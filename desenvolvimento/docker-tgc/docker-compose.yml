@@ -1,0 +1,49 @@
+version: '3.9'
+
+volumes:
+  postgres-data:
+  pgadmin4-data:
+  nodered-data:
+
+services:
+  db:
+    container_name: postgres-tgc
+    image: postgres:14.1-bullseye # https://hub.docker.com/_/postgres
+    environment:
+      - POSTGRES_USER=TGC
+      - POSTGRES_PASSWORD=TGC
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  db-client:
+    container_name: pgadmin4-tgc
+    image: dpage/pgadmin4:6.1 # https://hub.docker.com/r/dpage/pgadmin4/
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=joao.pereira@aluno.ufabc.edu.br
+      - PGADMIN_DEFAULT_PASSWORD=TGC
+    ports:
+      - 5050:80
+    volumes:
+      - pgadmin4-data:/var/lib/pgadmin
+    links:
+      - db
+    depends_on:
+      - db
+
+  backend:
+    container_name: nodered-tgc
+    image: nodered/node-red:2.0.6 # https://hub.docker.com/r/nodered/node-red
+    environment:
+      - DB_PORT=5432
+      - DB_USER=TGC
+      - DB_PASS=TGC
+    ports:
+      - 1880:1880
+    volumes:
+      - nodered-data:/data
+    links:
+      - db
+    depends_on:
+      - db
