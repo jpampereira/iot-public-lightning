@@ -47,3 +47,13 @@ services:
       - db
     depends_on:
       - db
+  
+  frontend:
+    container_name: nginx-tgc
+    image: nginx:1.21.4 # https://hub.docker.com/_/nginx/
+    ports:
+      - 8080:80
+    volumes:
+      - ../nginx:/usr/share/nginx/html
+    depends_on:
+      - backend
