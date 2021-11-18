@@ -1,0 +1,144 @@
+@charset "utf-8";
+
+* {
+	padding: 0px;
+	margin: 0px;
+}
+
+body {
+	background-color: #0f0f0f;
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	height: 100vh;
+}
+
+body > header {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: center;
+	background-color: #097479;
+	padding: 20px;
+}
+
+input[type="text"] {
+	padding: 5px;
+	width: 250px;
+	border-radius: 5px;
+	border: none;
+}
+
+button {
+	padding: 5px;
+	border-radius: 3px;
+	border: none;
+	width: 80px;
+}
+
+main {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	margin-bottom: 20px;
+}
+
+main > header, main > main {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: center;
+	width:  80%;
+	height: 50%;
+	padding: 20px 0px 10px 0px;
+}
+
+.info-session {
+	min-width: 490px;
+	height: 400px;
+	border-radius: 10px;
+	box-shadow: 1px 0.5px 5px 1px rgba(51, 51, 51, 0.349);
+}
+
+.info-session > main {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: center;
+	height: 90%;
+	margin: 0px;
+}
+
+.info {
+	width: 100%;
+	padding: 10px;
+	height: 60%;
+}
+
+hr {
+	width: 85%;
+	border: 1px solid #097479;
+}
+
+.btn-on-off {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: #808080;
+	color: white;
+	font-size: 1.2em;
+	width: 120px;
+	padding: 10px 20px;
+	border-radius: 5px;
+	margin-bottom: 20px;
+}
+
+.btn-on-off:hover {
+	cursor: default;
+}
+
+.maps-session {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-end;
+	min-width: 590px;
+	height: 400px;
+	border-radius: 10px;
+	padding: 20px;
+}
+
+#map {
+	width: 100%;
+	height: 100%;
+	border-radius: 10px;
+}
+
+.charts-session {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	width: 100%;
+}
+
+.chart-card {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	min-width: 390px;
+	min-height: 195px;
+	margin: 10px 10px;
+	border-radius: 10px;
+	box-shadow: 1px 0.5px 5px 1px rgba(51, 51, 51, 0.349);
+}
+
+.chart-card > header, .info-session > header {
+	background-color: #097479;
+	padding: 6px;
+	border-radius: 10px 10px 0px 0px;
+	font-size: 0.6em;
+	text-align: center;
+}
+
+footer {
+	background-color: #097479;
+	text-align: center;
+	padding: 8px;
+}

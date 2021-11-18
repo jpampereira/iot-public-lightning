@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Monitoração</title>
+	<link rel="shortcut icon" href="../images/monitoring-favicon.ico" type="image/x-icon">
+	
+	<link rel="stylesheet" href="../styles/monitoring.css">
+
+	<!-- Chart libraries -->
+	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	<script src="https://unpkg.com/chart.js@2.8.0/dist/Chart.bundle.js"></script>
+	<script src="https://unpkg.com/chartjs-gauge@0.3.0/dist/chartjs-gauge.js"></script>
+
+	<!-- Map library -->
+	<script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDGf2F6gJHjEJETRBsRqR00hWQAfHaZcVU&callback=create_map&v=weekly"></script>
+</head>
+<body>
+	<header>
+		<form>
+			<input type="text" name="device_id">
+			<input type="hidden" name="current_id">
+			<button>Buscar</button>
+		</form>
+	</header>
+	<main>
+		<header>
+			<div class="info-session">
+				<header><h1>Informações do Dispositivo</h1></header>
+				<main>
+					<div class="info"></div>
+					<hr>
+					<div class="btn-on-off">
+						Ligar/Desligar
+					</div>
+				</main>
+			</div>
+			<div class="maps-session">
+				<div id="map"></div>
+			</div>
+		</header>
+		<main>
+			<div class="charts-session">
+				<div class="chart-card">
+					<header><h1>Tensão</h1></header>
+					<canvas id="tensao" class="chart"></canvas>
+				</div>
+				<div class="chart-card">
+					<header><h1>Corrente</h1></header>
+					<canvas id="corrente" class="chart"></canvas>
+				</div>
+				<div class="chart-card">
+					<header><h1>Luminosidade</h1></header>
+					<canvas id="luminosidade" class="chart"></canvas>
+				</div>
+				<div class="chart-card">
+					<header><h1>Potência</h1></header>
+					<canvas id="potencia" class="chart"></canvas>
+				</div>
+			</div>
+		</main>
+	</main>
+	<footer>
+		<p>Criado por João Pedro de Abreu Martins Pereira &ltjpampereira@gmail.com&gt</p>
+	</footer>
+
+	<script src="../scripts/requests.js"></script>
+	<script src="../scripts/monitoring-map.js"></script>
+	<script src="../scripts/monitoring-status-btn.js"></script>
+	<script src="../scripts/monitoring-charts.js"></script>
+	<script src="../scripts/monitoring-main.js"></script>
+
+</body>
+</html>
