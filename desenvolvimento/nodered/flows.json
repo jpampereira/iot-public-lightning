@@ -1,0 +1,601 @@
+[
+    {
+        "id": "8813ec2835daae18",
+        "type": "tab",
+        "label": "Get Sensors Data",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "7f5557aca01f4737",
+        "type": "tab",
+        "label": "Monitoring Page",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "bab6ffe5b7ae3a28",
+        "type": "subflow",
+        "name": "Database",
+        "info": "",
+        "category": "",
+        "in": [
+            {
+                "x": 100,
+                "y": 100,
+                "wires": [
+                    {
+                        "id": "2dc46f9c24f9eb35"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 700,
+                "y": 100,
+                "wires": [
+                    {
+                        "id": "dcf9a148a61be9fc",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [],
+        "meta": {},
+        "color": "#DDAA99"
+    },
+    {
+        "id": "df4bdf4be0d4150f",
+        "type": "mqtt-broker",
+        "name": "MQTT Eclipse",
+        "broker": "mqtt.eclipseprojects.io",
+        "port": "1883",
+        "clientid": "",
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "sessionExpiry": ""
+    },
+    {
+        "id": "21c629e3be9268f3",
+        "type": "mydbConfig",
+        "name": "postgres@db:5432/TGC",
+        "host": "db",
+        "port": "5432",
+        "database": "TGC",
+        "ssl": false,
+        "rejectUnauthorized": false,
+        "ca": "",
+        "key": "",
+        "cert": "",
+        "max": "10",
+        "min": "1",
+        "idle": "1000"
+    },
+    {
+        "id": "2dc46f9c24f9eb35",
+        "type": "function",
+        "z": "bab6ffe5b7ae3a28",
+        "name": "Set Query",
+        "func": "msg.query = msg.payload;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 200,
+        "y": 100,
+        "wires": [
+            [
+                "57023228cce5d7bc"
+            ]
+        ]
+    },
+    {
+        "id": "dcf9a148a61be9fc",
+        "type": "function",
+        "z": "bab6ffe5b7ae3a28",
+        "name": "Get Query Response",
+        "func": "const query_response = msg.payload.rows;\n\ndelete msg.query;\n\nmsg.payload = query_response;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 560,
+        "y": 100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "8b614dd0c4e7ecd6",
+        "type": "mqtt in",
+        "z": "8813ec2835daae18",
+        "name": "Sensors Output",
+        "topic": "MQTTtcciluminacaoRecebe_02",
+        "qos": "2",
+        "datatype": "json",
+        "broker": "df4bdf4be0d4150f",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "x": 120,
+        "y": 96,
+        "wires": [
+            [
+                "187acea3920b5c2c"
+            ]
+        ]
+    },
+    {
+        "id": "80a46d82ca4455ee",
+        "type": "catch",
+        "z": "8813ec2835daae18",
+        "name": "",
+        "scope": null,
+        "uncaught": false,
+        "x": 101,
+        "y": 456,
+        "wires": [
+            [
+                "4fed0b38fbbe8ae3"
+            ]
+        ]
+    },
+    {
+        "id": "27e7cc799e913f9c",
+        "type": "comment",
+        "z": "8813ec2835daae18",
+        "name": "Exceptions Treatment",
+        "info": "",
+        "x": 140,
+        "y": 395,
+        "wires": []
+    },
+    {
+        "id": "4fed0b38fbbe8ae3",
+        "type": "debug",
+        "z": "8813ec2835daae18",
+        "name": "Exception",
+        "active": true,
+        "tosidebar": true,
+        "console": true,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 251,
+        "y": 456,
+        "wires": []
+    },
+    {
+        "id": "187acea3920b5c2c",
+        "type": "function",
+        "z": "8813ec2835daae18",
+        "name": "Parse Output",
+        "func": "msg.sensor_output = msg.payload;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 290,
+        "y": 96,
+        "wires": [
+            [
+                "4f84135b11c27312"
+            ]
+        ]
+    },
+    {
+        "id": "d5ce424ec67d4654",
+        "type": "comment",
+        "z": "8813ec2835daae18",
+        "name": "Store Data",
+        "info": "",
+        "x": 100,
+        "y": 196,
+        "wires": []
+    },
+    {
+        "id": "4f84135b11c27312",
+        "type": "link out",
+        "z": "8813ec2835daae18",
+        "name": "",
+        "links": [
+            "88a5b57865658712"
+        ],
+        "x": 395,
+        "y": 96,
+        "wires": []
+    },
+    {
+        "id": "88a5b57865658712",
+        "type": "link in",
+        "z": "8813ec2835daae18",
+        "name": "",
+        "links": [
+            "4f84135b11c27312"
+        ],
+        "x": 55,
+        "y": 236,
+        "wires": [
+            [
+                "96803667e593d0dc"
+            ]
+        ]
+    },
+    {
+        "id": "96803667e593d0dc",
+        "type": "function",
+        "z": "8813ec2835daae18",
+        "name": "Parse Output",
+        "func": "const sensor_output = msg.sensor_output;\n\nmsg.payload = `INSERT \nINTO DADOS_SENSORES_TEMPO_REAL (ID_EQUIPAMENTO, TENSAO, CORRENTE, LUMINOSIDADE, RELE_STATE) \nVALUES (${sensor_output.id}, ${sensor_output.tensao}, ${sensor_output.corrente}, ${sensor_output.luminosidade}, '${sensor_output.rele_state}')`;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 170,
+        "y": 236,
+        "wires": [
+            [
+                "fea15522f7bc9730"
+            ]
+        ]
+    },
+    {
+        "id": "fea15522f7bc9730",
+        "type": "subflow:bab6ffe5b7ae3a28",
+        "z": "8813ec2835daae18",
+        "name": "",
+        "env": [],
+        "x": 320,
+        "y": 236,
+        "wires": [
+            [
+                "8885c9540ad9bf99"
+            ]
+        ]
+    },
+    {
+        "id": "8885c9540ad9bf99",
+        "type": "debug",
+        "z": "8813ec2835daae18",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 450,
+        "y": 236,
+        "wires": []
+    },
+    {
+        "id": "6c14b6de93cba404",
+        "type": "comment",
+        "z": "8813ec2835daae18",
+        "name": "Get Sensors Data",
+        "info": "",
+        "x": 130,
+        "y": 56,
+        "wires": []
+    },
+    {
+        "id": "57023228cce5d7bc",
+        "type": "mydb",
+        "z": "bab6ffe5b7ae3a28",
+        "name": "Execute Query",
+        "style": "mustache",
+        "substEnvVars": false,
+        "query": "{{{ msg.query }}};",
+        "mydbConfig": "21c629e3be9268f3",
+        "x": 360,
+        "y": 100,
+        "wires": [
+            [
+                "dcf9a148a61be9fc"
+            ]
+        ]
+    },
+    {
+        "id": "ddaad138184f4e6a",
+        "type": "http in",
+        "z": "7f5557aca01f4737",
+        "name": "",
+        "url": "/monitoring/sensor-data",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 160,
+        "y": 96,
+        "wires": [
+            [
+                "34e72f6de097ed1b"
+            ]
+        ]
+    },
+    {
+        "id": "dbc7940b4ac567c3",
+        "type": "subflow:bab6ffe5b7ae3a28",
+        "z": "7f5557aca01f4737",
+        "name": "",
+        "env": [],
+        "x": 500,
+        "y": 96,
+        "wires": [
+            [
+                "6242dd720b168dfd"
+            ]
+        ]
+    },
+    {
+        "id": "34e72f6de097ed1b",
+        "type": "function",
+        "z": "7f5557aca01f4737",
+        "name": "Set query",
+        "func": "const device_id = msg.payload.param;\n\nmsg.payload = `SELECT TENSAO, CORRENTE, LUMINOSIDADE, RELE_STATE\n               FROM DADOS_SENSORES_TEMPO_REAL\n               WHERE ID_EQUIPAMENTO = ${device_id} AND HORA_INSERCAO > CURRENT_TIMESTAMP - INTERVAL '1 min' \n               ORDER BY HORA_INSERCAO DESC\n               LIMIT 1`;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 360,
+        "y": 96,
+        "wires": [
+            [
+                "dbc7940b4ac567c3"
+            ]
+        ]
+    },
+    {
+        "id": "9b6e79471d255e11",
+        "type": "comment",
+        "z": "7f5557aca01f4737",
+        "name": "Get most recently data of device",
+        "info": "",
+        "x": 170,
+        "y": 56,
+        "wires": []
+    },
+    {
+        "id": "b455f698c449ca64",
+        "type": "http response",
+        "z": "7f5557aca01f4737",
+        "name": "Send response",
+        "statusCode": "",
+        "headers": {},
+        "x": 860,
+        "y": 96,
+        "wires": []
+    },
+    {
+        "id": "4ac549b1969b0168",
+        "type": "catch",
+        "z": "7f5557aca01f4737",
+        "name": "",
+        "scope": null,
+        "uncaught": false,
+        "x": 100,
+        "y": 637,
+        "wires": [
+            [
+                "1705d89c23ac2369"
+            ]
+        ]
+    },
+    {
+        "id": "fca56cd6fe289503",
+        "type": "comment",
+        "z": "7f5557aca01f4737",
+        "name": "Exceptions Treatment",
+        "info": "",
+        "x": 139,
+        "y": 576,
+        "wires": []
+    },
+    {
+        "id": "1705d89c23ac2369",
+        "type": "debug",
+        "z": "7f5557aca01f4737",
+        "name": "Exception",
+        "active": true,
+        "tosidebar": true,
+        "console": true,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 250,
+        "y": 637,
+        "wires": []
+    },
+    {
+        "id": "6242dd720b168dfd",
+        "type": "function",
+        "z": "7f5557aca01f4737",
+        "name": "Calculate Potência",
+        "func": "const data = msg.payload;\n\nif (data.length > 0) {\n    // Calculate Potencia\n    const tensao = data[0].tensao;\n    const corrente = data[0].corrente;\n    \n    const potencia = parseInt(tensao * corrente);\n    \n    data[0].potencia = potencia;\n    \n    // Convert Rele State\n    const rele_state = data[0].rele_state;\n    data[0].rele_state = rele_state ? 1 : 0;\n    \n    msg.payload = data;\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 670,
+        "y": 96,
+        "wires": [
+            [
+                "b455f698c449ca64"
+            ]
+        ]
+    },
+    {
+        "id": "c6a98241887037fd",
+        "type": "mqtt out",
+        "z": "7f5557aca01f4737",
+        "name": "Sensors Input",
+        "topic": "MQTTtcciluminacaoEnvia_02",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "df4bdf4be0d4150f",
+        "x": 600,
+        "y": 416,
+        "wires": []
+    },
+    {
+        "id": "e0b9c1eff2e18be5",
+        "type": "comment",
+        "z": "7f5557aca01f4737",
+        "name": "Turn on/off device",
+        "info": "",
+        "x": 130,
+        "y": 335,
+        "wires": []
+    },
+    {
+        "id": "ec0b2b7b6c301d78",
+        "type": "http in",
+        "z": "7f5557aca01f4737",
+        "name": "",
+        "url": "/monitoring/change-status",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 170,
+        "y": 396,
+        "wires": [
+            [
+                "2ea58b854874e1f9"
+            ]
+        ]
+    },
+    {
+        "id": "2ea58b854874e1f9",
+        "type": "function",
+        "z": "7f5557aca01f4737",
+        "name": "Parse input",
+        "func": "msg.payload = msg.payload.param;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 410,
+        "y": 396,
+        "wires": [
+            [
+                "aecf27c4524c85ed",
+                "c6a98241887037fd"
+            ]
+        ]
+    },
+    {
+        "id": "aecf27c4524c85ed",
+        "type": "http response",
+        "z": "7f5557aca01f4737",
+        "name": "Send response",
+        "statusCode": "",
+        "headers": {},
+        "x": 600,
+        "y": 376,
+        "wires": []
+    },
+    {
+        "id": "bf3565fe998b3d15",
+        "type": "http in",
+        "z": "7f5557aca01f4737",
+        "name": "",
+        "url": "/monitoring/device-info",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 160,
+        "y": 236,
+        "wires": [
+            [
+                "4eb5c88f1b01827b"
+            ]
+        ]
+    },
+    {
+        "id": "28915e0493ef6a3f",
+        "type": "comment",
+        "z": "7f5557aca01f4737",
+        "name": "Get device informations",
+        "info": "",
+        "x": 140,
+        "y": 196,
+        "wires": []
+    },
+    {
+        "id": "ede3351d6c899062",
+        "type": "subflow:bab6ffe5b7ae3a28",
+        "z": "7f5557aca01f4737",
+        "name": "",
+        "env": [],
+        "x": 500,
+        "y": 236,
+        "wires": [
+            [
+                "fd5c74c4ecda2310"
+            ]
+        ]
+    },
+    {
+        "id": "4eb5c88f1b01827b",
+        "type": "function",
+        "z": "7f5557aca01f4737",
+        "name": "Set query",
+        "func": "const device_id = msg.payload.param;\n\nmsg.payload = `SELECT LATITUDE, LONGITUDE\n               FROM DADOS_EQUIPAMENTOS\n               WHERE ID_EQUIPAMENTO = ${device_id}`;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 360,
+        "y": 236,
+        "wires": [
+            [
+                "ede3351d6c899062"
+            ]
+        ]
+    },
+    {
+        "id": "fd5c74c4ecda2310",
+        "type": "http response",
+        "z": "7f5557aca01f4737",
+        "name": "Send response",
+        "statusCode": "",
+        "headers": {},
+        "x": 660,
+        "y": 236,
+        "wires": []
+    }
+]
