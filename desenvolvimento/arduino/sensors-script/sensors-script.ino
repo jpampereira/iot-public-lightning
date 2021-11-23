@@ -10,8 +10,8 @@ const int LIGHT_ID = 1;
 
 // === Wi-Fi Credentials ===========================================================================================
 
-const char* SSID          = "TGC-UFABC";
-const char* WIFI_PASSWORD = "TGC-21026515";
+const char* SSID          = "jpampereira";
+const char* WIFI_PASSWORD = "jp6532mn";
 WiFiServer server(1883); 
 WiFiClient espClient;
 
