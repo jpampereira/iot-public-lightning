@@ -219,7 +219,7 @@
         "type": "function",
         "z": "8813ec2835daae18",
         "name": "Parse output",
-        "func": "msg.sensor_output = msg.payload;\nreturn msg;",
+        "func": "msg.sensor_output = msg.payload;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -552,7 +552,7 @@
         ],
         "repeat": "",
         "crontab": "0 0-23 * * *",
-        "once": false,
+        "once": true,
         "onceDelay": 0.1,
         "topic": "",
         "payloadType": "str",
@@ -560,7 +560,7 @@
         "y": 95,
         "wires": [
             [
-                "1046435b385a96f0"
+                "74a7720e8d6dadce"
             ]
         ]
     },
@@ -579,7 +579,7 @@
         "type": "subflow:bab6ffe5b7ae3a28",
         "z": "50de4a0fb7daeabc",
         "name": "",
-        "x": 800,
+        "x": 1180,
         "y": 95,
         "wires": [
             [
@@ -617,7 +617,7 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 550,
+        "x": 930,
         "y": 95,
         "wires": [
             [
@@ -633,7 +633,7 @@
         "links": [
             "6227b764ecd66fbd"
         ],
-        "x": 895,
+        "x": 1275,
         "y": 95,
         "wires": []
     },
@@ -811,7 +811,7 @@
         "type": "function",
         "z": "50de4a0fb7daeabc",
         "name": "Calculate powers",
-        "func": "let dataset = msg.payload;\n\ndataset = dataset.map(row => {\n    const tension = row.tension;\n    const current = row.current;\n    \n    const power = Math.round(tension * current);\n    \n    row.power = power;\n    \n    return row;\n});\n\nmsg.payload = dataset;\n\nreturn msg;",
+        "func": "let dataset = msg.payload;\n\ndataset = dataset.map(data => {\n    const tension = data.tension;\n    const current = data.current;\n    \n    const power = Math.round(tension * current);\n    \n    data.power = power;\n    \n    return data;\n});\n\nmsg.payload = dataset;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -830,7 +830,7 @@
         "type": "function",
         "z": "50de4a0fb7daeabc",
         "name": "Calculate max, min and avg",
-        "func": "const dataset = msg.payload;\n\n// Functions\nconst min = (dataset) => dataset.sort()[0];\nconst max = (dataset) => dataset.sort()[dataset.length-1];\nconst avg = (dataset) => dataset.reduce((acc, cur) => acc + cur) / dataset.length;\n\n// Get data from a specific measure\nconst tensions  = dataset.map(row => row.tension);\nconst currents  = dataset.map(row => row.current); \nconst lightness = dataset.map(row => row.lightness);\nconst powers    = dataset.map(row => row.power);\n\nconst results = {\n    tension:   { min: min(tensions),  max: max(tensions),  avg: Math.round(avg(tensions))            },\n    current:   { min: min(currents),  max: max(currents),  avg: parseFloat(avg(currents).toFixed(2)) },\n    lightness: { min: min(lightness), max: max(lightness), avg: Math.round(avg(lightness))           },\n    power:     { min: min(powers),    max: max(powers),    avg: Math.round(avg(powers))              }\n}\n\nmsg.dataset = dataset;\nmsg.results = results;\n\nreturn msg;",
+        "func": "const dataset = msg.payload;\n\n// Functions\nconst min = dataset => Math.min(...dataset);\nconst max = dataset => Math.max(...dataset);\nconst avg = dataset => (dataset.reduce((acc, cur) => acc + cur, 0) / dataset.length);\n\n// Get data from a specific measure\nconst tensions  = dataset.map(data => data.tension);\nconst currents  = dataset.map(data => data.current); \nconst lightness = dataset.map(data => data.lightness);\nconst powers    = dataset.map(data => data.power);\n\nconst results = {\n    tension:   { min: min(tensions),  max: max(tensions),  avg: Math.round(avg(tensions))            },\n    current:   { min: min(currents),  max: max(currents),  avg: parseFloat(avg(currents).toFixed(2)) },\n    lightness: { min: min(lightness), max: max(lightness), avg: Math.round(avg(lightness))           },\n    power:     { min: min(powers),    max: max(powers),    avg: Math.round(avg(powers))              }\n}\n\nmsg.dataset = dataset;\nmsg.results = results;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -908,7 +908,7 @@
         "type": "function",
         "z": "50de4a0fb7daeabc",
         "name": "Insert results in database",
-        "func": "function format_date(timestamp) {\n    const year = timestamp.getFullYear();\n    const mon  = `0${timestamp.getMonth()+1}`.slice(-2);\n    const day  = `0${timestamp.getDate()}`.slice(-2);\n    const hour = `0${timestamp.getHours()}`.slice(-2);\n    const min  = `0${timestamp.getMinutes()}`.slice(-2);\n    const sec  = `0${timestamp.getSeconds()}`.slice(-2);\n    \n    return `${year}-${mon}-${day} ${hour}:${min}:${sec}`;\n}\n\nconst device_id = msg.device_id;\nconst results   = msg.results;\nconst dataset   = msg.dataset;\nconst timestamp = msg.timestamp;\n\nconst date = new Date(timestamp);\ndate.setSeconds(0);\ndate.setMilliseconds(0);\n\nconst insertion_time = format_date(date);\n\nconst tension        = results.tension;\nconst current        = results.current;\nconst lightness      = results.lightness;\nconst power          = results.power;\n\nmsg.payload = `INSERT\n               INTO SENSORS_DATA_INTERVAL\n               (EQUIPMENT_ID, TENSION_MIN, TENSION_MAX, TENSION_AVG, CURRENT_MIN, CURRENT_MAX, CURRENT_AVG, LIGHTNESS_MIN, LIGHTNESS_MAX, LIGHTNESS_AVG, POWER_MIN, POWER_MAX, POWER_AVG, POWER_EXPEND, INSERTION_TIME, NUM_REGISTRIES)\n               VALUES\n               (${device_id}, ${tension.min}, ${tension.max}, ${tension.avg}, ${current.min}, ${current.max}, ${current.avg}, ${lightness.min}, ${lightness.max}, ${lightness.avg}, ${power.min}, ${power.max}, ${power.avg}, ${results.power_expend}, '${insertion_time}', ${dataset.length})`;\n               \nreturn msg;",
+        "func": "function format_date(timestamp) {\n    const year = timestamp.getFullYear();\n    const mon  = `0${timestamp.getMonth()+1}`.slice(-2);\n    const day  = `0${timestamp.getDate()}`.slice(-2);\n    const hour = `0${timestamp.getHours()}`.slice(-2);\n    const min  = `0${timestamp.getMinutes()}`.slice(-2);\n    const sec  = `0${timestamp.getSeconds()}`.slice(-2);\n    \n    return `${year}-${mon}-${day} ${hour}:${min}:${sec}`;\n}\n\nconst device_id = msg.device_id;\nconst results   = msg.results;\nconst dataset   = msg.dataset;\nconst timestamp = msg.timestamp;\n\nconst date = new Date(timestamp);\ndate.setSeconds(0);\ndate.setMilliseconds(0);\n\nconst insertion_time = format_date(date);\n\nconst tension   = results.tension;\nconst current   = results.current;\nconst lightness = results.lightness;\nconst power     = results.power;\n\nmsg.payload = `INSERT\n               INTO SENSORS_DATA_INTERVAL\n               (EQUIPMENT_ID, TENSION_MIN, TENSION_MAX, TENSION_AVG, CURRENT_MIN, CURRENT_MAX, CURRENT_AVG, LIGHTNESS_MIN, LIGHTNESS_MAX, LIGHTNESS_AVG, POWER_MIN, POWER_MAX, POWER_AVG, POWER_EXPEND, INSERTION_TIME, NUM_REGISTRIES)\n               VALUES\n               (${device_id}, ${tension.min}, ${tension.max}, ${tension.avg}, ${current.min}, ${current.max}, ${current.avg}, ${lightness.min}, ${lightness.max}, ${lightness.avg}, ${power.min}, ${power.max}, ${power.avg}, ${results.power_expend}, '${insertion_time}', ${dataset.length})`;\n               \nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1289,7 +1289,7 @@
         "type": "function",
         "z": "7f5557aca01f4737",
         "name": "Group data by minute",
-        "func": "const dataset   = msg.payload;\nconst threshold = msg.threshold;\nconst n_groups  = msg.interval;\nconst hop       = 1000 * msg.interval;\n\n// Create groups\n\nlet i;\nlet groups = [];\n\nfor (i = n_groups-1; i >= 0; i--) {\n    const timestamp = new Date(threshold - hop * (i+1));\n    const measures = [];\n    \n    groups.push({ timestamp, measures });\n}\n\n// Group data\n\ni = 0;\n\ndataset.forEach(data => {\n    const timestamp = new Date(data.insertion_time);\n    \n    for (i; i < groups.length && timestamp > groups[i].timestamp; i++);\n\n    if (i === 0) {\n        groups[i].measures.push(data);\n    } else {\n        groups[i-1].measures.push(data);\n    }\n});\n\n// Sum measures\n\nconst avg = dataset => dataset.reduce((acc, cur) => acc + cur, 0) / dataset.length;\n\ngroups = groups.map(group => {\n    const tension   = group.measures.map(data => data.tension);\n    const current   = group.measures.map(data => data.current);\n    const lightness = group.measures.map(data => data.lightness);\n    const powers    = group.measures.map(data => data.power);\n    \n    const tension_avg   = Math.round(avg(tension) || 0);\n    const current_avg   = parseFloat((avg(current) || 0).toFixed(2));\n    const lightness_avg = Math.round(avg(lightness) || 0);\n    const powers_avg    = Math.round(avg(powers) || 0);\n    \n    group.measures = {\n        tension:   tension_avg,\n        current:   current_avg,\n        lightness: lightness_avg,\n        power:     powers_avg\n    }\n    \n    return group;\n});\n\nmsg.dataset = groups;\nmsg.hop     = hop;\n\nreturn msg;",
+        "func": "const dataset   = msg.payload;\nconst threshold = msg.threshold;\nconst n_groups  = msg.interval;\nconst hop       = 1000 * 60;\n\n// Create groups\n\nlet i;\nlet groups = [];\n\nfor (i = n_groups; i > 0; i--) {\n    const timestamp = new Date(threshold - hop * i);\n    const measures  = [];\n    \n    groups.push({ timestamp, measures });\n}\n\n// Group data\n\ni = 1;\n\ndataset.forEach(data => {\n    const timestamp = new Date(data.insertion_time);\n    \n    for (i; i < groups.length && timestamp >= groups[i].timestamp; i++);\n\n    groups[i-1].measures.push(data);\n});\n\n// Sum measures\n\nconst avg = dataset => dataset.reduce((acc, cur) => acc + cur, 0) / dataset.length;\n\ngroups = groups.map(group => {\n    const tension   = group.measures.map(data => data.tension);\n    const current   = group.measures.map(data => data.current);\n    const lightness = group.measures.map(data => data.lightness);\n    const powers    = group.measures.map(data => data.power);\n    \n    const tension_avg   = Math.round(avg(tension) || 0);\n    const current_avg   = parseFloat((avg(current) || 0).toFixed(2));\n    const lightness_avg = Math.round(avg(lightness) || 0);\n    const powers_avg    = Math.round(avg(powers) || 0);\n    \n    group.measures = {\n        tension:   tension_avg,\n        current:   current_avg,\n        lightness: lightness_avg,\n        power:     powers_avg\n    }\n    \n    return group;\n});\n\nmsg.dataset = groups;\nmsg.hop     = hop;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1405,7 +1405,7 @@
         "type": "function",
         "z": "7f5557aca01f4737",
         "name": "Parse request body",
-        "func": "msg.device_id = msg.payload.device_id;\nmsg.interval  = msg.payload.interval; // in minutes\n\nreturn msg;",
+        "func": "msg.device_id = msg.payload.device_id;\nmsg.interval  = parseInt(msg.payload.interval); // in minutes\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1443,7 +1443,7 @@
         "type": "function",
         "z": "7f5557aca01f4737",
         "name": "Group data by 12 hours",
-        "func": "const dataset   = msg.dataset;\nconst threshold = msg.threshold;\nconst n_groups  = msg.interval / (60 * 12);\nconst hop       = 1000 * 60 * 60 * 12; // milliseconds * seconds * minutes * hours\n\n// Create groups\n\nlet i;\nlet groups = [];\n\nfor (i = n_groups-1; i >= 0; i--) {\n    const timestamp = new Date(threshold - hop * (i+1));\n    const measures = [];\n    \n    groups.push({ timestamp, measures });\n}\n\n// Group data\n\ni = 0;\n\ndataset.forEach(data => {\n    const timestamp = data.timestamp;\n    \n    for (i; i < groups.length && timestamp >= groups[i].timestamp; i++);\n\n    if (i === 0) {\n        groups[i].measures.push(data);\n    } else {\n        groups[i-1].measures.push(data);\n    }\n});\n\n\n// Sum values\n\nconst avg = dataset => dataset.reduce((acc, cur) => acc + cur, 0) / dataset.length;\n\ngroups = groups.map(group => {\n    tension_min   = Math.round(avg(group.measures.map(data => data.measures.tension_min)) || 0);\n    tension_max   = Math.round(avg(group.measures.map(data => data.measures.tension_max)) || 0);\n    tension_avg   = Math.round(avg(group.measures.map(data => data.measures.tension_avg)) || 0);\n    current_min   = parseFloat((avg(group.measures.map(data => data.measures.current_min)) || 0).toFixed(2));\n    current_max   = parseFloat((avg(group.measures.map(data => data.measures.current_max)) || 0).toFixed(2));\n    current_avg   = parseFloat((avg(group.measures.map(data => data.measures.current_avg)) || 0).toFixed(2));\n    lightness_min = Math.round(avg(group.measures.map(data => data.measures.lightness_min)) || 0);\n    lightness_max = Math.round(avg(group.measures.map(data => data.measures.lightness_max)) || 0);\n    lightness_avg = Math.round(avg(group.measures.map(data => data.measures.lightness_avg)) || 0);\n    power_min     = Math.round(avg(group.measures.map(data => data.measures.power_min)) || 0);\n    power_max     = Math.round(avg(group.measures.map(data => data.measures.power_max)) || 0);\n    power_avg     = Math.round(avg(group.measures.map(data => data.measures.power_avg)) || 0);\n\n    group.measures = {\n        tension_min,\n        tension_max,\n        tension_avg,\n        current_min,\n        current_max,\n        current_avg,\n        lightness_min,\n        lightness_max,\n        lightness_avg,\n        power_min,\n        power_max,\n        power_avg,\n    }\n    \n    return group;\n});\n\nmsg.dataset = groups;\nmsg.hop     = hop;\n\nreturn msg;",
+        "func": "const dataset   = msg.dataset;\nconst threshold = msg.threshold;\nconst n_groups  = msg.interval / (60 * 12);\nconst hop       = 1000 * 60 * 60 * 12; // milliseconds * seconds * minutes * hours\n\n// Create groups\n\nlet i;\nlet groups = [];\n\nfor (i = n_groups; i > 0; i--) {\n    const timestamp = new Date(threshold - hop * i);\n    const measures = [];\n    \n    groups.push({ timestamp, measures });\n}\n\n// Group data\n\ni = 1;\n\ndataset.forEach(data => {\n    const timestamp = data.timestamp;\n    \n    for (i; i < groups.length && timestamp >= groups[i].timestamp; i++);\n\n    groups[i-1].measures.push(data);\n});\n\n\n// Sum values\n\nconst avg = dataset => dataset.reduce((acc, cur) => acc + cur, 0) / dataset.length;\n\ngroups = groups.map(group => {\n    tension_min   = Math.round(avg(group.measures.map(data => data.measures.tension_min)) || 0);\n    tension_max   = Math.round(avg(group.measures.map(data => data.measures.tension_max)) || 0);\n    tension_avg   = Math.round(avg(group.measures.map(data => data.measures.tension_avg)) || 0);\n    current_min   = parseFloat((avg(group.measures.map(data => data.measures.current_min)) || 0).toFixed(2));\n    current_max   = parseFloat((avg(group.measures.map(data => data.measures.current_max)) || 0).toFixed(2));\n    current_avg   = parseFloat((avg(group.measures.map(data => data.measures.current_avg)) || 0).toFixed(2));\n    lightness_min = Math.round(avg(group.measures.map(data => data.measures.lightness_min)) || 0);\n    lightness_max = Math.round(avg(group.measures.map(data => data.measures.lightness_max)) || 0);\n    lightness_avg = Math.round(avg(group.measures.map(data => data.measures.lightness_avg)) || 0);\n    power_min     = Math.round(avg(group.measures.map(data => data.measures.power_min)) || 0);\n    power_max     = Math.round(avg(group.measures.map(data => data.measures.power_max)) || 0);\n    power_avg     = Math.round(avg(group.measures.map(data => data.measures.power_avg)) || 0);\n\n    group.measures = {\n        tension_min,\n        tension_max,\n        tension_avg,\n        current_min,\n        current_max,\n        current_avg,\n        lightness_min,\n        lightness_max,\n        lightness_avg,\n        power_min,\n        power_max,\n        power_avg,\n    }\n    \n    return group;\n});\n\nmsg.dataset = groups;\nmsg.hop     = hop;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1807,7 +1807,7 @@
         "type": "debug",
         "z": "7f5557aca01f4737",
         "name": "[EXIT] Get device power expend",
-        "active": true,
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -1862,7 +1862,7 @@
         "type": "function",
         "z": "7f5557aca01f4737",
         "name": "Group data by hour",
-        "func": "const dataset   = msg.payload;\nconst threshold = msg.threshold;\nconst n_groups  = msg.interval / 60;\nconst hop       = 1000 * 60 * 60;\n\n// Create groups\n\nlet i;\nlet groups = [];\n\nfor (i = n_groups-1; i >= 0; i--) {\n    const timestamp = new Date(threshold - hop * (i+1));\n    const measures = [];\n    \n    groups.push({ timestamp, measures });\n}\n\n// Group data\n\ni = 0;\n\ndataset.forEach(data => {\n    const timestamp = new Date(data.insertion_time);\n    \n    for (i; i < groups.length && timestamp > groups[i].timestamp; i++);\n\n    if (i === 0) {\n        groups[i].measures.push(data);\n    } else {\n        groups[i-1].measures.push(data);\n    }\n});\n\n// Sum values\n\nconst avg = dataset => dataset.reduce((acc, cur) => acc + cur, 0) / dataset.length;\n\ngroups = groups.map(group => {\n    tension_min   = Math.round(avg(group.measures.map(data => data.tension_min)) || 0);\n    tension_max   = Math.round(avg(group.measures.map(data => data.tension_max)) || 0);\n    tension_avg   = Math.round(avg(group.measures.map(data => data.tension_avg)) || 0);\n    current_min   = parseFloat((avg(group.measures.map(data => data.current_min)) || 0).toFixed(2));\n    current_max   = parseFloat((avg(group.measures.map(data => data.current_max)) || 0).toFixed(2));\n    current_avg   = parseFloat((avg(group.measures.map(data => data.current_avg)) || 0).toFixed(2));\n    lightness_min = Math.round(avg(group.measures.map(data => data.lightness_min)) || 0);\n    lightness_max = Math.round(avg(group.measures.map(data => data.lightness_max)) || 0);\n    lightness_avg = Math.round(avg(group.measures.map(data => data.lightness_avg)) || 0);\n    power_min     = Math.round(avg(group.measures.map(data => data.power_min)) || 0);\n    power_max     = Math.round(avg(group.measures.map(data => data.power_max)) || 0);\n    power_avg     = Math.round(avg(group.measures.map(data => data.power_avg)) || 0);\n    \n    group.measures = {\n        tension_min,\n        tension_max,\n        tension_avg,\n        current_min,\n        current_max,\n        current_avg,\n        lightness_min,\n        lightness_max,\n        lightness_avg,\n        power_min,\n        power_max,\n        power_avg,\n    }\n    \n    return group;\n});\n\nmsg.dataset = groups;\nmsg.hop     = hop;\n\nreturn msg;",
+        "func": "const dataset   = msg.payload;\nconst threshold = msg.threshold;\nconst n_groups  = msg.interval / 60;\nconst hop       = 1000 * 60 * 60;\n\n// Create groups\n\nlet i;\nlet groups = [];\n\nfor (i = n_groups; i > 0; i--) {\n    const timestamp = new Date(threshold - hop * i);\n    const measures  = [];\n    \n    groups.push({ timestamp, measures });\n}\n\n// Group data\n\ni = 1;\n\ndataset.forEach(data => {\n    const timestamp = new Date(data.insertion_time);\n    \n    for (i; i < groups.length && timestamp > groups[i].timestamp; i++);\n\n    groups[i-1].measures.push(data);\n});\n\n// Sum values\n\nconst avg = dataset => dataset.reduce((acc, cur) => acc + cur, 0) / dataset.length;\n\ngroups = groups.map(group => {\n    tension_min   = Math.round(avg(group.measures.map(data => data.tension_min)) || 0);\n    tension_max   = Math.round(avg(group.measures.map(data => data.tension_max)) || 0);\n    tension_avg   = Math.round(avg(group.measures.map(data => data.tension_avg)) || 0);\n    current_min   = parseFloat((avg(group.measures.map(data => data.current_min)) || 0).toFixed(2));\n    current_max   = parseFloat((avg(group.measures.map(data => data.current_max)) || 0).toFixed(2));\n    current_avg   = parseFloat((avg(group.measures.map(data => data.current_avg)) || 0).toFixed(2));\n    lightness_min = Math.round(avg(group.measures.map(data => data.lightness_min)) || 0);\n    lightness_max = Math.round(avg(group.measures.map(data => data.lightness_max)) || 0);\n    lightness_avg = Math.round(avg(group.measures.map(data => data.lightness_avg)) || 0);\n    power_min     = Math.round(avg(group.measures.map(data => data.power_min)) || 0);\n    power_max     = Math.round(avg(group.measures.map(data => data.power_max)) || 0);\n    power_avg     = Math.round(avg(group.measures.map(data => data.power_avg)) || 0);\n    \n    group.measures = {\n        tension_min,\n        tension_max,\n        tension_avg,\n        current_min,\n        current_max,\n        current_avg,\n        lightness_min,\n        lightness_max,\n        lightness_avg,\n        power_min,\n        power_max,\n        power_avg,\n    }\n    \n    return group;\n});\n\nmsg.dataset = groups;\nmsg.hop     = hop;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1881,7 +1881,7 @@
         "type": "function",
         "z": "7f5557aca01f4737",
         "name": "Create labels",
-        "func": "function format_date(timestamp) {\n    const hour = `0${timestamp.getHours()}`.slice(-2);\n    const min  = `0${timestamp.getMinutes()}`.slice(-2);\n    const day  = `0${timestamp.getDate()}`.slice(-2);\n    const mon  = `0${timestamp.getMonth()+1}`.slice(-2);\n    \n    if (interval === 60) {\n        return `${hour}:${min}`;\n    } else {\n        return `${hour}:${min} ${day}/${mon}`;\n    }\n}\n\nconst interval = msg.interval;\nconst hop      = msg.hop;\n\nlet dataset = msg.dataset;\n\ndataset = dataset.map(data => {\n    const timestamp = data.timestamp;\n    \n    const begin = format_date(timestamp, interval);\n    timestamp.setTime(timestamp.getTime() + hop);\n    const final = format_date(timestamp, interval);\n    \n    if (interval === 60) {\n        data.label = `${begin}`;\n    } else {\n        data.label = `${begin} à ${final}`;\n    }\n    \n    delete data.timestamp;\n    \n    return data;\n});\n\nmsg.dataset = dataset;\n\nreturn msg;",
+        "func": "function format_date(timestamp, interval) {\n    const hour = `0${timestamp.getHours()}`.slice(-2);\n    const min  = `0${timestamp.getMinutes()}`.slice(-2);\n    const day  = `0${timestamp.getDate()}`.slice(-2);\n    const mon  = `0${timestamp.getMonth()+1}`.slice(-2);\n    \n    if (interval === 60) {\n        return `${hour}:${min}`;\n    } else {\n        return `${hour}:${min} ${day}/${mon}`;\n    }\n}\n\nconst interval = msg.interval;\nconst hop      = msg.hop;\n\nlet dataset = msg.dataset;\n\ndataset = dataset.map(data => {\n    const timestamp = data.timestamp;\n    \n    const begin = format_date(timestamp, interval);\n    \n    if (interval === 60) {\n        data.label = `${begin}`;\n    } else {\n        timestamp.setTime(timestamp.getTime() + hop);\n        const final = format_date(timestamp, interval);\n        \n        data.label = `${begin} à ${final}`;\n    }\n    \n    delete data.timestamp;\n    \n    return data;\n});\n\nmsg.dataset = dataset;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1912,6 +1912,50 @@
             [
                 "47e86d41591c2ef2",
                 "dc71772a94af1a6d"
+            ]
+        ]
+    },
+    {
+        "id": "74a7720e8d6dadce",
+        "type": "function",
+        "z": "50de4a0fb7daeabc",
+        "name": "Get current minute",
+        "func": "const timestamp = msg.timestamp;\nconst date      = new Date(timestamp);\n\nmsg.payload = date.getMinutes();\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 470,
+        "y": 95,
+        "wires": [
+            [
+                "d76c06b50bb83d9c"
+            ]
+        ]
+    },
+    {
+        "id": "d76c06b50bb83d9c",
+        "type": "switch",
+        "z": "50de4a0fb7daeabc",
+        "name": "Execute flow?",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "0",
+                "vt": "num"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 660,
+        "y": 95,
+        "wires": [
+            [
+                "1046435b385a96f0"
             ]
         ]
     }
