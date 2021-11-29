@@ -4,9 +4,9 @@ const chart_config = function (type, measure) {
 	const config  = { type: type, data: {}, options: {}};
 	
 	const datasets = [
-		{ label: 'Mínimo', color: 'red'   }, 
-		{ label: 'Máximo', color: 'green' }, 
-		{ label: 'Média',  color: 'blue'  }
+		{ label: 'Mínimo', border_color: 'red',   background_color: 'rgba(255, 0, 0, 0.185)' }, 
+		{ label: 'Máximo', border_color: 'green', background_color: 'rgba(0, 255, 0, 0.185)'  }, 
+		{ label: 'Média',  border_color: 'blue',  background_color: 'rgba(0, 0, 255, 0.185)'   }
 	];
 
 	config.data = {
@@ -16,7 +16,8 @@ const chart_config = function (type, measure) {
 				label: dataset.label,
 				data: [],
 				fill: true,
-				borderColor: dataset.color,
+				borderColor: dataset.border_color,
+				backgroundColor: dataset.background_color,
 				tension: 0.1
 			}
 		})
