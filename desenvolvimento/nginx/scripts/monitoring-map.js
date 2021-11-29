@@ -15,23 +15,30 @@ function create_map () {
 /******************* ON PAGE REQUEST *******************/
 
 function update_map(device_id) {
-	request('/monitoring/device-info', device_id, 'get')
+	request('/device-info', { device_id }, 'get')
 	.then(res => {
 		const device_data = res[0];
 
 		if (device_data !== undefined) {
+			update_info_card(device_data);
+
 			const lat = parseFloat(device_data.latitude);
 			const lng = parseFloat(device_data.longitude);
 
 			window.map.setCenter({ lat, lng });
 			window.map.setZoom(17);
+			
 			window.marker.setMap(map);
 			window.marker.setPosition({ lat, lng });
 		} else {
 			reset_map();
+			reset_info_card();
 		}
 	})
-	.catch(reset_map());
+	.catch(_ => {
+		reset_map();
+		reset_info_card();
+	});
 }
 
 function reset_map() {

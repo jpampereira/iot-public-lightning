@@ -4,10 +4,11 @@ let btn_state = 2;
 
 //****************** IN BACKGROUND *********************/
 
+// 0 = Off, 1 = On, 2 = Unknown
 const btn_opts = {
-	'0': { color: '#008000', text: 'Ligar',          hover: { color: '#005c00', cursor: 'pointer', font: 'bold'}  },  // Off
-	'1': { color: '#ff0000', text: 'Desligar ',      hover: { color: '#a30000', cursor: 'pointer', font: 'bold' } },  // On
-	'2': { color: '#808080', text: 'Ligar/Desligar', hover: { color: '#808080', cursor: 'default', font: 'normal' } } // Unknown
+	'0': { color: '#008000', text: 'Ligar',          hover: { cursor: 'pointer', font: 'bold'   }, active: { border: '1px inset #004d00', padding: '14px 29px' } },  
+	'1': { color: '#ff0000', text: 'Desligar ',      hover: { cursor: 'pointer', font: 'bold'   }, active: { border: '1px inset #aa0000', padding: '14px 29px' } },
+	'2': { color: '#808080', text: 'Ligar/Desligar', hover: { cursor: 'default', font: 'normal' }, active: { border: 'none',              padding: '15px 30px' } }
 };
 
 function change_btn_label(status) {
@@ -16,15 +17,17 @@ function change_btn_label(status) {
 		// Get configs to apply in button
 		const configs = btn_opts[status];
 
-		// Get button elements
-		const btn_hover = window.document.styleSheets[0];
+		// Get button pseudo-elements
+		const btn_pseudo_elem = window.document.querySelector(':root').style;
 
 		// Apply new style
 		btn.style.backgroundColor = configs.color;
 		btn.innerHTML = configs.text;
-		btn_hover.insertRule(`.btn-on-off:hover { font-weight: ${configs.hover.font} }`, 0);
-		btn_hover.insertRule(`.btn-on-off:hover { background-color: ${configs.hover.color} }`, 0);
-		btn_hover.insertRule(`.btn-on-off:hover { cursor: ${configs.hover.cursor} }`, 0);
+
+		btn_pseudo_elem.setProperty('--btn-weight',  configs.hover.font);
+		btn_pseudo_elem.setProperty('--btn-cursor',  configs.hover.cursor);
+		btn_pseudo_elem.setProperty('--btn-border',  configs.active.border);
+		btn_pseudo_elem.setProperty('--btn-padding', configs.active.padding);
 
 		btn_state = status;
 	}
@@ -39,7 +42,7 @@ btn.onclick = function() {
 			action = 'L';
 		}
 
-		request('/monitoring/change-status', action, 'get')
+		request('/change-status', { action }, 'get')
 		.then()
 		.catch(console.log);
 	}
