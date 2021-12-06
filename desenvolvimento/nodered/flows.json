@@ -165,7 +165,7 @@
         "rap": true,
         "rh": 0,
         "x": 120,
-        "y": 96,
+        "y": 117,
         "wires": [
             [
                 "187acea3920b5c2c"
@@ -180,7 +180,7 @@
         "scope": null,
         "uncaught": false,
         "x": 101,
-        "y": 476,
+        "y": 496,
         "wires": [
             [
                 "4fed0b38fbbe8ae3"
@@ -194,7 +194,7 @@
         "name": "Exceptions Treatment",
         "info": "",
         "x": 140,
-        "y": 415,
+        "y": 435,
         "wires": []
     },
     {
@@ -211,7 +211,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 251,
-        "y": 476,
+        "y": 496,
         "wires": []
     },
     {
@@ -226,10 +226,10 @@
         "finalize": "",
         "libs": [],
         "x": 290,
-        "y": 96,
+        "y": 117,
         "wires": [
             [
-                "4f84135b11c27312"
+                "42c1b1a281ba72f5"
             ]
         ]
     },
@@ -240,7 +240,7 @@
         "name": "Store sensors data",
         "info": "",
         "x": 130,
-        "y": 216,
+        "y": 235,
         "wires": []
     },
     {
@@ -251,8 +251,8 @@
         "links": [
             "88a5b57865658712"
         ],
-        "x": 395,
-        "y": 96,
+        "x": 975,
+        "y": 95,
         "wires": []
     },
     {
@@ -264,7 +264,7 @@
             "4f84135b11c27312"
         ],
         "x": 55,
-        "y": 256,
+        "y": 275,
         "wires": [
             [
                 "96803667e593d0dc"
@@ -276,14 +276,14 @@
         "type": "function",
         "z": "8813ec2835daae18",
         "name": "Set query",
-        "func": "const sensor_output = msg.sensor_output;\n\nmsg.payload = `INSERT \n               INTO SENSORS_DATA_REAL_TIME (EQUIPMENT_ID, TENSION, CURRENT, LIGHTNESS, RELE_STATE) \n               VALUES (${sensor_output.id}, ${sensor_output.tensao}, ${sensor_output.corrente}, ${sensor_output.luminosidade}, '${sensor_output.rele_state}')`;\n\nreturn msg;",
+        "func": "const sensor_output = msg.sensor_output;\n\nmsg.payload = `INSERT \n               INTO SENSORS_DATA_REAL_TIME (DEVICE_ID, VOLTAGE, CURRENT, LIGHTNESS, RELE_STATE) \n               VALUES (${sensor_output.id}, ${sensor_output.tensao}, ${sensor_output.corrente}, ${sensor_output.luminosidade}, '${sensor_output.rele_state}')`;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
         "x": 160,
-        "y": 256,
+        "y": 275,
         "wires": [
             [
                 "fea15522f7bc9730"
@@ -297,7 +297,7 @@
         "name": "",
         "env": [],
         "x": 300,
-        "y": 256,
+        "y": 275,
         "wires": [
             [
                 "8885c9540ad9bf99"
@@ -308,7 +308,7 @@
         "id": "8885c9540ad9bf99",
         "type": "debug",
         "z": "8813ec2835daae18",
-        "name": "",
+        "name": "[EXIT] Store sensors data",
         "active": false,
         "tosidebar": true,
         "console": false,
@@ -317,8 +317,8 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 430,
-        "y": 256,
+        "x": 490,
+        "y": 275,
         "wires": []
     },
     {
@@ -328,7 +328,7 @@
         "name": "Receive sensors data",
         "info": "",
         "x": 140,
-        "y": 56,
+        "y": 55,
         "wires": []
     },
     {
@@ -513,7 +513,7 @@
         "type": "function",
         "z": "7f5557aca01f4737",
         "name": "Set query",
-        "func": "const device_id = msg.device_id;\n\nmsg.payload = `SELECT LATITUDE, LONGITUDE, STREET, DISTRICT, STATUS\n               FROM EQUIPMENTS_DATA\n               WHERE EQUIPMENT_ID = ${device_id}`;\n\nreturn msg;",
+        "func": "const device_id = msg.device_id;\n\nmsg.payload = `SELECT LATITUDE, LONGITUDE, STREET, DISTRICT, STATUS\n               FROM DEVICES_DATA\n               WHERE DEVICE_ID = ${device_id}`;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -592,7 +592,7 @@
         "type": "function",
         "z": "50de4a0fb7daeabc",
         "name": "Get active devices",
-        "func": "msg.payload = `SELECT EQUIPMENT_ID \n               FROM EQUIPMENTS_DATA \n               WHERE STATUS = '1'`;\n               \nreturn msg;",
+        "func": "msg.payload = `SELECT DEVICE_ID \n               FROM DEVICES_DATA \n               WHERE STATUS = '1'`;\n               \nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -671,7 +671,7 @@
         "type": "function",
         "z": "50de4a0fb7daeabc",
         "name": "Get devices id",
-        "func": "const active_devices = msg.payload;\n\nconst devices_id = active_devices.map(row => row.equipment_id);\n\nmsg.payload = devices_id;\n\nreturn msg;",
+        "func": "const active_devices = msg.payload;\n\nconst devices_id = active_devices.map(row => row.device_id);\n\nmsg.payload = devices_id;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -779,7 +779,7 @@
         "type": "function",
         "z": "50de4a0fb7daeabc",
         "name": "Get sensors data from last 1 hour",
-        "func": "function format_date(timestamp) {\n    const year = timestamp.getFullYear();\n    const mon  = `0${timestamp.getMonth()+1}`.slice(-2);\n    const day  = `0${timestamp.getDate()}`.slice(-2);\n    const hour = `0${timestamp.getHours()}`.slice(-2);\n    const min  = `0${timestamp.getMinutes()}`.slice(-2);\n    const sec  = `0${timestamp.getSeconds()}`.slice(-2);\n    \n    return `${year}-${mon}-${day} ${hour}:${min}:${sec}`;\n}\n\nconst device_id = msg.payload;\nconst timestamp = msg.timestamp;\n\nconst date = new Date(timestamp);\ndate.setSeconds(0);\ndate.setMilliseconds(0);\n\nconst end = format_date(date);\n\ndate.setMinutes(date.getMinutes()-60);\n\nconst begin = format_date(date);\n\nmsg.payload = `SELECT TENSION, CURRENT, LIGHTNESS, RELE_STATE, INSERTION_TIME\n               FROM SENSORS_DATA_REAL_TIME\n               WHERE EQUIPMENT_ID = ${device_id}\n               AND (INSERTION_TIME AT TIME ZONE 'CST') >= (TO_TIMESTAMP('${begin}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST')\n               AND (INSERTION_TIME AT TIME ZONE 'CST') < (TO_TIMESTAMP('${end}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST')\n               ORDER BY INSERTION_TIME`;\n               \nmsg.device_id = device_id;\n               \nreturn msg;",
+        "func": "function format_date(timestamp) {\n    const year = timestamp.getFullYear();\n    const mon  = `0${timestamp.getMonth()+1}`.slice(-2);\n    const day  = `0${timestamp.getDate()}`.slice(-2);\n    const hour = `0${timestamp.getHours()}`.slice(-2);\n    const min  = `0${timestamp.getMinutes()}`.slice(-2);\n    const sec  = `0${timestamp.getSeconds()}`.slice(-2);\n    \n    return `${year}-${mon}-${day} ${hour}:${min}:${sec}`;\n}\n\nconst device_id = msg.payload;\nconst timestamp = msg.timestamp;\n\nconst date = new Date(timestamp);\ndate.setSeconds(0);\ndate.setMilliseconds(0);\n\nconst end = format_date(date);\n\ndate.setMinutes(date.getMinutes()-60);\n\nconst begin = format_date(date);\n\nmsg.payload = `SELECT VOLTAGE, CURRENT, LIGHTNESS, RELE_STATE, INSERTION_TIME\n               FROM SENSORS_DATA_REAL_TIME\n               WHERE DEVICE_ID = ${device_id}\n               AND (INSERTION_TIME AT TIME ZONE 'CST') >= (TO_TIMESTAMP('${begin}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST')\n               AND (INSERTION_TIME AT TIME ZONE 'CST') < (TO_TIMESTAMP('${end}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST')\n               ORDER BY INSERTION_TIME`;\n               \nmsg.device_id = device_id;\n               \nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -811,7 +811,7 @@
         "type": "function",
         "z": "50de4a0fb7daeabc",
         "name": "Calculate powers",
-        "func": "let dataset = msg.payload;\n\ndataset = dataset.map(data => {\n    const tension = data.tension;\n    const current = data.current;\n    \n    const power = Math.round(tension * current);\n    \n    data.power = power;\n    \n    return data;\n});\n\nmsg.payload = dataset;\n\nreturn msg;",
+        "func": "let dataset = msg.payload;\n\ndataset = dataset.map(data => {\n    const voltage = data.voltage;\n    const current = data.current;\n    \n    const power = Math.round(voltage * current);\n    \n    data.power = power;\n    \n    return data;\n});\n\nmsg.payload = dataset;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -830,7 +830,7 @@
         "type": "function",
         "z": "50de4a0fb7daeabc",
         "name": "Calculate max, min and avg",
-        "func": "const dataset = msg.payload;\n\n// Functions\nconst min = dataset => Math.min(...dataset);\nconst max = dataset => Math.max(...dataset);\nconst avg = dataset => (dataset.reduce((acc, cur) => acc + cur, 0) / dataset.length);\n\n// Get data from a specific measure\nconst tensions  = dataset.map(data => data.tension);\nconst currents  = dataset.map(data => data.current); \nconst lightness = dataset.map(data => data.lightness);\nconst powers    = dataset.map(data => data.power);\n\nconst results = {\n    tension:   { min: min(tensions),  max: max(tensions),  avg: Math.round(avg(tensions))            },\n    current:   { min: min(currents),  max: max(currents),  avg: parseFloat(avg(currents).toFixed(2)) },\n    lightness: { min: min(lightness), max: max(lightness), avg: Math.round(avg(lightness))           },\n    power:     { min: min(powers),    max: max(powers),    avg: Math.round(avg(powers))              }\n}\n\nmsg.dataset = dataset;\nmsg.results = results;\n\nreturn msg;",
+        "func": "const dataset = msg.payload;\n\n// Functions\nconst min = dataset => Math.min(...dataset);\nconst max = dataset => Math.max(...dataset);\nconst avg = dataset => (dataset.reduce((acc, cur) => acc + cur, 0) / dataset.length);\n\n// Get data from a specific measure\nconst voltages  = dataset.map(data => data.voltage);\nconst currents  = dataset.map(data => data.current); \nconst lightness = dataset.map(data => data.lightness);\nconst powers    = dataset.map(data => data.power);\n\nconst results = {\n    voltage:   { min: min(voltages),  max: max(voltages),  avg: Math.round(avg(voltages))            },\n    current:   { min: min(currents),  max: max(currents),  avg: parseFloat(avg(currents).toFixed(2)) },\n    lightness: { min: min(lightness), max: max(lightness), avg: Math.round(avg(lightness))           },\n    power:     { min: min(powers),    max: max(powers),    avg: Math.round(avg(powers))              }\n}\n\nmsg.dataset = dataset;\nmsg.results = results;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -908,7 +908,7 @@
         "type": "function",
         "z": "50de4a0fb7daeabc",
         "name": "Insert results in database",
-        "func": "function format_date(timestamp) {\n    const year = timestamp.getFullYear();\n    const mon  = `0${timestamp.getMonth()+1}`.slice(-2);\n    const day  = `0${timestamp.getDate()}`.slice(-2);\n    const hour = `0${timestamp.getHours()}`.slice(-2);\n    const min  = `0${timestamp.getMinutes()}`.slice(-2);\n    const sec  = `0${timestamp.getSeconds()}`.slice(-2);\n    \n    return `${year}-${mon}-${day} ${hour}:${min}:${sec}`;\n}\n\nconst device_id = msg.device_id;\nconst results   = msg.results;\nconst dataset   = msg.dataset;\nconst timestamp = msg.timestamp;\n\nconst date = new Date(timestamp);\ndate.setSeconds(0);\ndate.setMilliseconds(0);\n\nconst insertion_time = format_date(date);\n\nconst tension   = results.tension;\nconst current   = results.current;\nconst lightness = results.lightness;\nconst power     = results.power;\n\nmsg.payload = `INSERT\n               INTO SENSORS_DATA_INTERVAL\n               (EQUIPMENT_ID, TENSION_MIN, TENSION_MAX, TENSION_AVG, CURRENT_MIN, CURRENT_MAX, CURRENT_AVG, LIGHTNESS_MIN, LIGHTNESS_MAX, LIGHTNESS_AVG, POWER_MIN, POWER_MAX, POWER_AVG, POWER_EXPEND, INSERTION_TIME, NUM_REGISTRIES)\n               VALUES\n               (${device_id}, ${tension.min}, ${tension.max}, ${tension.avg}, ${current.min}, ${current.max}, ${current.avg}, ${lightness.min}, ${lightness.max}, ${lightness.avg}, ${power.min}, ${power.max}, ${power.avg}, ${results.power_expend}, '${insertion_time}', ${dataset.length})`;\n               \nreturn msg;",
+        "func": "function format_date(timestamp) {\n    const year = timestamp.getFullYear();\n    const mon  = `0${timestamp.getMonth()+1}`.slice(-2);\n    const day  = `0${timestamp.getDate()}`.slice(-2);\n    const hour = `0${timestamp.getHours()}`.slice(-2);\n    const min  = `0${timestamp.getMinutes()}`.slice(-2);\n    const sec  = `0${timestamp.getSeconds()}`.slice(-2);\n    \n    return `${year}-${mon}-${day} ${hour}:${min}:${sec}`;\n}\n\nconst device_id = msg.device_id;\nconst results   = msg.results;\nconst dataset   = msg.dataset;\nconst timestamp = msg.timestamp;\n\nconst date = new Date(timestamp);\ndate.setSeconds(0);\ndate.setMilliseconds(0);\n\nconst insertion_time = format_date(date);\n\nconst voltage   = results.voltage;\nconst current   = results.current;\nconst lightness = results.lightness;\nconst power     = results.power;\n\nmsg.payload = `INSERT\n               INTO SENSORS_DATA_INTERVAL\n               (DEVICE_ID, VOLTAGE_MIN, VOLTAGE_MAX, VOLTAGE_AVG, CURRENT_MIN, CURRENT_MAX, CURRENT_AVG, LIGHTNESS_MIN, LIGHTNESS_MAX, LIGHTNESS_AVG, POWER_MIN, POWER_MAX, POWER_AVG, POWER_EXPEND, INSERTION_TIME, NUM_REGISTRIES)\n               VALUES\n               (${device_id}, ${voltage.min}, ${voltage.max}, ${voltage.avg}, ${current.min}, ${current.max}, ${current.avg}, ${lightness.min}, ${lightness.max}, ${lightness.avg}, ${power.min}, ${power.max}, ${power.avg}, ${results.power_expend}, '${insertion_time}', ${dataset.length})`;\n               \nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1010,7 +1010,7 @@
         "type": "function",
         "z": "50de4a0fb7daeabc",
         "name": "Calculate power expend",
-        "func": "const dataset = msg.dataset;\n\nlet sum = 0;\n\nlet i, j;\n\nfor (i = 0; i < dataset.length; i++) {\n    if (dataset[i].rele_state === true) {\n        for (j = i+1; j < dataset.length && dataset[j].rele_state === true; j++);\n\n        const interval = dataset.slice(i, j);\n        \n        const begin = new Date(interval[0].insertion_time);\n        const final = new Date(interval[interval.length-1].insertion_time);\n        \n        const time_diff = (final-begin)/(1000*60*60); // milliseconds * seconds * minutes\n        \n        const tension_avg = interval.reduce((acc, cur) => acc + cur.tension, 0) / interval.length;\n        const current_avg = interval.reduce((acc, cur) => acc + cur.current, 0) / interval.length;\n        \n        sum += (((tension_avg * current_avg) / 1000) * time_diff);\n        \n        i = j-1;\n    }\n}\n\nmsg.results.power_expend = parseFloat(sum.toFixed(2)); // in kW/h\n\nreturn msg;",
+        "func": "const dataset = msg.dataset;\n\nlet sum = 0;\n\nlet i, j;\n\nfor (i = 0; i < dataset.length; i++) {\n    if (dataset[i].rele_state === true) {\n        for (j = i+1; j < dataset.length && dataset[j].rele_state === true; j++);\n\n        const interval = dataset.slice(i, j);\n        \n        const begin = new Date(interval[0].insertion_time);\n        const final = new Date(interval[interval.length-1].insertion_time);\n        \n        const time_diff = (final-begin)/(1000*60*60); // milliseconds * seconds * minutes\n        \n        const voltage_avg = interval.reduce((acc, cur) => acc + cur.voltage, 0) / interval.length;\n        const current_avg = interval.reduce((acc, cur) => acc + cur.current, 0) / interval.length;\n        \n        sum += (((voltage_avg * current_avg) / 1000) * time_diff);\n        \n        i = j-1;\n    }\n}\n\nmsg.results.power_expend = parseFloat(sum.toFixed(2)); // in kW/h\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1056,7 +1056,7 @@
         "type": "function",
         "z": "7f5557aca01f4737",
         "name": "Set query",
-        "func": "function format_date(timestamp) {\n    const year = timestamp.getFullYear();\n    const mon  = `0${timestamp.getMonth()+1}`.slice(-2);\n    const day  = `0${timestamp.getDate()}`.slice(-2);\n    const hour = `0${timestamp.getHours()}`.slice(-2);\n    const min  = `0${timestamp.getMinutes()}`.slice(-2);\n    const sec  = `0${timestamp.getSeconds()}`.slice(-2);\n    \n    return `${year}-${mon}-${day} ${hour}:${min}:${sec}`;\n}\n\nconst threshold = msg.threshold;\nconst interval  = msg.interval;\nconst device_id = msg.device_id;\n\nconst end   = format_date(threshold);\nconst begin = format_date(new Date(threshold - 1000 * 60 * interval));\n\nmsg.payload = `SELECT TENSION_MIN, TENSION_MAX, TENSION_AVG, CURRENT_MIN, CURRENT_MAX, CURRENT_AVG, LIGHTNESS_MIN, LIGHTNESS_MAX, LIGHTNESS_AVG, POWER_MIN, POWER_MAX, POWER_AVG, INSERTION_TIME\n               FROM SENSORS_DATA_INTERVAL\n               WHERE EQUIPMENT_ID = ${device_id} \n               AND (INSERTION_TIME AT TIME ZONE 'CST') > (TO_TIMESTAMP('${begin}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST') \n               AND (INSERTION_TIME AT TIME ZONE 'CST') <= (TO_TIMESTAMP('${end}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST')\n               ORDER BY INSERTION_TIME`;\n               \nreturn msg;",
+        "func": "function format_date(timestamp) {\n    const year = timestamp.getFullYear();\n    const mon  = `0${timestamp.getMonth()+1}`.slice(-2);\n    const day  = `0${timestamp.getDate()}`.slice(-2);\n    const hour = `0${timestamp.getHours()}`.slice(-2);\n    const min  = `0${timestamp.getMinutes()}`.slice(-2);\n    const sec  = `0${timestamp.getSeconds()}`.slice(-2);\n    \n    return `${year}-${mon}-${day} ${hour}:${min}:${sec}`;\n}\n\nconst threshold = msg.threshold;\nconst interval  = msg.interval;\nconst device_id = msg.device_id;\n\nconst end   = format_date(threshold);\nconst begin = format_date(new Date(threshold - 1000 * 60 * interval));\n\nmsg.payload = `SELECT VOLTAGE_MIN, VOLTAGE_MAX, VOLTAGE_AVG, CURRENT_MIN, CURRENT_MAX, CURRENT_AVG, LIGHTNESS_MIN, LIGHTNESS_MAX, LIGHTNESS_AVG, POWER_MIN, POWER_MAX, POWER_AVG, INSERTION_TIME\n               FROM SENSORS_DATA_INTERVAL\n               WHERE DEVICE_ID = ${device_id} \n               AND (INSERTION_TIME AT TIME ZONE 'CST') > (TO_TIMESTAMP('${begin}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST') \n               AND (INSERTION_TIME AT TIME ZONE 'CST') <= (TO_TIMESTAMP('${end}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST')\n               ORDER BY INSERTION_TIME`;\n               \nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1147,7 +1147,7 @@
         "type": "function",
         "z": "7f5557aca01f4737",
         "name": "Set query",
-        "func": "function format_date(timestamp) {\n    const year = timestamp.getFullYear();\n    const mon  = `0${timestamp.getMonth()+1}`.slice(-2);\n    const day  = `0${timestamp.getDate()}`.slice(-2);\n    const hour = `0${timestamp.getHours()}`.slice(-2);\n    const min  = `0${timestamp.getMinutes()}`.slice(-2);\n    const sec  = `0${timestamp.getSeconds()}`.slice(-2);\n    \n    return `${year}-${mon}-${day} ${hour}:${min}:${sec}`;\n}\n\nconst threshold = msg.threshold;\nconst interval  = msg.interval;\nconst device_id = msg.device_id;\n\nconst end   = format_date(threshold);\nconst begin = format_date(new Date(threshold - 1000 * 60 * interval));\n\nmsg.payload = `SELECT TENSION, CURRENT, LIGHTNESS, INSERTION_TIME\n               FROM SENSORS_DATA_REAL_TIME\n               WHERE EQUIPMENT_ID = ${device_id} \n               AND (INSERTION_TIME AT TIME ZONE 'CST') >= (TO_TIMESTAMP('${begin}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST') \n               AND (INSERTION_TIME AT TIME ZONE 'CST') < (TO_TIMESTAMP('${end}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST')\n               ORDER BY INSERTION_TIME`;\n\nreturn msg;",
+        "func": "function format_date(timestamp) {\n    const year = timestamp.getFullYear();\n    const mon  = `0${timestamp.getMonth()+1}`.slice(-2);\n    const day  = `0${timestamp.getDate()}`.slice(-2);\n    const hour = `0${timestamp.getHours()}`.slice(-2);\n    const min  = `0${timestamp.getMinutes()}`.slice(-2);\n    const sec  = `0${timestamp.getSeconds()}`.slice(-2);\n    \n    return `${year}-${mon}-${day} ${hour}:${min}:${sec}`;\n}\n\nconst threshold = msg.threshold;\nconst interval  = msg.interval;\nconst device_id = msg.device_id;\n\nconst end   = format_date(threshold);\nconst begin = format_date(new Date(threshold - 1000 * 60 * interval));\n\nmsg.payload = `SELECT VOLTAGE, CURRENT, LIGHTNESS, INSERTION_TIME\n               FROM SENSORS_DATA_REAL_TIME\n               WHERE DEVICE_ID = ${device_id} \n               AND (INSERTION_TIME AT TIME ZONE 'CST') >= (TO_TIMESTAMP('${begin}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST') \n               AND (INSERTION_TIME AT TIME ZONE 'CST') < (TO_TIMESTAMP('${end}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST')\n               ORDER BY INSERTION_TIME`;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1166,7 +1166,7 @@
         "type": "function",
         "z": "7f5557aca01f4737",
         "name": "Calculate powers",
-        "func": "let dataset = msg.payload;\n\ndataset = dataset.map(data => {\n    const tension = data.tension;\n    const current = data.current;\n    \n    const power = Math.round(tension * current);\n    \n    data.power = power;\n    \n    return data;\n});\n\nmsg.payload = dataset;\n\nreturn msg;",
+        "func": "let dataset = msg.payload;\n\ndataset = dataset.map(data => {\n    const voltage = data.voltage;\n    const current = data.current;\n    \n    const power = Math.round(voltage * current);\n    \n    data.power = power;\n    \n    return data;\n});\n\nmsg.payload = dataset;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1289,7 +1289,7 @@
         "type": "function",
         "z": "7f5557aca01f4737",
         "name": "Group data by minute",
-        "func": "const dataset   = msg.payload;\nconst threshold = msg.threshold;\nconst n_groups  = msg.interval;\nconst hop       = 1000 * 60;\n\n// Create groups\n\nlet i;\nlet groups = [];\n\nfor (i = n_groups; i > 0; i--) {\n    const timestamp = new Date(threshold - hop * i);\n    const measures  = [];\n    \n    groups.push({ timestamp, measures });\n}\n\n// Group data\n\ni = 1;\n\ndataset.forEach(data => {\n    const timestamp = new Date(data.insertion_time);\n    \n    for (i; i < groups.length && timestamp >= groups[i].timestamp; i++);\n\n    groups[i-1].measures.push(data);\n});\n\n// Sum measures\n\nconst avg = dataset => dataset.reduce((acc, cur) => acc + cur, 0) / dataset.length;\n\ngroups = groups.map(group => {\n    const tension   = group.measures.map(data => data.tension);\n    const current   = group.measures.map(data => data.current);\n    const lightness = group.measures.map(data => data.lightness);\n    const powers    = group.measures.map(data => data.power);\n    \n    const tension_avg   = Math.round(avg(tension) || 0);\n    const current_avg   = parseFloat((avg(current) || 0).toFixed(2));\n    const lightness_avg = Math.round(avg(lightness) || 0);\n    const powers_avg    = Math.round(avg(powers) || 0);\n    \n    group.measures = {\n        tension:   tension_avg,\n        current:   current_avg,\n        lightness: lightness_avg,\n        power:     powers_avg\n    }\n    \n    return group;\n});\n\nmsg.dataset = groups;\nmsg.hop     = hop;\n\nreturn msg;",
+        "func": "const dataset   = msg.payload;\nconst threshold = msg.threshold;\nconst n_groups  = msg.interval;\nconst hop       = 1000 * 60;\n\n// Create groups\n\nlet i;\nlet groups = [];\n\nfor (i = n_groups; i > 0; i--) {\n    const timestamp = new Date(threshold - hop * i);\n    const measures  = [];\n    \n    groups.push({ timestamp, measures });\n}\n\n// Group data\n\ni = 1;\n\ndataset.forEach(data => {\n    const timestamp = new Date(data.insertion_time);\n    \n    for (i; i < groups.length && timestamp >= groups[i].timestamp; i++);\n\n    groups[i-1].measures.push(data);\n});\n\n// Sum measures\n\nconst avg = dataset => dataset.reduce((acc, cur) => acc + cur, 0) / dataset.length;\n\ngroups = groups.map(group => {\n    const voltage   = group.measures.map(data => data.voltage);\n    const current   = group.measures.map(data => data.current);\n    const lightness = group.measures.map(data => data.lightness);\n    const powers    = group.measures.map(data => data.power);\n    \n    const voltage_avg   = Math.round(avg(voltage) || 0);\n    const current_avg   = parseFloat((avg(current) || 0).toFixed(2));\n    const lightness_avg = Math.round(avg(lightness) || 0);\n    const powers_avg    = Math.round(avg(powers) || 0);\n    \n    group.measures = {\n        voltage:   voltage_avg,\n        current:   current_avg,\n        lightness: lightness_avg,\n        power:     powers_avg\n    }\n    \n    return group;\n});\n\nmsg.dataset = groups;\nmsg.hop     = hop;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1325,7 +1325,7 @@
         "type": "function",
         "z": "7f5557aca01f4737",
         "name": "Set query",
-        "func": "const device_id = msg.device_id;\n\nmsg.payload = `SELECT TENSION, CURRENT, LIGHTNESS, RELE_STATE\n               FROM SENSORS_DATA_REAL_TIME\n               WHERE EQUIPMENT_ID = ${device_id} \n               AND (INSERTION_TIME AT TIME ZONE 'CST') > (CURRENT_TIMESTAMP AT TIME ZONE 'CST') - INTERVAL '1 min'\n               ORDER BY INSERTION_TIME DESC\n               LIMIT 1`;\n\nreturn msg;",
+        "func": "const device_id = msg.device_id;\n\nmsg.payload = `SELECT VOLTAGE, CURRENT, LIGHTNESS, RELE_STATE\n               FROM SENSORS_DATA_REAL_TIME\n               WHERE DEVICE_ID = ${device_id} \n               AND (INSERTION_TIME AT TIME ZONE 'CST') > (CURRENT_TIMESTAMP AT TIME ZONE 'CST') - INTERVAL '1 min'\n               ORDER BY INSERTION_TIME DESC\n               LIMIT 1`;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1357,7 +1357,7 @@
         "type": "function",
         "z": "7f5557aca01f4737",
         "name": "Calculate power",
-        "func": "let dataset = msg.payload;\n\nif (dataset.length > 0) {\n    dataset = dataset.map(data => {\n        // Calculate power\n        const tension = data.tension;\n        const current = data.current;\n        \n        const power = Math.round(tension * current);\n        \n        data.power = power;\n        \n        // Convert rele_state\n        data.rele_state = data.rele_state ? 1 : 0;\n        \n        return data;\n    });\n    \n    msg.payload = dataset;\n}\n\nreturn msg;",
+        "func": "let dataset = msg.payload;\n\nif (dataset.length > 0) {\n    dataset = dataset.map(data => {\n        // Calculate power\n        const voltage = data.voltage;\n        const current = data.current;\n        \n        const power = Math.round(voltage * current);\n        \n        data.power = power;\n        \n        // Convert rele_state\n        data.rele_state = data.rele_state ? 1 : 0;\n        \n        return data;\n    });\n    \n    msg.payload = dataset;\n}\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1424,7 +1424,7 @@
         "type": "function",
         "z": "7f5557aca01f4737",
         "name": "Define thresholds",
-        "func": "const interval  = msg.interval;\n\nlet threshold = new Date();\nthreshold.setSeconds(0);\nthreshold.setMilliseconds(0);\n\nif (interval > 60) {\n    threshold.setMinutes(0);\n}\n\nif (interval > 1440) {\n    const hour = threshold.getHours();\n    \n    if (hour > 18) { // Hour between 18:00 and 00:00\n        threshold.setHours(18);\n    } else if (hour > 6) { // Hour between 06:00 and 18:00\n        threshold.setHours(6);\n    } else { // Hour between 00:00 and 06:00\n        threshold.setDate(threshold.getDate()-1);\n        threshold.setHours(18);\n    }\n}\n\nmsg.threshold = threshold;\n\nreturn msg;",
+        "func": "const interval = msg.interval;\n\nlet threshold = new Date();\nthreshold.setSeconds(0);\nthreshold.setMilliseconds(0);\n\nif (interval > 60) {\n    threshold.setMinutes(0);\n}\n\nif (interval > 1440) {\n    const hour = threshold.getHours();\n    \n    if (hour > 18) { // Hour between 18:00 and 00:00\n        threshold.setHours(18);\n    } else if (hour > 6) { // Hour between 06:00 and 18:00\n        threshold.setHours(6);\n    } else if (hour !== 6 && hour !== 18) { // Hour between 00:00 and 06:00\n        threshold.setDate(threshold.getDate()-1);\n        threshold.setHours(18);\n    }\n}\n\nmsg.threshold = threshold;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1443,7 +1443,7 @@
         "type": "function",
         "z": "7f5557aca01f4737",
         "name": "Group data by 12 hours",
-        "func": "const dataset   = msg.dataset;\nconst threshold = msg.threshold;\nconst n_groups  = msg.interval / (60 * 12);\nconst hop       = 1000 * 60 * 60 * 12; // milliseconds * seconds * minutes * hours\n\n// Create groups\n\nlet i;\nlet groups = [];\n\nfor (i = n_groups; i > 0; i--) {\n    const timestamp = new Date(threshold - hop * i);\n    const measures = [];\n    \n    groups.push({ timestamp, measures });\n}\n\n// Group data\n\ni = 1;\n\ndataset.forEach(data => {\n    const timestamp = data.timestamp;\n    \n    for (i; i < groups.length && timestamp >= groups[i].timestamp; i++);\n\n    groups[i-1].measures.push(data);\n});\n\n\n// Sum values\n\nconst avg = dataset => dataset.reduce((acc, cur) => acc + cur, 0) / dataset.length;\n\ngroups = groups.map(group => {\n    tension_min   = Math.round(avg(group.measures.map(data => data.measures.tension_min)) || 0);\n    tension_max   = Math.round(avg(group.measures.map(data => data.measures.tension_max)) || 0);\n    tension_avg   = Math.round(avg(group.measures.map(data => data.measures.tension_avg)) || 0);\n    current_min   = parseFloat((avg(group.measures.map(data => data.measures.current_min)) || 0).toFixed(2));\n    current_max   = parseFloat((avg(group.measures.map(data => data.measures.current_max)) || 0).toFixed(2));\n    current_avg   = parseFloat((avg(group.measures.map(data => data.measures.current_avg)) || 0).toFixed(2));\n    lightness_min = Math.round(avg(group.measures.map(data => data.measures.lightness_min)) || 0);\n    lightness_max = Math.round(avg(group.measures.map(data => data.measures.lightness_max)) || 0);\n    lightness_avg = Math.round(avg(group.measures.map(data => data.measures.lightness_avg)) || 0);\n    power_min     = Math.round(avg(group.measures.map(data => data.measures.power_min)) || 0);\n    power_max     = Math.round(avg(group.measures.map(data => data.measures.power_max)) || 0);\n    power_avg     = Math.round(avg(group.measures.map(data => data.measures.power_avg)) || 0);\n\n    group.measures = {\n        tension_min,\n        tension_max,\n        tension_avg,\n        current_min,\n        current_max,\n        current_avg,\n        lightness_min,\n        lightness_max,\n        lightness_avg,\n        power_min,\n        power_max,\n        power_avg,\n    }\n    \n    return group;\n});\n\nmsg.dataset = groups;\nmsg.hop     = hop;\n\nreturn msg;",
+        "func": "const dataset   = msg.dataset;\nconst threshold = msg.threshold;\nconst n_groups  = msg.interval / (60 * 12);\nconst hop       = 1000 * 60 * 60 * 12; // milliseconds * seconds * minutes * hours\n\n// Create groups\n\nlet i;\nlet groups = [];\n\nfor (i = n_groups; i > 0; i--) {\n    const timestamp = new Date(threshold - hop * i);\n    const measures = [];\n    \n    groups.push({ timestamp, measures });\n}\n\n// Group data\n\ni = 1;\n\ndataset.forEach(data => {\n    const timestamp = data.timestamp;\n    \n    for (i; i < groups.length && timestamp >= groups[i].timestamp; i++);\n\n    groups[i-1].measures.push(data);\n});\n\n\n// Sum values\n\nconst avg = dataset => dataset.reduce((acc, cur) => acc + cur, 0) / dataset.length;\n\ngroups = groups.map(group => {\n    voltage_min   = Math.round(avg(group.measures.map(data => data.measures.voltage_min)) || 0);\n    voltage_max   = Math.round(avg(group.measures.map(data => data.measures.voltage_max)) || 0);\n    voltage_avg   = Math.round(avg(group.measures.map(data => data.measures.voltage_avg)) || 0);\n    current_min   = parseFloat((avg(group.measures.map(data => data.measures.current_min)) || 0).toFixed(2));\n    current_max   = parseFloat((avg(group.measures.map(data => data.measures.current_max)) || 0).toFixed(2));\n    current_avg   = parseFloat((avg(group.measures.map(data => data.measures.current_avg)) || 0).toFixed(2));\n    lightness_min = Math.round(avg(group.measures.map(data => data.measures.lightness_min)) || 0);\n    lightness_max = Math.round(avg(group.measures.map(data => data.measures.lightness_max)) || 0);\n    lightness_avg = Math.round(avg(group.measures.map(data => data.measures.lightness_avg)) || 0);\n    power_min     = Math.round(avg(group.measures.map(data => data.measures.power_min)) || 0);\n    power_max     = Math.round(avg(group.measures.map(data => data.measures.power_max)) || 0);\n    power_avg     = Math.round(avg(group.measures.map(data => data.measures.power_avg)) || 0);\n\n    group.measures = {\n        voltage_min,\n        voltage_max,\n        voltage_avg,\n        current_min,\n        current_max,\n        current_avg,\n        lightness_min,\n        lightness_max,\n        lightness_avg,\n        power_min,\n        power_max,\n        power_avg,\n    }\n    \n    return group;\n});\n\nmsg.dataset = groups;\nmsg.hop     = hop;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1606,7 +1606,7 @@
         "type": "function",
         "z": "7f5557aca01f4737",
         "name": "Set query",
-        "func": "function format_date(timestamp) {\n    const year = timestamp.getFullYear();\n    const mon  = `0${timestamp.getMonth()+1}`.slice(-2);\n    const day  = `0${timestamp.getDate()}`.slice(-2);\n    const hour = `0${timestamp.getHours()}`.slice(-2);\n    const min  = `0${timestamp.getMinutes()}`.slice(-2);\n    const sec  = `0${timestamp.getSeconds()}`.slice(-2);\n    \n    return `${year}-${mon}-${day} ${hour}:${min}:${sec}`;\n}\n\nconst threshold = msg.threshold;\nconst interval  = msg.interval;\nconst device_id = msg.device_id;\n\nconst end   = format_date(threshold);\nconst begin = format_date(new Date(threshold - 1000 * 60 * interval));\n\nmsg.payload = `SELECT POWER_EXPEND, INSERTION_TIME\n               FROM SENSORS_DATA_INTERVAL\n               WHERE EQUIPMENT_ID = ${device_id}\n               AND (INSERTION_TIME AT TIME ZONE 'CST') > (TO_TIMESTAMP('${begin}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST')\n               AND (INSERTION_TIME AT TIME ZONE 'CST') <= (TO_TIMESTAMP('${end}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST')\n               ORDER BY INSERTION_TIME`;\n               \nreturn msg;",
+        "func": "function format_date(timestamp) {\n    const year = timestamp.getFullYear();\n    const mon  = `0${timestamp.getMonth()+1}`.slice(-2);\n    const day  = `0${timestamp.getDate()}`.slice(-2);\n    const hour = `0${timestamp.getHours()}`.slice(-2);\n    const min  = `0${timestamp.getMinutes()}`.slice(-2);\n    const sec  = `0${timestamp.getSeconds()}`.slice(-2);\n    \n    return `${year}-${mon}-${day} ${hour}:${min}:${sec}`;\n}\n\nconst threshold = msg.threshold;\nconst interval  = msg.interval;\nconst device_id = msg.device_id;\n\nconst end   = format_date(threshold);\nconst begin = format_date(new Date(threshold - 1000 * 60 * interval));\n\nmsg.payload = `SELECT POWER_EXPEND, INSERTION_TIME\n               FROM SENSORS_DATA_INTERVAL\n               WHERE DEVICE_ID = ${device_id}\n               AND (INSERTION_TIME AT TIME ZONE 'CST') > (TO_TIMESTAMP('${begin}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST')\n               AND (INSERTION_TIME AT TIME ZONE 'CST') <= (TO_TIMESTAMP('${end}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST')\n               ORDER BY INSERTION_TIME`;\n               \nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1862,7 +1862,7 @@
         "type": "function",
         "z": "7f5557aca01f4737",
         "name": "Group data by hour",
-        "func": "const dataset   = msg.payload;\nconst threshold = msg.threshold;\nconst n_groups  = msg.interval / 60;\nconst hop       = 1000 * 60 * 60;\n\n// Create groups\n\nlet i;\nlet groups = [];\n\nfor (i = n_groups; i > 0; i--) {\n    const timestamp = new Date(threshold - hop * i);\n    const measures  = [];\n    \n    groups.push({ timestamp, measures });\n}\n\n// Group data\n\ni = 1;\n\ndataset.forEach(data => {\n    const timestamp = new Date(data.insertion_time);\n    \n    for (i; i < groups.length && timestamp > groups[i].timestamp; i++);\n\n    groups[i-1].measures.push(data);\n});\n\n// Sum values\n\nconst avg = dataset => dataset.reduce((acc, cur) => acc + cur, 0) / dataset.length;\n\ngroups = groups.map(group => {\n    tension_min   = Math.round(avg(group.measures.map(data => data.tension_min)) || 0);\n    tension_max   = Math.round(avg(group.measures.map(data => data.tension_max)) || 0);\n    tension_avg   = Math.round(avg(group.measures.map(data => data.tension_avg)) || 0);\n    current_min   = parseFloat((avg(group.measures.map(data => data.current_min)) || 0).toFixed(2));\n    current_max   = parseFloat((avg(group.measures.map(data => data.current_max)) || 0).toFixed(2));\n    current_avg   = parseFloat((avg(group.measures.map(data => data.current_avg)) || 0).toFixed(2));\n    lightness_min = Math.round(avg(group.measures.map(data => data.lightness_min)) || 0);\n    lightness_max = Math.round(avg(group.measures.map(data => data.lightness_max)) || 0);\n    lightness_avg = Math.round(avg(group.measures.map(data => data.lightness_avg)) || 0);\n    power_min     = Math.round(avg(group.measures.map(data => data.power_min)) || 0);\n    power_max     = Math.round(avg(group.measures.map(data => data.power_max)) || 0);\n    power_avg     = Math.round(avg(group.measures.map(data => data.power_avg)) || 0);\n    \n    group.measures = {\n        tension_min,\n        tension_max,\n        tension_avg,\n        current_min,\n        current_max,\n        current_avg,\n        lightness_min,\n        lightness_max,\n        lightness_avg,\n        power_min,\n        power_max,\n        power_avg,\n    }\n    \n    return group;\n});\n\nmsg.dataset = groups;\nmsg.hop     = hop;\n\nreturn msg;",
+        "func": "const dataset   = msg.payload;\nconst threshold = msg.threshold;\nconst n_groups  = msg.interval / 60;\nconst hop       = 1000 * 60 * 60;\n\n// Create groups\n\nlet i;\nlet groups = [];\n\nfor (i = n_groups; i > 0; i--) {\n    const timestamp = new Date(threshold - hop * i);\n    const measures  = [];\n    \n    groups.push({ timestamp, measures });\n}\n\n// Group data\n\ni = 1;\n\ndataset.forEach(data => {\n    const timestamp = new Date(data.insertion_time);\n    \n    for (i; i < groups.length && timestamp > groups[i].timestamp; i++);\n\n    groups[i-1].measures.push(data);\n});\n\n// Sum values\n\nconst avg = dataset => dataset.reduce((acc, cur) => acc + cur, 0) / dataset.length;\n\ngroups = groups.map(group => {\n    voltage_min   = Math.round(avg(group.measures.map(data => data.voltage_min)) || 0);\n    voltage_max   = Math.round(avg(group.measures.map(data => data.voltage_max)) || 0);\n    voltage_avg   = Math.round(avg(group.measures.map(data => data.voltage_avg)) || 0);\n    current_min   = parseFloat((avg(group.measures.map(data => data.current_min)) || 0).toFixed(2));\n    current_max   = parseFloat((avg(group.measures.map(data => data.current_max)) || 0).toFixed(2));\n    current_avg   = parseFloat((avg(group.measures.map(data => data.current_avg)) || 0).toFixed(2));\n    lightness_min = Math.round(avg(group.measures.map(data => data.lightness_min)) || 0);\n    lightness_max = Math.round(avg(group.measures.map(data => data.lightness_max)) || 0);\n    lightness_avg = Math.round(avg(group.measures.map(data => data.lightness_avg)) || 0);\n    power_min     = Math.round(avg(group.measures.map(data => data.power_min)) || 0);\n    power_max     = Math.round(avg(group.measures.map(data => data.power_max)) || 0);\n    power_avg     = Math.round(avg(group.measures.map(data => data.power_avg)) || 0);\n    \n    group.measures = {\n        voltage_min,\n        voltage_max,\n        voltage_avg,\n        current_min,\n        current_max,\n        current_avg,\n        lightness_min,\n        lightness_max,\n        lightness_avg,\n        power_min,\n        power_max,\n        power_avg,\n    }\n    \n    return group;\n});\n\nmsg.dataset = groups;\nmsg.hop     = hop;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1900,7 +1900,7 @@
         "type": "function",
         "z": "7f5557aca01f4737",
         "name": "Prepare response",
-        "func": "const dataset  = msg.dataset;\nconst interval = msg.interval;\n\nconst labels = dataset.map(data => data.label);\n\nlet values;\n\nif (interval === 60) {\n    values = {\n        tension:   dataset.map(data => data.measures.tension),\n        current:   dataset.map(data => data.measures.current),\n        lightness: dataset.map(data => data.measures.lightness),\n        power:     dataset.map(data => data.measures.power)\n    }\n} else {\n    values = {\n        tension: {\n            min: dataset.map(data => data.measures.tension_min),\n            max: dataset.map(data => data.measures.tension_max),\n            avg: dataset.map(data => data.measures.tension_avg)\n        },\n        current: {\n            min: dataset.map(data => data.measures.current_min),\n            max: dataset.map(data => data.measures.current_max),\n            avg: dataset.map(data => data.measures.current_avg)       \n        },\n        lightness: {\n            min: dataset.map(data => data.measures.lightness_min),\n            max: dataset.map(data => data.measures.lightness_max),\n            avg: dataset.map(data => data.measures.lightness_avg)      \n        },\n        power: {\n            min: dataset.map(data => data.measures.power_min),\n            max: dataset.map(data => data.measures.power_max),\n            avg: dataset.map(data => data.measures.power_avg)          \n        }\n    }\n}\n\nmsg.payload = { labels, values };\n\nreturn msg;",
+        "func": "const dataset  = msg.dataset;\nconst interval = msg.interval;\n\nconst labels = dataset.map(data => data.label);\n\nlet values;\n\nif (interval === 60) {\n    values = {\n        voltage:   dataset.map(data => data.measures.voltage),\n        current:   dataset.map(data => data.measures.current),\n        lightness: dataset.map(data => data.measures.lightness),\n        power:     dataset.map(data => data.measures.power)\n    }\n} else {\n    values = {\n        voltage: {\n            min: dataset.map(data => data.measures.voltage_min),\n            max: dataset.map(data => data.measures.voltage_max),\n            avg: dataset.map(data => data.measures.voltage_avg)\n        },\n        current: {\n            min: dataset.map(data => data.measures.current_min),\n            max: dataset.map(data => data.measures.current_max),\n            avg: dataset.map(data => data.measures.current_avg)       \n        },\n        lightness: {\n            min: dataset.map(data => data.measures.lightness_min),\n            max: dataset.map(data => data.measures.lightness_max),\n            avg: dataset.map(data => data.measures.lightness_avg)      \n        },\n        power: {\n            min: dataset.map(data => data.measures.power_min),\n            max: dataset.map(data => data.measures.power_max),\n            avg: dataset.map(data => data.measures.power_avg)          \n        }\n    }\n}\n\nmsg.payload = { labels, values };\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1958,5 +1958,77 @@
                 "1046435b385a96f0"
             ]
         ]
+    },
+    {
+        "id": "136e50967fd0d184",
+        "type": "subflow:bab6ffe5b7ae3a28",
+        "z": "8813ec2835daae18",
+        "name": "",
+        "env": [],
+        "x": 640,
+        "y": 117,
+        "wires": [
+            [
+                "e3c40742d52ebe20"
+            ]
+        ]
+    },
+    {
+        "id": "42c1b1a281ba72f5",
+        "type": "function",
+        "z": "8813ec2835daae18",
+        "name": "Get device status",
+        "func": "const device_id = msg.sensor_output.id;\n\nmsg.payload = `SELECT STATUS\n               FROM DEVICES_DATA\n               WHERE DEVICE_ID = ${device_id}`;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 470,
+        "y": 117,
+        "wires": [
+            [
+                "136e50967fd0d184"
+            ]
+        ]
+    },
+    {
+        "id": "e3c40742d52ebe20",
+        "type": "function",
+        "z": "8813ec2835daae18",
+        "name": "Device is operational?",
+        "func": "const response = msg.payload;\n\nif (response.length > 0) {\n    const status = response[0].status;\n    \n    if (status === true) {\n        return [msg, null];\n    }\n}\n\nreturn [null, msg];",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 820,
+        "y": 117,
+        "wires": [
+            [
+                "4f84135b11c27312"
+            ],
+            [
+                "c57818bbb89356ec"
+            ]
+        ]
+    },
+    {
+        "id": "c57818bbb89356ec",
+        "type": "debug",
+        "z": "8813ec2835daae18",
+        "name": "[EXIT] Receive sensors data",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1080,
+        "y": 138,
+        "wires": []
     }
 ]

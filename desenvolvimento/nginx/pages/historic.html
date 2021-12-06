@@ -24,7 +24,7 @@
 					<input type="text" name="device_id" placeholder="Identificador do setor">
 					<select name="interval">
 						<option value="" selected hidden>Selecionar período</option>
-						<option value="1440">Últimas 24 Horas</option>
+						<option value="1440">Últimas 24 horas</option>
 						<option value="10080">Última semana</option>
 						<option value="43200">Últimos 30 dias</option>
 					</select>
@@ -37,19 +37,19 @@
 	</header>
 	<main>
 		<div class="chart-card">
-			<header><h1>Tensão</h1></header>
-			<canvas data-measure="tension" data-type="line" class="charts"></canvas>
+			<header><h1>Tensão (Volts)</h1></header>
+			<canvas data-measure="voltage" data-type="line" class="charts"></canvas>
 		</div>
 		<div class="chart-card">
-			<header><h1>Corrente</h1></header>
+			<header><h1>Corrente (Amperes)</h1></header>
 			<canvas data-measure="current" data-type="line" class="charts" ></canvas>
 		</div>
 		<div class="chart-card">
-			<header><h1>Luminosidade</h1></header>
+			<header><h1>Luminosidade (Lux)</h1></header>
 			<canvas data-measure="lightness" data-type="line" class="charts" ></canvas>
 		</div>
 		<div class="chart-card">
-			<header><h1>Potência</h1></header>
+			<header><h1>Potência (Watts)</h1></header>
 			<canvas data-measure="power" data-type="line" class="charts" ></canvas>
 		</div>
 	</main>
