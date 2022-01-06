@@ -7,7 +7,7 @@ volumes:
 
 services:
   db:
-    container_name: postgres-tgc
+    container_name: postgres-pgc
     image: postgres:14.1-bullseye # https://hub.docker.com/_/postgres
     environment:
       - POSTGRES_USER=postgres
@@ -18,9 +18,10 @@ services:
       - 5432:5432
     volumes:
       - postgres-data:/var/lib/postgresql/data
+      - ../postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
 
   db-client:
-    container_name: pgadmin4-tgc
+    container_name: pgadmin4-pgc
     image: dpage/pgadmin4:6.1 # https://hub.docker.com/r/dpage/pgadmin4/
     environment:
       - PGADMIN_DEFAULT_EMAIL=joao.pereira@aluno.ufabc.edu.br
@@ -35,7 +36,7 @@ services:
       - db
 
   backend:
-    container_name: nodered-tgc
+    container_name: nodered-pgc
     image: nodered/node-red:2.0.6 # https://hub.docker.com/r/nodered/node-red
     environment:
       - TZ=America/Sao_Paulo
@@ -49,7 +50,7 @@ services:
       - db
   
   frontend:
-    container_name: nginx-tgc
+    container_name: nginx-pgc
     image: nginx:1.21.4 # https://hub.docker.com/_/nginx/
     ports:
       - 8080:80

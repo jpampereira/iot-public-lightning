@@ -81,10 +81,10 @@
     {
         "id": "21c629e3be9268f3",
         "type": "mydbConfig",
-        "name": "postgres@db:5432/TGC",
+        "name": "postgres@db:5432/PGC",
         "host": "db",
         "port": "5432",
-        "database": "TGC",
+        "database": "PGC",
         "ssl": false,
         "rejectUnauthorized": false,
         "ca": "",
@@ -451,7 +451,8 @@
         "wires": [
             [
                 "d72bcdcd084b8be6",
-                "c6a98241887037fd"
+                "c6a98241887037fd",
+                "c67c3c1b66b9ba58"
             ]
         ]
     },
@@ -966,8 +967,7 @@
         "y": 1016,
         "wires": [
             [
-                "aecf27c4524c85ed",
-                "c67c3c1b66b9ba58"
+                "aecf27c4524c85ed"
             ]
         ]
     },
@@ -993,7 +993,7 @@
         "type": "debug",
         "z": "7f5557aca01f4737",
         "name": "[EXIT] Turn on/off device",
-        "active": false,
+        "active": true,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
