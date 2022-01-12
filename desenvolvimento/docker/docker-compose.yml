@@ -1,14 +1,19 @@
 version: '3.9'
 
+### VOLUMES ############################################################
 volumes:
-  postgres-data:
-  pgadmin4-data:
-  nodered-data:
+  db-data:
+  db-client-data:
+  backend-data:
 
+### SERVICES ############################################################
 services:
+
+  ## DATABASE ##############################
   db:
-    container_name: postgres-pgc
+    container_name: db
     image: postgres:14.1-bullseye # https://hub.docker.com/_/postgres
+    restart: always
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
@@ -17,41 +22,47 @@ services:
     ports:
       - 5432:5432
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - db-data:/var/lib/postgresql/data
       - ../postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
 
+  ## DATABASE CLIENT ##############################
   db-client:
-    container_name: pgadmin4-pgc
+    container_name: db-client
     image: dpage/pgadmin4:6.1 # https://hub.docker.com/r/dpage/pgadmin4/
+    restart: always
     environment:
       - PGADMIN_DEFAULT_EMAIL=joao.pereira@aluno.ufabc.edu.br
       - PGADMIN_DEFAULT_PASSWORD=postgres
     ports:
       - 5050:80
     volumes:
-      - pgadmin4-data:/var/lib/pgadmin
+      - db-client-data:/var/lib/pgadmin
     links:
       - db
     depends_on:
       - db
 
+  ## BACK-END SERVER ##############################
   backend:
-    container_name: nodered-pgc
+    container_name: backend
     image: nodered/node-red:2.0.6 # https://hub.docker.com/r/nodered/node-red
+    restart: always
     environment:
       - TZ=America/Sao_Paulo
     ports:
       - 1880:1880
     volumes:
-      - nodered-data:/data
+      - backend-data:/data
     links:
       - db
     depends_on:
       - db
-  
+
+  ## FRONT-END SERVER ##############################
   frontend:
-    container_name: nginx-pgc
+    container_name: frontend
     image: nginx:1.21.4 # https://hub.docker.com/_/nginx/
+    restart: always
     ports:
       - 8080:80
     volumes:
