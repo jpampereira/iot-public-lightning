@@ -95,28 +95,6 @@
         "idle": "1000"
     },
     {
-        "id": "1b46bae9.2cd099",
-        "type": "mqtt-broker",
-        "name": "My mqtt",
-        "broker": "https://mqtt.eclipseprojects.io/",
-        "port": "1883",
-        "clientid": "",
-        "usetls": false,
-        "compatmode": true,
-        "keepalive": "60",
-        "cleansession": true,
-        "birthTopic": "",
-        "birthQos": "0",
-        "birthRetain": "true",
-        "birthPayload": "",
-        "closeTopic": "",
-        "closePayload": "",
-        "willTopic": "",
-        "willQos": "0",
-        "willRetain": "false",
-        "willPayload": ""
-    },
-    {
         "id": "2dc46f9c24f9eb35",
         "type": "function",
         "z": "bab6ffe5b7ae3a28",
@@ -131,7 +109,7 @@
         "y": 100,
         "wires": [
             [
-                "57023228cce5d7bc"
+                "bb3a8d2b7854dccb"
             ]
         ]
     },
@@ -157,7 +135,7 @@
         "type": "mqtt in",
         "z": "8813ec2835daae18",
         "name": "Sensors Output",
-        "topic": "MQTTtcciluminacaoRecebe_02",
+        "topic": "pgc_ufabc_device_measures",
         "qos": "2",
         "datatype": "json",
         "broker": "df4bdf4be0d4150f",
@@ -276,7 +254,7 @@
         "type": "function",
         "z": "8813ec2835daae18",
         "name": "Set query",
-        "func": "const sensor_output = msg.sensor_output;\n\nmsg.payload = `INSERT \n               INTO SENSORS_DATA_REAL_TIME (DEVICE_ID, VOLTAGE, CURRENT, LIGHTNESS, RELE_STATE) \n               VALUES (${sensor_output.id}, ${sensor_output.tensao}, ${sensor_output.corrente}, ${sensor_output.luminosidade}, '${sensor_output.rele_state}')`;\n\nreturn msg;",
+        "func": "const sensor_output = msg.sensor_output;\n\nmsg.payload = `INSERT \n               INTO SENSORS_DATA_REAL_TIME (DEVICE_ID, VOLTAGE, CURRENT, LIGHTNESS, RELE_STATE) \n               VALUES (${sensor_output.device_id}, ${sensor_output.voltage}, ${sensor_output.current}, ${sensor_output.lightness}, '${sensor_output.rele_state}')`;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -332,23 +310,6 @@
         "wires": []
     },
     {
-        "id": "57023228cce5d7bc",
-        "type": "mydb",
-        "z": "bab6ffe5b7ae3a28",
-        "name": "Execute Query",
-        "style": "mustache",
-        "substEnvVars": false,
-        "query": "{{{ msg.query }}};",
-        "mydbConfig": "21c629e3be9268f3",
-        "x": 360,
-        "y": 100,
-        "wires": [
-            [
-                "dcf9a148a61be9fc"
-            ]
-        ]
-    },
-    {
         "id": "4ac549b1969b0168",
         "type": "catch",
         "z": "7f5557aca01f4737",
@@ -395,7 +356,7 @@
         "type": "mqtt out",
         "z": "7f5557aca01f4737",
         "name": "Sensors Input",
-        "topic": "MQTTtcciluminacaoEnvia_02",
+        "topic": "",
         "qos": "",
         "retain": "",
         "respTopic": "",
@@ -440,7 +401,7 @@
         "type": "function",
         "z": "7f5557aca01f4737",
         "name": "Parse request body",
-        "func": "msg.payload = msg.payload.action;\n\nreturn msg;",
+        "func": "const action = msg.payload.action;\nconst device_id = msg.payload.device_id;\n\nmsg.topic = `pgc_ufabc_device_${device_id}`;\nmsg.payload = action;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -451,8 +412,7 @@
         "wires": [
             [
                 "d72bcdcd084b8be6",
-                "c6a98241887037fd",
-                "c67c3c1b66b9ba58"
+                "c6a98241887037fd"
             ]
         ]
     },
@@ -967,7 +927,8 @@
         "y": 1016,
         "wires": [
             [
-                "aecf27c4524c85ed"
+                "aecf27c4524c85ed",
+                "c67c3c1b66b9ba58"
             ]
         ]
     },
@@ -993,7 +954,7 @@
         "type": "debug",
         "z": "7f5557aca01f4737",
         "name": "[EXIT] Turn on/off device",
-        "active": true,
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -1344,6 +1305,7 @@
         "type": "subflow:bab6ffe5b7ae3a28",
         "z": "7f5557aca01f4737",
         "name": "",
+        "env": [],
         "x": 660,
         "y": 115,
         "wires": [
@@ -1978,7 +1940,7 @@
         "type": "function",
         "z": "8813ec2835daae18",
         "name": "Get device status",
-        "func": "const device_id = msg.sensor_output.id;\n\nmsg.payload = `SELECT STATUS\n               FROM DEVICES_DATA\n               WHERE DEVICE_ID = ${device_id}`;\n\nreturn msg;",
+        "func": "const device_id = msg.sensor_output.device_id;\n\nmsg.payload = `SELECT STATUS\n               FROM DEVICES_DATA\n               WHERE DEVICE_ID = ${device_id}`;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -2030,5 +1992,22 @@
         "x": 1080,
         "y": 138,
         "wires": []
+    },
+    {
+        "id": "bb3a8d2b7854dccb",
+        "type": "mydb",
+        "z": "bab6ffe5b7ae3a28",
+        "name": "Execute Query",
+        "style": "mustache",
+        "substEnvVars": false,
+        "query": "{{{ msg.query }}};",
+        "mydbConfig": "21c629e3be9268f3",
+        "x": 360,
+        "y": 100,
+        "wires": [
+            [
+                "dcf9a148a61be9fc"
+            ]
+        ]
     }
 ]

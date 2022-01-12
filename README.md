@@ -3,7 +3,6 @@ Esse repositório é destinado ao meu Trabalho de Conclusão de Curso do Bachare
 
 Próximos passos:
 
-- Configurar Broker
 - Revisão do Arduíno com o Renan
 - Gráfico de gasto de energia
 - Redis para consulta em tempo real e de alarmes

@@ -19,9 +19,9 @@ WiFiClient espClient;
 
 const char* MQTT_BROKER_HOST = "mqtt.eclipseprojects.io";
 const int   MQTT_BROKER_PORT = 1883;
-const char* MQTT_BROKER_ID   = "Tcc_setor02";
-const char* SUBSCRIBE_TOPIC  = "MQTTtcciluminacaoEnvia_02";
-const char* PUBLISH_TOPIC    = "MQTTtcciluminacaoRecebe_02";
+const char* MQTT_BROKER_ID   = "pgc_ufabc";
+const char* SUBSCRIBE_TOPIC  = "pgc_ufabc_device_1";
+const char* PUBLISH_TOPIC    = "pgc_ufabc_device_measures";
 PubSubClient MQTT(espClient);
 
 // === NodeMCU Pins ================================================================================================
@@ -224,17 +224,17 @@ float get_luminosidade() {
 
 /* Envia ao Broker MQTT o estado atual do refletor. */
 void send_to_mqtt_broker(float tensao, float corrente, float luminosidade) {
-  char id_JSON[10] = "";
-  char tensao_JSON[20] = "";
-  char corrente_JSON[20] = "";
-  char luminosidade_JSON[30] = "";
+  char id_JSON[20] = "";
+  char tensao_JSON[30] = "";
+  char corrente_JSON[30] = "";
+  char luminosidade_JSON[40] = "";
   char rele_state_JSON[20] = "";
   
-  sprintf(id_JSON,           "\"id\": %d,",             LIGHT_ID);
-  sprintf(tensao_JSON,       "\"tensao\": %0.f,",       tensao);
-  sprintf(corrente_JSON,     "\"corrente\": %.1f,",     corrente);
-  sprintf(luminosidade_JSON, "\"luminosidade\": %0.f,", luminosidade);
-  sprintf(rele_state_JSON,   "\"rele_state\": \"%c\"",  rele_state);
+  sprintf(id_JSON,           "\"device_id\": %d,",     LIGHT_ID);
+  sprintf(tensao_JSON,       "\"voltage\": %0.f,",     tensao);
+  sprintf(corrente_JSON,     "\"current\": %.1f,",     corrente);
+  sprintf(luminosidade_JSON, "\"lightness\": %0.f,",   luminosidade);
+  sprintf(rele_state_JSON,   "\"rele_state\": \"%c\"", rele_state);
 
   char json[200] = "";
 

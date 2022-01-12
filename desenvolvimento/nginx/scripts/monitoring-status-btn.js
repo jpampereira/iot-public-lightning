@@ -42,7 +42,9 @@ btn.onclick = function() {
 			action = 'L';
 		}
 
-		request('/change-status', { action }, 'get')
+		const device_id = form.elements.current_id.value;
+
+		request('/change-status', { device_id, action }, 'get')
 		.then()
 		.catch(console.log);
 	}
