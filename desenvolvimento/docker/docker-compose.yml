@@ -23,7 +23,9 @@ services:
       - 5432:5432
     volumes:
       - db-data:/var/lib/postgresql/data
-      - ../postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ../postgres/scripts:/scripts
+      - ../postgres/dumps:/dumps
+      - ../postgres/scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
 
   ## DATABASE CLIENT ##############################
   db-client:

@@ -22,8 +22,7 @@ function update_map(device_id) {
 		if (device_data !== undefined) {
 			update_info_card(device_data);
 
-			const lat = parseFloat(device_data.latitude);
-			const lng = parseFloat(device_data.longitude);
+			const [lat, lng] = device_data.coordinates.split(/\s*;\s*/).map(coordinate => parseFloat(coordinate));
 
 			window.map.setCenter({ lat, lng });
 			window.map.setZoom(17);
