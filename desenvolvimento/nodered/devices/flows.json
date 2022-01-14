@@ -1,0 +1,841 @@
+[
+    {
+        "id": "f6f2187d.f17ca8",
+        "type": "tab",
+        "label": "Devices",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "929f53a6eaff0271",
+        "type": "tab",
+        "label": "ON/OFF action",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "bab6ffe5b7ae3a28",
+        "type": "subflow",
+        "name": "Database",
+        "info": "",
+        "category": "",
+        "in": [
+            {
+                "x": 100,
+                "y": 100,
+                "wires": [
+                    {
+                        "id": "2dc46f9c24f9eb35"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 700,
+                "y": 100,
+                "wires": [
+                    {
+                        "id": "dcf9a148a61be9fc",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [],
+        "meta": {},
+        "color": "#DDAA99"
+    },
+    {
+        "id": "5881b3f4325c9978",
+        "type": "mqtt-broker",
+        "name": "MQTT Eclipse",
+        "broker": "mqtt.eclipseprojects.io",
+        "port": "1883",
+        "clientid": "",
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "sessionExpiry": ""
+    },
+    {
+        "id": "21c629e3be9268f3",
+        "type": "mydbConfig",
+        "name": "postgres@db:5432/PGC",
+        "host": "db",
+        "port": "5432",
+        "database": "PGC",
+        "ssl": false,
+        "rejectUnauthorized": false,
+        "ca": "",
+        "key": "",
+        "cert": "",
+        "max": "10",
+        "min": "1",
+        "idle": "1000"
+    },
+    {
+        "id": "77c0714f80783889",
+        "type": "debug",
+        "z": "f6f2187d.f17ca8",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 969,
+        "y": 56,
+        "wires": []
+    },
+    {
+        "id": "7b6898a61964476b",
+        "type": "inject",
+        "z": "f6f2187d.f17ca8",
+        "name": "Every 600 milliseconds",
+        "props": [],
+        "repeat": "0.6",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 175,
+        "y": 156,
+        "wires": [
+            [
+                "e9b0dbc48e943e7c"
+            ]
+        ]
+    },
+    {
+        "id": "52cb4927a775e913",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "Set measure values",
+        "func": "const device_id  = msg.payload.device_id;\nconst rele_state = msg.payload.rele_state;\n\nconst voltage   = rele_state ? Math.floor(Math.random() * (136 - 118) + 118) : 0;\nconst current   = rele_state ? Math.random() * (0.6 - 0.5) + 0.5 : 0;\nconst lightness = rele_state ? 247: 150;\n\nmsg.payload = JSON.stringify({ device_id, voltage, current, lightness, rele_state });\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 820,
+        "y": 156,
+        "wires": [
+            [
+                "01cfad97883fc878"
+            ]
+        ]
+    },
+    {
+        "id": "36f723663c2236d0",
+        "type": "debug",
+        "z": "f6f2187d.f17ca8",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 430,
+        "y": 216,
+        "wires": []
+    },
+    {
+        "id": "b34ee45083d0d0db",
+        "type": "mqtt out",
+        "z": "f6f2187d.f17ca8",
+        "name": "Send measure to Broker MQTT",
+        "topic": "pgc_ufabc_device_measures",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "5881b3f4325c9978",
+        "x": 231,
+        "y": 216,
+        "wires": []
+    },
+    {
+        "id": "2dc46f9c24f9eb35",
+        "type": "function",
+        "z": "bab6ffe5b7ae3a28",
+        "name": "Set Query",
+        "func": "msg.query = msg.payload;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 200,
+        "y": 100,
+        "wires": [
+            [
+                "bb3a8d2b7854dccb"
+            ]
+        ]
+    },
+    {
+        "id": "dcf9a148a61be9fc",
+        "type": "function",
+        "z": "bab6ffe5b7ae3a28",
+        "name": "Get Query Response",
+        "func": "const query_response = msg.payload.rows;\n\ndelete msg.query;\n\nmsg.payload = query_response;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 560,
+        "y": 100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "bb3a8d2b7854dccb",
+        "type": "mydb",
+        "z": "bab6ffe5b7ae3a28",
+        "name": "Execute Query",
+        "style": "mustache",
+        "substEnvVars": false,
+        "query": "{{{ msg.query }}};",
+        "mydbConfig": "21c629e3be9268f3",
+        "x": 360,
+        "y": 100,
+        "wires": [
+            [
+                "dcf9a148a61be9fc"
+            ]
+        ]
+    },
+    {
+        "id": "04747dadf5a0b8a5",
+        "type": "subflow:bab6ffe5b7ae3a28",
+        "z": "f6f2187d.f17ca8",
+        "name": "",
+        "env": [],
+        "x": 600,
+        "y": 56,
+        "wires": [
+            [
+                "c591baf98b841b04"
+            ]
+        ]
+    },
+    {
+        "id": "47ffe6b69fc8772c",
+        "type": "inject",
+        "z": "f6f2187d.f17ca8",
+        "name": "Every 5 minutes",
+        "props": [],
+        "repeat": "300",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 155,
+        "y": 56,
+        "wires": [
+            [
+                "3569d311c9fade93"
+            ]
+        ]
+    },
+    {
+        "id": "3569d311c9fade93",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "Get devices from inventory",
+        "func": "msg.payload = `SELECT DEVICE_ID, STATUS \n               FROM DEVICES_INVENTORY\n               WHERE IS_REAL = False`;\n               \nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 56,
+        "wires": [
+            [
+                "04747dadf5a0b8a5"
+            ]
+        ]
+    },
+    {
+        "id": "c591baf98b841b04",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "Set operational devices",
+        "func": "const current_list = global.get('OPERATIONAL_DEVICES') || [];\n\nconst select_device = device => device.status === true || Math.round() <= 0.05;\n\nconst define_reles_states = device => {\n    const current_state = current_list.find(item => item.device_id === device.device_id);\n    \n    device.rele_state = current_state !== undefined ? current_state.rele_state : 0;\n    \n    return device;\n}\n\nlet new_list = msg.payload;\n\nnew_list = new_list.filter(select_device).map(define_reles_states);\n\nglobal.set('OPERATIONAL_DEVICES', new_list);\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 790,
+        "y": 56,
+        "wires": [
+            [
+                "77c0714f80783889"
+            ]
+        ]
+    },
+    {
+        "id": "2b558ee4b8403a68",
+        "type": "split",
+        "z": "f6f2187d.f17ca8",
+        "name": "Split devices",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 630,
+        "y": 156,
+        "wires": [
+            [
+                "52cb4927a775e913"
+            ]
+        ]
+    },
+    {
+        "id": "e9b0dbc48e943e7c",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "Get operational devices",
+        "func": "msg.payload = global.get('OPERATIONAL_DEVICES');\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 156,
+        "wires": [
+            [
+                "2b558ee4b8403a68"
+            ]
+        ]
+    },
+    {
+        "id": "12423f63a3d35f50",
+        "type": "link in",
+        "z": "f6f2187d.f17ca8",
+        "name": "",
+        "links": [
+            "01cfad97883fc878"
+        ],
+        "x": 56,
+        "y": 216,
+        "wires": [
+            [
+                "36f723663c2236d0",
+                "b34ee45083d0d0db"
+            ]
+        ]
+    },
+    {
+        "id": "01cfad97883fc878",
+        "type": "link out",
+        "z": "f6f2187d.f17ca8",
+        "name": "",
+        "links": [
+            "12423f63a3d35f50"
+        ],
+        "x": 955,
+        "y": 156,
+        "wires": []
+    },
+    {
+        "id": "6fcdcdf981c597f3",
+        "type": "mqtt in",
+        "z": "929f53a6eaff0271",
+        "name": "Device 2",
+        "topic": "pgc_ufabc_device_2",
+        "qos": "2",
+        "datatype": "utf8",
+        "broker": "5881b3f4325c9978",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "x": 100,
+        "y": 316,
+        "wires": [
+            [
+                "d46f8f464a5c584c"
+            ]
+        ]
+    },
+    {
+        "id": "1ca349d90e2437e2",
+        "type": "mqtt in",
+        "z": "929f53a6eaff0271",
+        "name": "Device 3",
+        "topic": "pgc_ufabc_device_3",
+        "qos": "2",
+        "datatype": "utf8",
+        "broker": "5881b3f4325c9978",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "x": 100,
+        "y": 376,
+        "wires": [
+            [
+                "864092ce73678cf6"
+            ]
+        ]
+    },
+    {
+        "id": "10931eae9a08f564",
+        "type": "mqtt in",
+        "z": "929f53a6eaff0271",
+        "name": "Device 4",
+        "topic": "pgc_ufabc_device_4",
+        "qos": "2",
+        "datatype": "utf8",
+        "broker": "5881b3f4325c9978",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "x": 100,
+        "y": 436,
+        "wires": [
+            [
+                "3c87233a9136cd7b"
+            ]
+        ]
+    },
+    {
+        "id": "bf9470565c828136",
+        "type": "mqtt in",
+        "z": "929f53a6eaff0271",
+        "name": "Device 5",
+        "topic": "pgc_ufabc_device_5",
+        "qos": "2",
+        "datatype": "utf8",
+        "broker": "5881b3f4325c9978",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "x": 100,
+        "y": 496,
+        "wires": [
+            [
+                "fd20562f06585155"
+            ]
+        ]
+    },
+    {
+        "id": "7b7fabe1e773c2f2",
+        "type": "mqtt in",
+        "z": "929f53a6eaff0271",
+        "name": "Device 6",
+        "topic": "pgc_ufabc_device_6",
+        "qos": "2",
+        "datatype": "utf8",
+        "broker": "5881b3f4325c9978",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "x": 100,
+        "y": 556,
+        "wires": [
+            [
+                "48e178dc865a06e6"
+            ]
+        ]
+    },
+    {
+        "id": "d46f8f464a5c584c",
+        "type": "function",
+        "z": "929f53a6eaff0271",
+        "name": "Set rele state",
+        "func": "let devices = global.get('OPERATIONAL_DEVICES');\n\nconst action = msg.payload;\nconst new_state = action === 'L' ? 1 : 0;\n\ndevices = devices.map(device => {\n    if (device.device_id === 2) {\n        device.rele_state = new_state;\n    }\n    \n    return device;\n});\n\nglobal.set('OPERATIONAL_DEVICES', devices);\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 250,
+        "y": 316,
+        "wires": [
+            [
+                "560a959be3be9a5f"
+            ]
+        ]
+    },
+    {
+        "id": "864092ce73678cf6",
+        "type": "function",
+        "z": "929f53a6eaff0271",
+        "name": "Set rele state",
+        "func": "let devices = global.get('OPERATIONAL_DEVICES');\n\nconst action = msg.payload;\nconst new_state = action === 'L' ? 1 : 0;\n\ndevices = devices.map(device => {\n    if (device.device_id === 3) {\n        device.rele_state = new_state;\n    }\n    \n    return device;\n});\n\nglobal.set('OPERATIONAL_DEVICES', devices);\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 250,
+        "y": 376,
+        "wires": [
+            [
+                "a951a364fe80f373"
+            ]
+        ]
+    },
+    {
+        "id": "3c87233a9136cd7b",
+        "type": "function",
+        "z": "929f53a6eaff0271",
+        "name": "Set rele state",
+        "func": "let devices = global.get('OPERATIONAL_DEVICES');\n\nconst action = msg.payload;\nconst new_state = action === 'L' ? 1 : 0;\n\ndevices = devices.map(device => {\n    if (device.device_id === 4) {\n        device.rele_state = new_state;\n    }\n    \n    return device;\n});\n\nglobal.set('OPERATIONAL_DEVICES', devices);\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 250,
+        "y": 436,
+        "wires": [
+            [
+                "897793e81f41cdf5"
+            ]
+        ]
+    },
+    {
+        "id": "fd20562f06585155",
+        "type": "function",
+        "z": "929f53a6eaff0271",
+        "name": "Set rele state",
+        "func": "let devices = global.get('OPERATIONAL_DEVICES');\n\nconst action = msg.payload;\nconst new_state = action === 'L' ? 1 : 0;\n\ndevices = devices.map(device => {\n    if (device.device_id === 5) {\n        device.rele_state = new_state;\n    }\n    \n    return device;\n});\n\nglobal.set('OPERATIONAL_DEVICES', devices);\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 250,
+        "y": 496,
+        "wires": [
+            [
+                "6aaf315acece22a7"
+            ]
+        ]
+    },
+    {
+        "id": "48e178dc865a06e6",
+        "type": "function",
+        "z": "929f53a6eaff0271",
+        "name": "Set rele state",
+        "func": "let devices = global.get('OPERATIONAL_DEVICES');\n\nconst action = msg.payload;\nconst new_state = action === 'L' ? 1 : 0;\n\ndevices = devices.map(device => {\n    if (device.device_id === 6) {\n        device.rele_state = new_state;\n    }\n    \n    return device;\n});\n\nglobal.set('OPERATIONAL_DEVICES', devices);\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 250,
+        "y": 556,
+        "wires": [
+            [
+                "f6bc1deaf953f1d3"
+            ]
+        ]
+    },
+    {
+        "id": "560a959be3be9a5f",
+        "type": "debug",
+        "z": "929f53a6eaff0271",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 390,
+        "y": 316,
+        "wires": []
+    },
+    {
+        "id": "a951a364fe80f373",
+        "type": "debug",
+        "z": "929f53a6eaff0271",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 390,
+        "y": 376,
+        "wires": []
+    },
+    {
+        "id": "897793e81f41cdf5",
+        "type": "debug",
+        "z": "929f53a6eaff0271",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 390,
+        "y": 436,
+        "wires": []
+    },
+    {
+        "id": "6aaf315acece22a7",
+        "type": "debug",
+        "z": "929f53a6eaff0271",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 390,
+        "y": 496,
+        "wires": []
+    },
+    {
+        "id": "f6bc1deaf953f1d3",
+        "type": "debug",
+        "z": "929f53a6eaff0271",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 390,
+        "y": 556,
+        "wires": []
+    },
+    {
+        "id": "eae2ceb1e1285e1e",
+        "type": "inject",
+        "z": "929f53a6eaff0271",
+        "name": "[06:00] Turn OFF",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "00 06 * * *",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "D",
+        "payloadType": "str",
+        "x": 155,
+        "y": 116,
+        "wires": [
+            [
+                "1253d38137731d17"
+            ]
+        ]
+    },
+    {
+        "id": "a6ccd9893fb24127",
+        "type": "inject",
+        "z": "929f53a6eaff0271",
+        "name": "[18:00] Turn ON",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "00 06 * * *",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "L",
+        "payloadType": "str",
+        "x": 155,
+        "y": 156,
+        "wires": [
+            [
+                "1253d38137731d17"
+            ]
+        ]
+    },
+    {
+        "id": "1253d38137731d17",
+        "type": "function",
+        "z": "929f53a6eaff0271",
+        "name": "Set rele state of devices",
+        "func": "let devices = global.get('OPERATIONAL_DEVICES');\n\nconst action = msg.payload;\n\nconst new_state = action === 'L' ? 1 : 0;\n\ndevices = devices.map(device => {\n    device.rele_state = new_state;\n    return device;\n});\n\nglobal.set('OPERATIONAL_DEVICES', devices);\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 390,
+        "y": 136,
+        "wires": [
+            [
+                "13cdee3a5da82e37"
+            ]
+        ]
+    },
+    {
+        "id": "13cdee3a5da82e37",
+        "type": "debug",
+        "z": "929f53a6eaff0271",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 570,
+        "y": 136,
+        "wires": []
+    },
+    {
+        "id": "be8147fb41c71aa3",
+        "type": "comment",
+        "z": "929f53a6eaff0271",
+        "name": "Set state based in hour",
+        "info": "",
+        "x": 140,
+        "y": 55,
+        "wires": []
+    },
+    {
+        "id": "0e76079e3f7666c0",
+        "type": "comment",
+        "z": "929f53a6eaff0271",
+        "name": "Set state based in On/Off button action",
+        "info": "",
+        "x": 190,
+        "y": 255,
+        "wires": []
+    },
+    {
+        "id": "80a46d82ca4455ee",
+        "type": "catch",
+        "z": "f6f2187d.f17ca8",
+        "name": "",
+        "scope": null,
+        "uncaught": false,
+        "x": 100,
+        "y": 456,
+        "wires": [
+            [
+                "4fed0b38fbbe8ae3"
+            ]
+        ]
+    },
+    {
+        "id": "27e7cc799e913f9c",
+        "type": "comment",
+        "z": "f6f2187d.f17ca8",
+        "name": "Exceptions Treatment",
+        "info": "",
+        "x": 139,
+        "y": 395,
+        "wires": []
+    },
+    {
+        "id": "4fed0b38fbbe8ae3",
+        "type": "debug",
+        "z": "f6f2187d.f17ca8",
+        "name": "Exception",
+        "active": true,
+        "tosidebar": true,
+        "console": true,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 250,
+        "y": 456,
+        "wires": []
+    },
+    {
+        "id": "dc7e05f99e186370",
+        "type": "catch",
+        "z": "929f53a6eaff0271",
+        "name": "",
+        "scope": null,
+        "uncaught": false,
+        "x": 100,
+        "y": 797,
+        "wires": [
+            [
+                "5d8fc7a8992c9bf0"
+            ]
+        ]
+    },
+    {
+        "id": "8273cfcd3bb2899a",
+        "type": "comment",
+        "z": "929f53a6eaff0271",
+        "name": "Exceptions Treatment",
+        "info": "",
+        "x": 139,
+        "y": 736,
+        "wires": []
+    },
+    {
+        "id": "5d8fc7a8992c9bf0",
+        "type": "debug",
+        "z": "929f53a6eaff0271",
+        "name": "Exception",
+        "active": true,
+        "tosidebar": true,
+        "console": true,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 250,
+        "y": 797,
+        "wires": []
+    }
+]

@@ -1,80 +1,80 @@
-device_id,"coordinates","street","district",status
-1,"-23.62387246384708;-46.73480698739778","Rua Charles Spencer Chaplin","Vila Andrade",True
-2,"-23.62434735053875;-46.7359215318322","Rua Abdo Ambuba","Vila Andrade",False
-3,"-23.634735633502423;-46.73236741834121","Rua Alcantarilla","Vila Andrade",True
-4,"-23.635884337320483;-46.7398034434731","Rua Alexandre Archipenko","Vila Andrade",True
-5,"-23.63450025096545;-46.73775447416117","Rua Alexandre Benois","Vila Andrade",True
-6,"-23.633634573429426;-46.72936446252123","Rua Algeciras","Vila Andrade",True
-7,"-23.635132707393446;-46.733273589505124","Rua Algemesi","Vila Andrade",True
-8,"-23.637166368795995;-46.73551918950511","Rua Almaden","Vila Andrade",True
-9,"-23.63377631849077;-46.73065368765315","Rua Almansa","Vila Andrade",True
-10,"-23.63229992532576;-46.72856514532527","Rua Antônio da Costa Barbosa","Vila Andrade",True
-11,"-23.6278725319288;-46.740500904849306","Rua Arnaldo Olinto Bastos Filho","Vila Andrade",True
-12,"-23.628443703821684;-46.73740817416129","Rua Áureliano Guimarães","Vila Andrade",True
-13,"-23.639114527847614;-46.743849476013004","Rua Caetano de Odivelas","Vila Andrade",True
-14,"-23.638080354552226;-46.741998089504996","Rua Campo Novo do Sul","Vila Andrade",True
-15,"-23.639506842813542;-46.74766073368497","Rua Canabarro","Vila Andrade",True
-16,"-23.633257388601912;-46.7391071741612","Rua Canoal","Vila Andrade",True
-17,"-23.636228865184815;-46.740490274161075","Rua Canto Bonito","Vila Andrade",True
-18,"-23.632334267301513;-46.7408617029972","Rua Cantori","Vila Andrade",True
-19,"-23.624429324437024;-46.73726257601347","Rua Carapoanã","Vila Andrade",False
-20,"-23.62603991653691;-46.74441890484927","Rua Carupina","Vila Andrade",True
-21,"-23.631485385410432;-46.74037084717719","Rua Carvalho de Freitas","Vila Andrade",True
-22,"-23.623056089271394;-46.745447945325395","Rua Cascado","Vila Andrade",False
-23,"-23.631454914484017;-46.739173520193184","Rua Castelhano","Vila Andrade",True
-24,"-23.630507566858725;-46.74226968950528","Rua Catarinenses","Vila Andrade",True
-25,"-23.636927352648378;-46.73736952998102","Rua Catuti","Vila Andrade",True
-26,"-23.62616299868793;-46.747588660669294","Rua Carvaxi","Vila Andrade",False
-27,"-23.62813394380066;-46.745846331833334","Rua Cauípe","Vila Andrade",False
-28,"-23.63620558022975;-46.737367545325064","Rua Caxé","Vila Andrade",True
-29,"-23.630003770456437;-46.74157534532527","Rua Caxingó","Vila Andrade",True
-30,"-23.62711404808493;-46.74679436066936","Rua Celso Ramos","Vila Andrade",False
-31,"-23.634488148620864;-46.73696770299721","Rua Cemoaba","Vila Andrade",True
-32,"-23.630953455287187;-46.73909964717715","Rua Chapada Velha","Vila Andrade",False
-33,"-23.622421628703222;-46.73959271648941","Rua Cherpitel","Vila Andrade",True
-34,"-23.637310523785096;-46.74244726066914","Rua Chicó Gomes","Vila Andrade",True
-35,"-23.628530674674725;-46.74075205881723","Rua Cidade de Rio Pardo","Vila Andrade",False
-36,"-23.634424575089557;-46.736223402997176","Rua Clarindo","Vila Andrade",True
-37,"-23.62663349974692;-46.740256760669325","Rua Clodion","Vila Andrade",True
-38,"-23.625033051464857;-46.74008301834131","Rua Colantonio","Vila Andrade",True
-39,"-23.62656715858002;-46.73842487416139","Rua Cornelisz","Vila Andrade",True
-40,"-23.626880200309103;-46.74273188739773","Rua Crucy","Vila Andrade",True
-41,"-23.625505697215313;-46.74313350273806","Rua da Chibata","Vila Andrade",False
-42,"-23.634001634642956;-46.73510083157298","Rua Delegado Moraes Novaes","Vila Andrade",True
-43,"-23.628803680587858;-46.73185926040814","Rua Deputado João Sussumu Hirata","Vila Andrade",False
-44,"-23.634931089571737;-46.73956936040804","Rua Dom Salomão Ferraz","Vila Andrade",True
-45,"-23.62862681501555;-46.73482608924341","Rua Doutor Fonseca Brasil","Vila Andrade",True
-46,"-23.624924573603096;-46.73619828924331","Rua Doutor Sóter de Faria","Vila Andrade",True
-47,"-23.625689474980252;-46.73607767205728","Rua Eduardo Ambuba","Vila Andrade",True
-48,"-23.62862428026483;-46.73676390273799","Rua Engenheiro Antônio Jovino","Vila Andrade",True
-49,"-23.631974889940164;-46.73047964506769","Rua Fábio Lopes dos Santos Luz","Vila Andrade",True
-50,"-23.626354805689452;-46.74229781807842","Rua Francisco José da Silva","Vila Andrade",True
-51,"-23.627883461352376;-46.73978973341873","Rua Francisco Pessoa","Vila Andrade",True
-52,"-23.62562412704346;-46.735669116232735","Rua Frei Duarte Jorge de Mendonça","Vila Andrade",True
-53,"-23.635603592834784;-46.734267673902735","Rua Germano Ulbrich","Vila Andrade",True
-54,"-23.630566266988946;-46.73542697390277","Rua Itacaiúna","Vila Andrade",True
-55,"-23.631952219007538;-46.73217072972732","Rua Itajará","Vila Andrade",False
-56,"-23.62966628214135;-46.732003473903006","Rua Itamataí","Vila Andrade",True
-57,"-23.62731206015181;-46.73360887390281","Rua Itamira","Vila Andrade",True
-58,"-23.632565287362283;-46.730154702737856","Rua Itanhatim","Vila Andrade",True
-59,"-23.630645883905444;-46.731125945067824","Rua Itapecoca","Vila Andrade",True
-60,"-23.631296155936823;-46.73367740273776","Rua Itapimirum","Vila Andrade",True
-61,"-23.629756282303383;-46.73256917390293","Rua Itatupã","Vila Andrade",True
-62,"-23.627677943292145;-46.73429691807843","Rua Iubatinga","Vila Andrade",True
-63,"-23.63264817136357;-46.733959802738056","Rua Iuru","Vila Andrade",True
-64,"-23.629942348729408;-46.735263789243255","Rua Ivora","Vila Andrade",True
-65,"-23.629089539715416;-46.73329418924328","Rua Jamanari","Vila Andrade",True
-66,"-23.630154599929178;-46.73481184506775","Rua Jandiatuba","Vila Andrade",False
-67,"-23.631096601342833;-46.732762631573024","Rua Janga","Vila Andrade",False
-68,"-23.62319921100289;-46.74062591807857","Rua José Coimbra","Vila Andrade",True
-69,"-23.625434963264944;-46.74127467574868","Rua José da Mota","Vila Andrade",True
-70,"-23.625006003362092;-46.74118933157311","Rua José da Silva Ribeiro","Vila Andrade",True
-71,"-23.624577902623393;-46.738269245067826","Rua José de Oliveira Coelho","Vila Andrade",True
-72,"-23.6244950914372;-46.73928951807841","Rua José Gonçalves","Vila Andrade",False
-73,"-23.634043476829152;-46.73287067574846","Rua José Ramon Urtiza","Vila Andrade",False
-74,"-23.63559423691373;-46.74197358924319","Rua Maria José da Conceição","Vila Andrade",False
-75,"-23.63043243750626;-46.73770120273801","Rua Nelson Gama de Oliveira","Vila Andrade",False
-76,"-23.627597296091764;-46.74200907205717","Rua Nicola Rollo","Vila Andrade",True
-77,"-23.63477957798917;-46.73498500273782","Rua Olávo Leite","Vila Andrade",True
-78,"-23.63459180433787;-46.728165102737826","Rua Ribeirão da Prata","Vila Andrade",True
-79,"-23.63436813279209;-46.73563241623263","Rua Sophia Ambuba","Vila Andrade",False
+device_id,"coordinates","street","district",status,is_real
+1,"-23.62387246384708;-46.73480698739778","Rua Charles Spencer Chaplin","Vila Andrade",True,True
+2,"-23.62434735053875;-46.7359215318322","Rua Abdo Ambuba","Vila Andrade",False,False
+3,"-23.634735633502423;-46.73236741834121","Rua Alcantarilla","Vila Andrade",True,False
+4,"-23.635884337320483;-46.7398034434731","Rua Alexandre Archipenko","Vila Andrade",True,False
+5,"-23.63450025096545;-46.73775447416117","Rua Alexandre Benois","Vila Andrade",True,False
+6,"-23.633634573429426;-46.72936446252123","Rua Algeciras","Vila Andrade",True,False
+7,"-23.635132707393446;-46.733273589505124","Rua Algemesi","Vila Andrade",True,False
+8,"-23.637166368795995;-46.73551918950511","Rua Almaden","Vila Andrade",True,False
+9,"-23.63377631849077;-46.73065368765315","Rua Almansa","Vila Andrade",True,False
+10,"-23.63229992532576;-46.72856514532527","Rua Antônio da Costa Barbosa","Vila Andrade",True,False
+11,"-23.6278725319288;-46.740500904849306","Rua Arnaldo Olinto Bastos Filho","Vila Andrade",True,False
+12,"-23.628443703821684;-46.73740817416129","Rua Áureliano Guimarães","Vila Andrade",True,False
+13,"-23.639114527847614;-46.743849476013004","Rua Caetano de Odivelas","Vila Andrade",True,False
+14,"-23.638080354552226;-46.741998089504996","Rua Campo Novo do Sul","Vila Andrade",True,False
+15,"-23.639506842813542;-46.74766073368497","Rua Canabarro","Vila Andrade",True,False
+16,"-23.633257388601912;-46.7391071741612","Rua Canoal","Vila Andrade",True,False
+17,"-23.636228865184815;-46.740490274161075","Rua Canto Bonito","Vila Andrade",True,False
+18,"-23.632334267301513;-46.7408617029972","Rua Cantori","Vila Andrade",True,False
+19,"-23.624429324437024;-46.73726257601347","Rua Carapoanã","Vila Andrade",False,False
+20,"-23.62603991653691;-46.74441890484927","Rua Carupina","Vila Andrade",True,False
+21,"-23.631485385410432;-46.74037084717719","Rua Carvalho de Freitas","Vila Andrade",True,False
+22,"-23.623056089271394;-46.745447945325395","Rua Cascado","Vila Andrade",False,False
+23,"-23.631454914484017;-46.739173520193184","Rua Castelhano","Vila Andrade",True,False
+24,"-23.630507566858725;-46.74226968950528","Rua Catarinenses","Vila Andrade",True,False
+25,"-23.636927352648378;-46.73736952998102","Rua Catuti","Vila Andrade",True,False
+26,"-23.62616299868793;-46.747588660669294","Rua Carvaxi","Vila Andrade",False,False
+27,"-23.62813394380066;-46.745846331833334","Rua Cauípe","Vila Andrade",False,False
+28,"-23.63620558022975;-46.737367545325064","Rua Caxé","Vila Andrade",True,False
+29,"-23.630003770456437;-46.74157534532527","Rua Caxingó","Vila Andrade",True,False
+30,"-23.62711404808493;-46.74679436066936","Rua Celso Ramos","Vila Andrade",False,False
+31,"-23.634488148620864;-46.73696770299721","Rua Cemoaba","Vila Andrade",True,False
+32,"-23.630953455287187;-46.73909964717715","Rua Chapada Velha","Vila Andrade",False,False
+33,"-23.622421628703222;-46.73959271648941","Rua Cherpitel","Vila Andrade",True,False
+34,"-23.637310523785096;-46.74244726066914","Rua Chicó Gomes","Vila Andrade",True,False
+35,"-23.628530674674725;-46.74075205881723","Rua Cidade de Rio Pardo","Vila Andrade",False,False
+36,"-23.634424575089557;-46.736223402997176","Rua Clarindo","Vila Andrade",True,False
+37,"-23.62663349974692;-46.740256760669325","Rua Clodion","Vila Andrade",True,False
+38,"-23.625033051464857;-46.74008301834131","Rua Colantonio","Vila Andrade",True,False
+39,"-23.62656715858002;-46.73842487416139","Rua Cornelisz","Vila Andrade",True,False
+40,"-23.626880200309103;-46.74273188739773","Rua Crucy","Vila Andrade",True,False
+41,"-23.625505697215313;-46.74313350273806","Rua da Chibata","Vila Andrade",False,False
+42,"-23.634001634642956;-46.73510083157298","Rua Delegado Moraes Novaes","Vila Andrade",True,False
+43,"-23.628803680587858;-46.73185926040814","Rua Deputado João Sussumu Hirata","Vila Andrade",False,False
+44,"-23.634931089571737;-46.73956936040804","Rua Dom Salomão Ferraz","Vila Andrade",True,False
+45,"-23.62862681501555;-46.73482608924341","Rua Doutor Fonseca Brasil","Vila Andrade",True,False
+46,"-23.624924573603096;-46.73619828924331","Rua Doutor Sóter de Faria","Vila Andrade",True,False
+47,"-23.625689474980252;-46.73607767205728","Rua Eduardo Ambuba","Vila Andrade",True,False
+48,"-23.62862428026483;-46.73676390273799","Rua Engenheiro Antônio Jovino","Vila Andrade",True,False
+49,"-23.631974889940164;-46.73047964506769","Rua Fábio Lopes dos Santos Luz","Vila Andrade",True,False
+50,"-23.626354805689452;-46.74229781807842","Rua Francisco José da Silva","Vila Andrade",True,False
+51,"-23.627883461352376;-46.73978973341873","Rua Francisco Pessoa","Vila Andrade",True,False
+52,"-23.62562412704346;-46.735669116232735","Rua Frei Duarte Jorge de Mendonça","Vila Andrade",True,False
+53,"-23.635603592834784;-46.734267673902735","Rua Germano Ulbrich","Vila Andrade",True,False
+54,"-23.630566266988946;-46.73542697390277","Rua Itacaiúna","Vila Andrade",True,False
+55,"-23.631952219007538;-46.73217072972732","Rua Itajará","Vila Andrade",False,False
+56,"-23.62966628214135;-46.732003473903006","Rua Itamataí","Vila Andrade",True,False
+57,"-23.62731206015181;-46.73360887390281","Rua Itamira","Vila Andrade",True,False
+58,"-23.632565287362283;-46.730154702737856","Rua Itanhatim","Vila Andrade",True,False
+59,"-23.630645883905444;-46.731125945067824","Rua Itapecoca","Vila Andrade",True,False
+60,"-23.631296155936823;-46.73367740273776","Rua Itapimirum","Vila Andrade",True,False
+61,"-23.629756282303383;-46.73256917390293","Rua Itatupã","Vila Andrade",True,False
+62,"-23.627677943292145;-46.73429691807843","Rua Iubatinga","Vila Andrade",True,False
+63,"-23.63264817136357;-46.733959802738056","Rua Iuru","Vila Andrade",True,False
+64,"-23.629942348729408;-46.735263789243255","Rua Ivora","Vila Andrade",True,False
+65,"-23.629089539715416;-46.73329418924328","Rua Jamanari","Vila Andrade",True,False
+66,"-23.630154599929178;-46.73481184506775","Rua Jandiatuba","Vila Andrade",False,False
+67,"-23.631096601342833;-46.732762631573024","Rua Janga","Vila Andrade",False,False
+68,"-23.62319921100289;-46.74062591807857","Rua José Coimbra","Vila Andrade",True,False
+69,"-23.625434963264944;-46.74127467574868","Rua José da Mota","Vila Andrade",True,False
+70,"-23.625006003362092;-46.74118933157311","Rua José da Silva Ribeiro","Vila Andrade",True,False
+71,"-23.624577902623393;-46.738269245067826","Rua José de Oliveira Coelho","Vila Andrade",True,False
+72,"-23.6244950914372;-46.73928951807841","Rua José Gonçalves","Vila Andrade",False,False
+73,"-23.634043476829152;-46.73287067574846","Rua José Ramon Urtiza","Vila Andrade",False,False
+74,"-23.63559423691373;-46.74197358924319","Rua Maria José da Conceição","Vila Andrade",False,False
+75,"-23.63043243750626;-46.73770120273801","Rua Nelson Gama de Oliveira","Vila Andrade",False,False
+76,"-23.627597296091764;-46.74200907205717","Rua Nicola Rollo","Vila Andrade",True,False
+77,"-23.63477957798917;-46.73498500273782","Rua Olávo Leite","Vila Andrade",True,False
+78,"-23.63459180433787;-46.728165102737826","Rua Ribeirão da Prata","Vila Andrade",True,False
+79,"-23.63436813279209;-46.73563241623263","Rua Sophia Ambuba","Vila Andrade",False,False

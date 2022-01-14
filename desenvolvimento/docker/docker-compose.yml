@@ -5,6 +5,7 @@ volumes:
   db-data:
   db-client-data:
   backend-data:
+  devices-data:
 
 ### SERVICES ############################################################
 services:
@@ -71,3 +72,19 @@ services:
       - ../nginx:/usr/share/nginx/html
     depends_on:
       - backend
+
+  ## DEVICES SIMULATION ##############################
+  devices:
+    container_name: devices
+    image: nodered/node-red:2.0.6 # https://hub.docker.com/r/nodered/node-red
+    restart: always
+    environment:
+      - TZ=America/Sao_Paulo
+    ports:
+      - 1881:1880
+    volumes:
+      - devices-data:/data
+    links:
+      - db
+    depends_on:
+      - db
