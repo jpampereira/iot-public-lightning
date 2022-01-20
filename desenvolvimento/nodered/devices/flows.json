@@ -2,7 +2,7 @@
     {
         "id": "f6f2187d.f17ca8",
         "type": "tab",
-        "label": "Devices",
+        "label": "Simulate devices",
         "disabled": false,
         "info": ""
     },
@@ -49,8 +49,8 @@
     {
         "id": "5881b3f4325c9978",
         "type": "mqtt-broker",
-        "name": "MQTT Eclipse",
-        "broker": "mqtt.eclipseprojects.io",
+        "name": "MQTT Mosquitto",
+        "broker": "test.mosquitto.org",
         "port": "1883",
         "clientid": "",
         "usetls": false,
@@ -128,7 +128,7 @@
         "type": "function",
         "z": "f6f2187d.f17ca8",
         "name": "Set measure values",
-        "func": "const device_id  = msg.payload.device_id;\nconst rele_state = msg.payload.rele_state;\n\nconst voltage   = rele_state ? Math.floor(Math.random() * (136 - 118) + 118) : 0;\nconst current   = rele_state ? Math.random() * (0.6 - 0.5) + 0.5 : 0;\nconst lightness = rele_state ? 247: 150;\n\nmsg.payload = JSON.stringify({ device_id, voltage, current, lightness, rele_state });\n\nreturn msg;",
+        "func": "const device_id  = msg.payload.device_id;\nconst rele_state = msg.payload.rele_state;\n\nconst voltage   = rele_state ? Math.floor(Math.random() * (136 - 118) + 118) : 0;\nconst current   = (rele_state ? Math.random() * (0.6 - 0.5) + 0.5 : 0).toFixed(1);\nconst lightness = rele_state ? 247: 150;\n\nmsg.payload = JSON.stringify({ device_id, voltage, current, lightness, rele_state });\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -164,7 +164,7 @@
         "type": "mqtt out",
         "z": "f6f2187d.f17ca8",
         "name": "Send measure to Broker MQTT",
-        "topic": "pgc_ufabc_device_measures",
+        "topic": "pgc_ufabc/devices/measures",
         "qos": "",
         "retain": "",
         "respTopic": "",
@@ -287,7 +287,7 @@
         "type": "function",
         "z": "f6f2187d.f17ca8",
         "name": "Set operational devices",
-        "func": "const current_list = global.get('OPERATIONAL_DEVICES') || [];\n\nconst select_device = device => device.status === true || Math.round() <= 0.05;\n\nconst define_reles_states = device => {\n    const current_state = current_list.find(item => item.device_id === device.device_id);\n    \n    device.rele_state = current_state !== undefined ? current_state.rele_state : 0;\n    \n    return device;\n}\n\nlet new_list = msg.payload;\n\nnew_list = new_list.filter(select_device).map(define_reles_states);\n\nglobal.set('OPERATIONAL_DEVICES', new_list);\n\nreturn msg;",
+        "func": "const current_list = global.get('OPERATIONAL_DEVICES') || [];\n\nconst select_device = new_device => new_device.status === true || Math.round() <= 0.05;\n\nconst define_reles_states = new_device => {\n    const current_device = current_list.find(current_device => current_device.device_id === new_device.device_id);\n    \n    new_device.rele_state = current_device !== undefined ? current_device.rele_state : 0;\n    \n    return new_device;\n}\n\nlet new_list = msg.payload;\n\nnew_list = new_list.filter(select_device).map(define_reles_states);\n\nglobal.set('OPERATIONAL_DEVICES', new_list);\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -372,16 +372,16 @@
         "id": "6fcdcdf981c597f3",
         "type": "mqtt in",
         "z": "929f53a6eaff0271",
-        "name": "Device 2",
-        "topic": "pgc_ufabc_device_2",
+        "name": "Receive action messages",
+        "topic": "pgc_ufabc/devices/actions/+",
         "qos": "2",
         "datatype": "utf8",
         "broker": "5881b3f4325c9978",
         "nl": false,
         "rap": true,
         "rh": 0,
-        "x": 100,
-        "y": 316,
+        "x": 150,
+        "y": 276,
         "wires": [
             [
                 "d46f8f464a5c584c"
@@ -389,177 +389,21 @@
         ]
     },
     {
-        "id": "1ca349d90e2437e2",
-        "type": "mqtt in",
-        "z": "929f53a6eaff0271",
-        "name": "Device 3",
-        "topic": "pgc_ufabc_device_3",
-        "qos": "2",
-        "datatype": "utf8",
-        "broker": "5881b3f4325c9978",
-        "nl": false,
-        "rap": true,
-        "rh": 0,
-        "x": 100,
-        "y": 376,
-        "wires": [
-            [
-                "864092ce73678cf6"
-            ]
-        ]
-    },
-    {
-        "id": "10931eae9a08f564",
-        "type": "mqtt in",
-        "z": "929f53a6eaff0271",
-        "name": "Device 4",
-        "topic": "pgc_ufabc_device_4",
-        "qos": "2",
-        "datatype": "utf8",
-        "broker": "5881b3f4325c9978",
-        "nl": false,
-        "rap": true,
-        "rh": 0,
-        "x": 100,
-        "y": 436,
-        "wires": [
-            [
-                "3c87233a9136cd7b"
-            ]
-        ]
-    },
-    {
-        "id": "bf9470565c828136",
-        "type": "mqtt in",
-        "z": "929f53a6eaff0271",
-        "name": "Device 5",
-        "topic": "pgc_ufabc_device_5",
-        "qos": "2",
-        "datatype": "utf8",
-        "broker": "5881b3f4325c9978",
-        "nl": false,
-        "rap": true,
-        "rh": 0,
-        "x": 100,
-        "y": 496,
-        "wires": [
-            [
-                "fd20562f06585155"
-            ]
-        ]
-    },
-    {
-        "id": "7b7fabe1e773c2f2",
-        "type": "mqtt in",
-        "z": "929f53a6eaff0271",
-        "name": "Device 6",
-        "topic": "pgc_ufabc_device_6",
-        "qos": "2",
-        "datatype": "utf8",
-        "broker": "5881b3f4325c9978",
-        "nl": false,
-        "rap": true,
-        "rh": 0,
-        "x": 100,
-        "y": 556,
-        "wires": [
-            [
-                "48e178dc865a06e6"
-            ]
-        ]
-    },
-    {
         "id": "d46f8f464a5c584c",
         "type": "function",
         "z": "929f53a6eaff0271",
-        "name": "Set rele state",
-        "func": "let devices = global.get('OPERATIONAL_DEVICES');\n\nconst action = msg.payload;\nconst new_state = action === 'L' ? 1 : 0;\n\ndevices = devices.map(device => {\n    if (device.device_id === 2) {\n        device.rele_state = new_state;\n    }\n    \n    return device;\n});\n\nglobal.set('OPERATIONAL_DEVICES', devices);\n\nreturn msg;",
+        "name": "Set rele state of device",
+        "func": "let devices = global.get('OPERATIONAL_DEVICES');\n\nconst device_id = parseInt(msg.topic.match(/pgc_ufabc\\/devices\\/actions\\/(\\d+)/)[1]);\n\nconst action = msg.payload;\nconst new_state = action === 'L' ? 1 : 0;\n\ndevices = devices.map(device => {\n    if (device.device_id === device_id) {\n        device.rele_state = new_state;\n    }\n    \n    return device;\n});\n\nglobal.set('OPERATIONAL_DEVICES', devices);\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 250,
-        "y": 316,
+        "x": 380,
+        "y": 276,
         "wires": [
             [
                 "560a959be3be9a5f"
-            ]
-        ]
-    },
-    {
-        "id": "864092ce73678cf6",
-        "type": "function",
-        "z": "929f53a6eaff0271",
-        "name": "Set rele state",
-        "func": "let devices = global.get('OPERATIONAL_DEVICES');\n\nconst action = msg.payload;\nconst new_state = action === 'L' ? 1 : 0;\n\ndevices = devices.map(device => {\n    if (device.device_id === 3) {\n        device.rele_state = new_state;\n    }\n    \n    return device;\n});\n\nglobal.set('OPERATIONAL_DEVICES', devices);\n\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 250,
-        "y": 376,
-        "wires": [
-            [
-                "a951a364fe80f373"
-            ]
-        ]
-    },
-    {
-        "id": "3c87233a9136cd7b",
-        "type": "function",
-        "z": "929f53a6eaff0271",
-        "name": "Set rele state",
-        "func": "let devices = global.get('OPERATIONAL_DEVICES');\n\nconst action = msg.payload;\nconst new_state = action === 'L' ? 1 : 0;\n\ndevices = devices.map(device => {\n    if (device.device_id === 4) {\n        device.rele_state = new_state;\n    }\n    \n    return device;\n});\n\nglobal.set('OPERATIONAL_DEVICES', devices);\n\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 250,
-        "y": 436,
-        "wires": [
-            [
-                "897793e81f41cdf5"
-            ]
-        ]
-    },
-    {
-        "id": "fd20562f06585155",
-        "type": "function",
-        "z": "929f53a6eaff0271",
-        "name": "Set rele state",
-        "func": "let devices = global.get('OPERATIONAL_DEVICES');\n\nconst action = msg.payload;\nconst new_state = action === 'L' ? 1 : 0;\n\ndevices = devices.map(device => {\n    if (device.device_id === 5) {\n        device.rele_state = new_state;\n    }\n    \n    return device;\n});\n\nglobal.set('OPERATIONAL_DEVICES', devices);\n\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 250,
-        "y": 496,
-        "wires": [
-            [
-                "6aaf315acece22a7"
-            ]
-        ]
-    },
-    {
-        "id": "48e178dc865a06e6",
-        "type": "function",
-        "z": "929f53a6eaff0271",
-        "name": "Set rele state",
-        "func": "let devices = global.get('OPERATIONAL_DEVICES');\n\nconst action = msg.payload;\nconst new_state = action === 'L' ? 1 : 0;\n\ndevices = devices.map(device => {\n    if (device.device_id === 6) {\n        device.rele_state = new_state;\n    }\n    \n    return device;\n});\n\nglobal.set('OPERATIONAL_DEVICES', devices);\n\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 250,
-        "y": 556,
-        "wires": [
-            [
-                "f6bc1deaf953f1d3"
             ]
         ]
     },
@@ -576,76 +420,8 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 390,
-        "y": 316,
-        "wires": []
-    },
-    {
-        "id": "a951a364fe80f373",
-        "type": "debug",
-        "z": "929f53a6eaff0271",
-        "name": "",
-        "active": false,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "true",
-        "targetType": "full",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 390,
-        "y": 376,
-        "wires": []
-    },
-    {
-        "id": "897793e81f41cdf5",
-        "type": "debug",
-        "z": "929f53a6eaff0271",
-        "name": "",
-        "active": false,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "true",
-        "targetType": "full",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 390,
-        "y": 436,
-        "wires": []
-    },
-    {
-        "id": "6aaf315acece22a7",
-        "type": "debug",
-        "z": "929f53a6eaff0271",
-        "name": "",
-        "active": false,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "true",
-        "targetType": "full",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 390,
-        "y": 496,
-        "wires": []
-    },
-    {
-        "id": "f6bc1deaf953f1d3",
-        "type": "debug",
-        "z": "929f53a6eaff0271",
-        "name": "",
-        "active": false,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "true",
-        "targetType": "full",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 390,
-        "y": 556,
+        "x": 550,
+        "y": 276,
         "wires": []
     },
     {
@@ -666,7 +442,7 @@
         "payload": "D",
         "payloadType": "str",
         "x": 155,
-        "y": 116,
+        "y": 96,
         "wires": [
             [
                 "1253d38137731d17"
@@ -691,7 +467,7 @@
         "payload": "L",
         "payloadType": "str",
         "x": 155,
-        "y": 156,
+        "y": 136,
         "wires": [
             [
                 "1253d38137731d17"
@@ -710,7 +486,7 @@
         "finalize": "",
         "libs": [],
         "x": 390,
-        "y": 136,
+        "y": 116,
         "wires": [
             [
                 "13cdee3a5da82e37"
@@ -731,7 +507,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 570,
-        "y": 136,
+        "y": 116,
         "wires": []
     },
     {
@@ -748,10 +524,10 @@
         "id": "0e76079e3f7666c0",
         "type": "comment",
         "z": "929f53a6eaff0271",
-        "name": "Set state based in On/Off button action",
+        "name": "Set state based in On/Off button click",
         "info": "",
         "x": 190,
-        "y": 255,
+        "y": 235,
         "wires": []
     },
     {
@@ -797,32 +573,32 @@
         "wires": []
     },
     {
-        "id": "dc7e05f99e186370",
+        "id": "b46ca7eecdb18e77",
         "type": "catch",
         "z": "929f53a6eaff0271",
         "name": "",
         "scope": null,
         "uncaught": false,
         "x": 100,
-        "y": 797,
+        "y": 516,
         "wires": [
             [
-                "5d8fc7a8992c9bf0"
+                "d3a94f73e85e211d"
             ]
         ]
     },
     {
-        "id": "8273cfcd3bb2899a",
+        "id": "1e31fd1b2db76ae8",
         "type": "comment",
         "z": "929f53a6eaff0271",
         "name": "Exceptions Treatment",
         "info": "",
         "x": 139,
-        "y": 736,
+        "y": 455,
         "wires": []
     },
     {
-        "id": "5d8fc7a8992c9bf0",
+        "id": "d3a94f73e85e211d",
         "type": "debug",
         "z": "929f53a6eaff0271",
         "name": "Exception",
@@ -835,7 +611,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 250,
-        "y": 797,
+        "y": 516,
         "wires": []
     }
 ]

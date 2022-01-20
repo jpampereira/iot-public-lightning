@@ -20,8 +20,8 @@ WiFiClient espClient;
 const char* MQTT_BROKER_HOST = "mqtt.eclipseprojects.io";
 const int   MQTT_BROKER_PORT = 1883;
 const char* MQTT_BROKER_ID   = "pgc_ufabc";
-const char* SUBSCRIBE_TOPIC  = "pgc_ufabc_device_1";
-const char* PUBLISH_TOPIC    = "pgc_ufabc_device_measures";
+const char* SUBSCRIBE_TOPIC  = "pgc_ufabc/devices/actions/1";
+const char* PUBLISH_TOPIC    = "pgc_ufabc/devices/measures";
 PubSubClient MQTT(espClient);
 
 // === NodeMCU Pins ================================================================================================

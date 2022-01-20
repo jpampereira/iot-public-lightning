@@ -6,5 +6,4 @@ Próximos passos:
 - Revisão do Arduíno com o Renan
 - Gráfico de gasto de energia
 - Redis para consulta em tempo real e de alarmes
-- Simular várias lâmpadas
 - Alarmística
