@@ -14,7 +14,7 @@
         "info": ""
     },
     {
-        "id": "50de4a0fb7daeabc",
+        "id": "7bfe80d199363eac",
         "type": "tab",
         "label": "Populate historic table",
         "disabled": false,
@@ -131,6 +131,23 @@
         ]
     },
     {
+        "id": "bb3a8d2b7854dccb",
+        "type": "mydb",
+        "z": "bab6ffe5b7ae3a28",
+        "name": "Execute Query",
+        "style": "mustache",
+        "substEnvVars": false,
+        "query": "{{{ msg.query }}};",
+        "mydbConfig": "21c629e3be9268f3",
+        "x": 360,
+        "y": 100,
+        "wires": [
+            [
+                "dcf9a148a61be9fc"
+            ]
+        ]
+    },
+    {
         "id": "8b614dd0c4e7ecd6",
         "type": "mqtt in",
         "z": "8813ec2835daae18",
@@ -197,7 +214,7 @@
         "type": "function",
         "z": "8813ec2835daae18",
         "name": "Parse output",
-        "func": "msg.sensor_output = msg.payload;\n\nreturn msg;",
+        "func": "msg.sensor_output = msg.payload;\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -317,7 +334,7 @@
         "scope": null,
         "uncaught": false,
         "x": 100,
-        "y": 1256,
+        "y": 1016,
         "wires": [
             [
                 "1705d89c23ac2369"
@@ -331,7 +348,7 @@
         "name": "Exceptions Treatment",
         "info": "",
         "x": 140,
-        "y": 1215,
+        "y": 975,
         "wires": []
     },
     {
@@ -348,7 +365,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 250,
-        "y": 1256,
+        "y": 1016,
         "wires": []
     },
     {
@@ -365,18 +382,18 @@
         "correl": "",
         "expiry": "",
         "broker": "df4bdf4be0d4150f",
-        "x": 540,
-        "y": 1056,
+        "x": 740,
+        "y": 816,
         "wires": []
     },
     {
         "id": "e0b9c1eff2e18be5",
         "type": "comment",
         "z": "7f5557aca01f4737",
-        "name": "Turn on/off device",
+        "name": "##### Devices actions [/devices/actions] #####",
         "info": "",
-        "x": 130,
-        "y": 975,
+        "x": 220,
+        "y": 735,
         "wires": []
     },
     {
@@ -384,12 +401,12 @@
         "type": "http in",
         "z": "7f5557aca01f4737",
         "name": "",
-        "url": "/change-status",
+        "url": "/devices/actions/on-off",
         "method": "get",
         "upload": false,
         "swaggerDoc": "",
-        "x": 130,
-        "y": 1036,
+        "x": 310,
+        "y": 796,
         "wires": [
             [
                 "2ea58b854874e1f9"
@@ -407,8 +424,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 330,
-        "y": 1036,
+        "x": 530,
+        "y": 796,
         "wires": [
             [
                 "d72bcdcd084b8be6",
@@ -423,8 +440,8 @@
         "name": "Send response",
         "statusCode": "",
         "headers": {},
-        "x": 740,
-        "y": 1016,
+        "x": 940,
+        "y": 776,
         "wires": []
     },
     {
@@ -432,12 +449,12 @@
         "type": "http in",
         "z": "7f5557aca01f4737",
         "name": "",
-        "url": "/device-info",
+        "url": "/devices/info",
         "method": "get",
         "upload": false,
         "swaggerDoc": "",
         "x": 120,
-        "y": 876,
+        "y": 556,
         "wires": [
             [
                 "4a2f6b921cc7b9aa"
@@ -448,10 +465,10 @@
         "id": "28915e0493ef6a3f",
         "type": "comment",
         "z": "7f5557aca01f4737",
-        "name": "Get device informations",
+        "name": "##### Get devices informations [/devices/info] #####",
         "info": "",
-        "x": 140,
-        "y": 835,
+        "x": 230,
+        "y": 515,
         "wires": []
     },
     {
@@ -461,7 +478,7 @@
         "name": "",
         "env": [],
         "x": 620,
-        "y": 876,
+        "y": 556,
         "wires": [
             [
                 "fd5c74c4ecda2310",
@@ -474,14 +491,14 @@
         "type": "function",
         "z": "7f5557aca01f4737",
         "name": "Set query",
-        "func": "const device_id = msg.device_id;\n\nmsg.payload = `SELECT COORDINATES, STREET, DISTRICT, STATUS\n               FROM DEVICES_INVENTORY\n               WHERE DEVICE_ID = ${device_id}`;\n\nreturn msg;",
+        "func": "const device_id = msg.device_id;\n\nmsg.payload = `SELECT COORDINATES, STREET, DISTRICT, STATUS FROM DEVICES_INVENTORY WHERE DEVICE_ID = ${device_id}`;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
         "x": 480,
-        "y": 876,
+        "y": 556,
         "wires": [
             [
                 "ede3351d6c899062"
@@ -496,13 +513,13 @@
         "statusCode": "",
         "headers": {},
         "x": 780,
-        "y": 876,
+        "y": 556,
         "wires": []
     },
     {
-        "id": "f9a1ed4693df527c",
+        "id": "ad7a04302aa7d2a5",
         "type": "inject",
-        "z": "50de4a0fb7daeabc",
+        "z": "7bfe80d199363eac",
         "name": "[TRIGGER] Execute every 1 hour",
         "props": [
             {
@@ -521,14 +538,14 @@
         "y": 95,
         "wires": [
             [
-                "74a7720e8d6dadce"
+                "321102acad131081"
             ]
         ]
     },
     {
-        "id": "f7a4578e851c1da0",
+        "id": "c1d56661b93bc251",
         "type": "comment",
-        "z": "50de4a0fb7daeabc",
+        "z": "7bfe80d199363eac",
         "name": "Merge dataset of last 1 hour",
         "info": "",
         "x": 160,
@@ -536,24 +553,24 @@
         "wires": []
     },
     {
-        "id": "4b5a7e0209baa1d9",
+        "id": "65af7ad57593057d",
         "type": "subflow:bab6ffe5b7ae3a28",
-        "z": "50de4a0fb7daeabc",
+        "z": "7bfe80d199363eac",
         "name": "",
         "x": 1180,
         "y": 95,
         "wires": [
             [
-                "b63f23032ede52c6"
+                "b5f99fa633c93197"
             ]
         ]
     },
     {
-        "id": "c03fadbdeb961e4b",
+        "id": "9563eb3f5af48c81",
         "type": "function",
-        "z": "50de4a0fb7daeabc",
+        "z": "7bfe80d199363eac",
         "name": "Get active devices",
-        "func": "msg.payload = `SELECT DEVICE_ID \n               FROM DEVICES_INVENTORY \n               WHERE STATUS = '1'`;\n               \nreturn msg;",
+        "func": "msg.payload = `SELECT DEVICE_ID FROM DEVICES_INVENTORY WHERE STATUS = '1'`;\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -563,14 +580,14 @@
         "y": 156,
         "wires": [
             [
-                "04747dadf5a0b8a5"
+                "5591169f8bdc17c3"
             ]
         ]
     },
     {
-        "id": "1046435b385a96f0",
+        "id": "595d6b6ee38f20b2",
         "type": "function",
-        "z": "50de4a0fb7daeabc",
+        "z": "7bfe80d199363eac",
         "name": "Delete sensors data from more than a hour",
         "func": "const timestamp = msg.timestamp;\n\nconst date = new Date(timestamp);\ndate.setSeconds(0);\ndate.setMilliseconds(0);\n\nconst year = date.getFullYear();\nconst mon  = `0${date.getMonth()+1}`.slice(-2);\nconst day  = `0${date.getDate()}`.slice(-2);\nconst hour = `0${date.getHours()}`.slice(-2);\nconst min  = `0${date.getMinutes()}`.slice(-2);\nconst sec  = `0${date.getSeconds()}`.slice(-2);\n\nconst format_date = `${year}-${mon}-${day} ${hour}:${min}:${sec}`;\n\nmsg.payload = `DELETE\n               FROM SENSORS_DATA_REAL_TIME\n               WHERE (INSERTION_TIME AT TIME ZONE 'CST') < (TO_TIMESTAMP('${format_date}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST') - INTERVAL '1 hour'`;\n               \nreturn msg;",
         "outputs": 1,
@@ -582,55 +599,55 @@
         "y": 95,
         "wires": [
             [
-                "4b5a7e0209baa1d9"
+                "65af7ad57593057d"
             ]
         ]
     },
     {
-        "id": "b63f23032ede52c6",
+        "id": "b5f99fa633c93197",
         "type": "link out",
-        "z": "50de4a0fb7daeabc",
+        "z": "7bfe80d199363eac",
         "name": "OUT (1) Merge dataset of last 1 hour",
         "links": [
-            "6227b764ecd66fbd"
+            "332a597c5d4b37eb"
         ],
         "x": 1275,
         "y": 95,
         "wires": []
     },
     {
-        "id": "6227b764ecd66fbd",
+        "id": "332a597c5d4b37eb",
         "type": "link in",
-        "z": "50de4a0fb7daeabc",
+        "z": "7bfe80d199363eac",
         "name": "IN (1) Merge dataset of last 1 hour",
         "links": [
-            "b63f23032ede52c6"
+            "b5f99fa633c93197"
         ],
         "x": 55,
         "y": 156,
         "wires": [
             [
-                "c03fadbdeb961e4b"
+                "9563eb3f5af48c81"
             ]
         ]
     },
     {
-        "id": "04747dadf5a0b8a5",
+        "id": "5591169f8bdc17c3",
         "type": "subflow:bab6ffe5b7ae3a28",
-        "z": "50de4a0fb7daeabc",
+        "z": "7bfe80d199363eac",
         "name": "",
         "x": 360,
         "y": 156,
         "wires": [
             [
-                "f4feba67b52c1837"
+                "beecc4814c6aae9f"
             ]
         ]
     },
     {
-        "id": "f4feba67b52c1837",
+        "id": "beecc4814c6aae9f",
         "type": "function",
-        "z": "50de4a0fb7daeabc",
+        "z": "7bfe80d199363eac",
         "name": "Get devices id",
         "func": "const active_devices = msg.payload;\n\nconst devices_id = active_devices.map(row => row.device_id);\n\nmsg.payload = devices_id;\n\nreturn msg;",
         "outputs": 1,
@@ -642,14 +659,14 @@
         "y": 156,
         "wires": [
             [
-                "d68aa7ee3ccc5264"
+                "ed99fca3c09600af"
             ]
         ]
     },
     {
-        "id": "d68aa7ee3ccc5264",
+        "id": "ed99fca3c09600af",
         "type": "split",
-        "z": "50de4a0fb7daeabc",
+        "z": "7bfe80d199363eac",
         "name": "Split devices",
         "splt": "\\n",
         "spltType": "str",
@@ -661,14 +678,14 @@
         "y": 156,
         "wires": [
             [
-                "8a0d9d4b23720d2e"
+                "693d574d15cb8f85"
             ]
         ]
     },
     {
-        "id": "92fc89c81bb7de07",
+        "id": "eac004593bcd4e52",
         "type": "catch",
-        "z": "50de4a0fb7daeabc",
+        "z": "7bfe80d199363eac",
         "name": "",
         "scope": null,
         "uncaught": false,
@@ -676,14 +693,14 @@
         "y": 536,
         "wires": [
             [
-                "4fec106155933270"
+                "2917f36263955a9a"
             ]
         ]
     },
     {
-        "id": "9b9aca9dab255680",
+        "id": "9371aee991e4b665",
         "type": "comment",
-        "z": "50de4a0fb7daeabc",
+        "z": "7bfe80d199363eac",
         "name": "Exceptions Treatment",
         "info": "",
         "x": 139,
@@ -691,9 +708,9 @@
         "wires": []
     },
     {
-        "id": "4fec106155933270",
+        "id": "2917f36263955a9a",
         "type": "debug",
-        "z": "50de4a0fb7daeabc",
+        "z": "7bfe80d199363eac",
         "name": "Exception",
         "active": true,
         "tosidebar": true,
@@ -708,37 +725,37 @@
         "wires": []
     },
     {
-        "id": "8a0d9d4b23720d2e",
+        "id": "693d574d15cb8f85",
         "type": "link out",
-        "z": "50de4a0fb7daeabc",
+        "z": "7bfe80d199363eac",
         "name": "OUT (2) Merge dataset of last 1 hour",
         "links": [
-            "96b5ad8070d6bb47"
+            "8d1428957fa20719"
         ],
         "x": 795,
         "y": 156,
         "wires": []
     },
     {
-        "id": "96b5ad8070d6bb47",
+        "id": "8d1428957fa20719",
         "type": "link in",
-        "z": "50de4a0fb7daeabc",
+        "z": "7bfe80d199363eac",
         "name": "IN (2) Merge dataset of last 1 hour",
         "links": [
-            "8a0d9d4b23720d2e"
+            "693d574d15cb8f85"
         ],
         "x": 55,
         "y": 235,
         "wires": [
             [
-                "02d3d78b5276320a"
+                "0f771eab714c377a"
             ]
         ]
     },
     {
-        "id": "02d3d78b5276320a",
+        "id": "0f771eab714c377a",
         "type": "function",
-        "z": "50de4a0fb7daeabc",
+        "z": "7bfe80d199363eac",
         "name": "Get sensors data from last 1 hour",
         "func": "function format_date(timestamp) {\n    const year = timestamp.getFullYear();\n    const mon  = `0${timestamp.getMonth()+1}`.slice(-2);\n    const day  = `0${timestamp.getDate()}`.slice(-2);\n    const hour = `0${timestamp.getHours()}`.slice(-2);\n    const min  = `0${timestamp.getMinutes()}`.slice(-2);\n    const sec  = `0${timestamp.getSeconds()}`.slice(-2);\n    \n    return `${year}-${mon}-${day} ${hour}:${min}:${sec}`;\n}\n\nconst device_id = msg.payload;\nconst timestamp = msg.timestamp;\n\nconst date = new Date(timestamp);\ndate.setSeconds(0);\ndate.setMilliseconds(0);\n\nconst end = format_date(date);\n\ndate.setMinutes(date.getMinutes()-60);\n\nconst begin = format_date(date);\n\nmsg.payload = `SELECT VOLTAGE, CURRENT, LIGHTNESS, RELE_STATE, INSERTION_TIME\n               FROM SENSORS_DATA_REAL_TIME\n               WHERE DEVICE_ID = ${device_id}\n               AND (INSERTION_TIME AT TIME ZONE 'CST') >= (TO_TIMESTAMP('${begin}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST')\n               AND (INSERTION_TIME AT TIME ZONE 'CST') < (TO_TIMESTAMP('${end}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST')\n               ORDER BY INSERTION_TIME`;\n               \nmsg.device_id = device_id;\n               \nreturn msg;",
         "outputs": 1,
@@ -750,29 +767,29 @@
         "y": 235,
         "wires": [
             [
-                "811485ea2e5c682e"
+                "03af6adb8219152a"
             ]
         ]
     },
     {
-        "id": "811485ea2e5c682e",
+        "id": "03af6adb8219152a",
         "type": "subflow:bab6ffe5b7ae3a28",
-        "z": "50de4a0fb7daeabc",
+        "z": "7bfe80d199363eac",
         "name": "",
         "x": 460,
         "y": 235,
         "wires": [
             [
-                "341ef41fa76851e5"
+                "bc47812a82cb85c3"
             ]
         ]
     },
     {
-        "id": "8239521611090d34",
+        "id": "6c62112a5cd8d179",
         "type": "function",
-        "z": "50de4a0fb7daeabc",
+        "z": "7bfe80d199363eac",
         "name": "Calculate powers",
-        "func": "let dataset = msg.payload;\n\ndataset = dataset.map(data => {\n    const voltage = data.voltage;\n    const current = data.current;\n    \n    const power = Math.round(voltage * current);\n    \n    data.power = power;\n    \n    return data;\n});\n\nmsg.payload = dataset;\n\nreturn msg;",
+        "func": "let dataset = msg.payload;\n\ndataset = dataset.map(data => {\n    data.power = Math.round(data.voltage * data.current);\n    return data;\n});\n\nmsg.payload = dataset;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -782,14 +799,14 @@
         "y": 216,
         "wires": [
             [
-                "3e6ffec6a3a2009d"
+                "78cd9ac0cd2c0ec3"
             ]
         ]
     },
     {
-        "id": "3e6ffec6a3a2009d",
+        "id": "78cd9ac0cd2c0ec3",
         "type": "function",
-        "z": "50de4a0fb7daeabc",
+        "z": "7bfe80d199363eac",
         "name": "Calculate max, min and avg",
         "func": "const dataset = msg.payload;\n\n// Functions\nconst min = dataset => Math.min(...dataset);\nconst max = dataset => Math.max(...dataset);\nconst avg = dataset => (dataset.reduce((acc, cur) => acc + cur, 0) / dataset.length);\n\n// Get data from a specific measure\nconst voltages  = dataset.map(data => data.voltage);\nconst currents  = dataset.map(data => data.current); \nconst lightness = dataset.map(data => data.lightness);\nconst powers    = dataset.map(data => data.power);\n\nconst results = {\n    voltage:   { min: min(voltages),  max: max(voltages),  avg: Math.round(avg(voltages))            },\n    current:   { min: min(currents),  max: max(currents),  avg: parseFloat(avg(currents).toFixed(2)) },\n    lightness: { min: min(lightness), max: max(lightness), avg: Math.round(avg(lightness))           },\n    power:     { min: min(powers),    max: max(powers),    avg: Math.round(avg(powers))              }\n}\n\nmsg.dataset = dataset;\nmsg.results = results;\n\nreturn msg;",
         "outputs": 1,
@@ -801,14 +818,14 @@
         "y": 216,
         "wires": [
             [
-                "54b75e1e6cb42781"
+                "a6f8cbe1cf99fbb7"
             ]
         ]
     },
     {
-        "id": "341ef41fa76851e5",
+        "id": "bc47812a82cb85c3",
         "type": "switch",
-        "z": "50de4a0fb7daeabc",
+        "z": "7bfe80d199363eac",
         "name": "Found data?",
         "property": "payload.length",
         "propertyType": "msg",
@@ -829,45 +846,45 @@
         "y": 235,
         "wires": [
             [
-                "8239521611090d34"
+                "6c62112a5cd8d179"
             ],
             [
-                "8fa0ba1f6467e577"
+                "8d3e52ed971b346e"
             ]
         ]
     },
     {
-        "id": "54b75e1e6cb42781",
+        "id": "a6f8cbe1cf99fbb7",
         "type": "link out",
-        "z": "50de4a0fb7daeabc",
+        "z": "7bfe80d199363eac",
         "name": "OUT (3) Merge dataset of last 1 hour",
         "links": [
-            "1e33e29c38a821d4"
+            "3648289a20e9cc5d"
         ],
         "x": 1195,
         "y": 216,
         "wires": []
     },
     {
-        "id": "1e33e29c38a821d4",
+        "id": "3648289a20e9cc5d",
         "type": "link in",
-        "z": "50de4a0fb7daeabc",
+        "z": "7bfe80d199363eac",
         "name": "IN (3) Merge dataset of last 1 hour",
         "links": [
-            "54b75e1e6cb42781"
+            "a6f8cbe1cf99fbb7"
         ],
         "x": 55,
         "y": 316,
         "wires": [
             [
-                "9b71d7bbe4ced1ad"
+                "2233a99dd3d33b7e"
             ]
         ]
     },
     {
-        "id": "fa41f24c455d0f69",
+        "id": "acbdd010515a12d1",
         "type": "function",
-        "z": "50de4a0fb7daeabc",
+        "z": "7bfe80d199363eac",
         "name": "Insert results in database",
         "func": "function format_date(timestamp) {\n    const year = timestamp.getFullYear();\n    const mon  = `0${timestamp.getMonth()+1}`.slice(-2);\n    const day  = `0${timestamp.getDate()}`.slice(-2);\n    const hour = `0${timestamp.getHours()}`.slice(-2);\n    const min  = `0${timestamp.getMinutes()}`.slice(-2);\n    const sec  = `0${timestamp.getSeconds()}`.slice(-2);\n    \n    return `${year}-${mon}-${day} ${hour}:${min}:${sec}`;\n}\n\nconst device_id = msg.device_id;\nconst results   = msg.results;\nconst dataset   = msg.dataset;\nconst timestamp = msg.timestamp;\n\nconst date = new Date(timestamp);\ndate.setSeconds(0);\ndate.setMilliseconds(0);\n\nconst insertion_time = format_date(date);\n\nconst voltage   = results.voltage;\nconst current   = results.current;\nconst lightness = results.lightness;\nconst power     = results.power;\n\nmsg.payload = `INSERT\n               INTO SENSORS_DATA_INTERVAL\n               (DEVICE_ID, VOLTAGE_MIN, VOLTAGE_MAX, VOLTAGE_AVG, CURRENT_MIN, CURRENT_MAX, CURRENT_AVG, LIGHTNESS_MIN, LIGHTNESS_MAX, LIGHTNESS_AVG, POWER_MIN, POWER_MAX, POWER_AVG, POWER_EXPEND, INSERTION_TIME, NUM_REGISTRIES)\n               VALUES\n               (${device_id}, ${voltage.min}, ${voltage.max}, ${voltage.avg}, ${current.min}, ${current.max}, ${current.avg}, ${lightness.min}, ${lightness.max}, ${lightness.avg}, ${power.min}, ${power.max}, ${power.avg}, ${results.power_expend}, '${insertion_time}', ${dataset.length})`;\n               \nreturn msg;",
         "outputs": 1,
@@ -879,15 +896,15 @@
         "y": 316,
         "wires": [
             [
-                "d51538bdd423e8d5",
-                "8f7ee309234502d3"
+                "a7f85d37f23ca51c",
+                "0e031983ba29c66c"
             ]
         ]
     },
     {
-        "id": "d51538bdd423e8d5",
+        "id": "a7f85d37f23ca51c",
         "type": "subflow:bab6ffe5b7ae3a28",
-        "z": "50de4a0fb7daeabc",
+        "z": "7bfe80d199363eac",
         "name": "",
         "x": 641,
         "y": 316,
@@ -896,9 +913,9 @@
         ]
     },
     {
-        "id": "8f7ee309234502d3",
+        "id": "0e031983ba29c66c",
         "type": "debug",
-        "z": "50de4a0fb7daeabc",
+        "z": "7bfe80d199363eac",
         "name": "[EXIT 2] Merge dataset of last 1 hour",
         "active": false,
         "tosidebar": true,
@@ -917,14 +934,14 @@
         "type": "function",
         "z": "7f5557aca01f4737",
         "name": "Prepare response",
-        "func": "msg.payload = '';\nreturn msg;",
+        "func": "msg.payload = 'OK';\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 550,
-        "y": 1016,
+        "x": 750,
+        "y": 776,
         "wires": [
             [
                 "aecf27c4524c85ed",
@@ -936,7 +953,7 @@
         "id": "a54251fe8fe370a5",
         "type": "debug",
         "z": "7f5557aca01f4737",
-        "name": "[EXIT] Get device informations",
+        "name": "[EXIT 1] Get devices informations",
         "active": false,
         "tosidebar": true,
         "console": false,
@@ -945,8 +962,8 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1010,
-        "y": 876,
+        "x": 1020,
+        "y": 556,
         "wires": []
     },
     {
@@ -962,14 +979,14 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 950,
-        "y": 1016,
+        "x": 1150,
+        "y": 776,
         "wires": []
     },
     {
-        "id": "9b71d7bbe4ced1ad",
+        "id": "2233a99dd3d33b7e",
         "type": "function",
-        "z": "50de4a0fb7daeabc",
+        "z": "7bfe80d199363eac",
         "name": "Calculate power expend",
         "func": "const dataset = msg.dataset;\n\nlet sum = 0;\n\nlet i, j;\n\nfor (i = 0; i < dataset.length; i++) {\n    if (dataset[i].rele_state === true) {\n        for (j = i+1; j < dataset.length && dataset[j].rele_state === true; j++);\n\n        const interval = dataset.slice(i, j);\n        \n        const begin = new Date(interval[0].insertion_time);\n        const final = new Date(interval[interval.length-1].insertion_time);\n        \n        const time_diff = (final-begin)/(1000*60*60); // milliseconds * seconds * minutes\n        \n        const voltage_avg = interval.reduce((acc, cur) => acc + cur.voltage, 0) / interval.length;\n        const current_avg = interval.reduce((acc, cur) => acc + cur.current, 0) / interval.length;\n        \n        sum += (((voltage_avg * current_avg) / 1000) * time_diff);\n        \n        i = j-1;\n    }\n}\n\nmsg.results.power_expend = parseFloat(sum.toFixed(2)); // in kW/h\n\nreturn msg;",
         "outputs": 1,
@@ -981,7 +998,7 @@
         "y": 316,
         "wires": [
             [
-                "fa41f24c455d0f69"
+                "acbdd010515a12d1"
             ]
         ]
     },
@@ -989,9 +1006,9 @@
         "id": "5c7a0baf83fa417c",
         "type": "comment",
         "z": "7f5557aca01f4737",
-        "name": "Get sensors data ",
+        "name": "##### Get sensors data [/devices/measures] #####",
         "info": "",
-        "x": 120,
+        "x": 230,
         "y": 55,
         "wires": []
     },
@@ -1000,12 +1017,12 @@
         "type": "http in",
         "z": "7f5557aca01f4737",
         "name": "",
-        "url": "/sensors-data/interval",
+        "url": "/devices/measures/interval",
         "method": "get",
         "upload": false,
         "swaggerDoc": "",
-        "x": 151,
-        "y": 217,
+        "x": 171,
+        "y": 197,
         "wires": [
             [
                 "96bdf6630c129c17"
@@ -1023,8 +1040,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 960,
-        "y": 238,
+        "x": 1000,
+        "y": 218,
         "wires": [
             [
                 "6ec488a047717083"
@@ -1039,7 +1056,7 @@
         "statusCode": "",
         "headers": {},
         "x": 540,
-        "y": 436,
+        "y": 416,
         "wires": []
     },
     {
@@ -1047,8 +1064,8 @@
         "type": "subflow:bab6ffe5b7ae3a28",
         "z": "7f5557aca01f4737",
         "name": "",
-        "x": 1120,
-        "y": 215,
+        "x": 1160,
+        "y": 195,
         "wires": [
             [
                 "7cdff54cf4f12948"
@@ -1069,7 +1086,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 750,
-        "y": 436,
+        "y": 416,
         "wires": []
     },
     {
@@ -1092,8 +1109,8 @@
         "checkall": "false",
         "repair": false,
         "outputs": 2,
-        "x": 770,
-        "y": 217,
+        "x": 810,
+        "y": 197,
         "wires": [
             [
                 "57ce85e61299af4e"
@@ -1114,8 +1131,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 960,
-        "y": 195,
+        "x": 1000,
+        "y": 175,
         "wires": [
             [
                 "6ec488a047717083"
@@ -1134,7 +1151,7 @@
         "finalize": "",
         "libs": [],
         "x": 410,
-        "y": 296,
+        "y": 276,
         "wires": [
             [
                 "97320d78a0801902"
@@ -1162,7 +1179,7 @@
         "repair": false,
         "outputs": 2,
         "x": 190,
-        "y": 328,
+        "y": 308,
         "wires": [
             [
                 "1bb825e2928759bb"
@@ -1181,7 +1198,7 @@
             "7cdff54cf4f12948"
         ],
         "x": 55,
-        "y": 328,
+        "y": 308,
         "wires": [
             [
                 "f37dd2752270a5c8"
@@ -1196,8 +1213,8 @@
         "links": [
             "2d413cccf4985d24"
         ],
-        "x": 1215,
-        "y": 215,
+        "x": 1255,
+        "y": 195,
         "wires": []
     },
     {
@@ -1209,7 +1226,7 @@
             "6383f89379246b18"
         ],
         "x": 1015,
-        "y": 339,
+        "y": 319,
         "wires": []
     },
     {
@@ -1221,7 +1238,7 @@
             "6383f89379246b18"
         ],
         "x": 755,
-        "y": 296,
+        "y": 276,
         "wires": []
     },
     {
@@ -1238,7 +1255,7 @@
             "14237c631ef6b8a9"
         ],
         "x": 55,
-        "y": 436,
+        "y": 416,
         "wires": [
             [
                 "5f90a25a42bb5326"
@@ -1257,7 +1274,7 @@
         "finalize": "",
         "libs": [],
         "x": 620,
-        "y": 296,
+        "y": 276,
         "wires": [
             [
                 "6b6db413a491a12d"
@@ -1269,12 +1286,12 @@
         "type": "http in",
         "z": "7f5557aca01f4737",
         "name": "",
-        "url": "/sensors-data/last",
+        "url": "/devices/measures/last",
         "method": "get",
         "upload": false,
         "swaggerDoc": "",
-        "x": 140,
-        "y": 115,
+        "x": 160,
+        "y": 95,
         "wires": [
             [
                 "a59199192f78dcc7"
@@ -1292,8 +1309,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 520,
-        "y": 115,
+        "x": 560,
+        "y": 95,
         "wires": [
             [
                 "bc421cbbfbd8aa49"
@@ -1306,8 +1323,8 @@
         "z": "7f5557aca01f4737",
         "name": "",
         "env": [],
-        "x": 660,
-        "y": 115,
+        "x": 700,
+        "y": 95,
         "wires": [
             [
                 "269b6f17aa90ca43"
@@ -1319,14 +1336,14 @@
         "type": "function",
         "z": "7f5557aca01f4737",
         "name": "Calculate power",
-        "func": "let dataset = msg.payload;\n\nif (dataset.length > 0) {\n    dataset = dataset.map(data => {\n        // Calculate power\n        const voltage = data.voltage;\n        const current = data.current;\n        \n        const power = Math.round(voltage * current);\n        \n        data.power = power;\n        \n        // Convert rele_state\n        data.rele_state = data.rele_state ? 1 : 0;\n        \n        return data;\n    });\n    \n    msg.payload = dataset;\n}\n\nreturn msg;",
+        "func": "let dataset = msg.payload;\n\nif (dataset.length > 0) {\n    dataset = dataset.map(data => {\n        // Calculate power\n        data.power = Math.round(data.voltage * data.current);\n        \n        // Convert rele_state\n        data.rele_state = data.rele_state ? 1 : 0;\n        \n        return data;\n    });\n    \n    msg.payload = dataset;\n}\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 820,
-        "y": 115,
+        "x": 860,
+        "y": 95,
         "wires": [
             [
                 "270828bcb3beacf1",
@@ -1341,8 +1358,8 @@
         "name": "Send response",
         "statusCode": "",
         "headers": {},
-        "x": 1000,
-        "y": 115,
+        "x": 1040,
+        "y": 95,
         "wires": []
     },
     {
@@ -1358,8 +1375,8 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1210,
-        "y": 116,
+        "x": 1250,
+        "y": 96,
         "wires": []
     },
     {
@@ -1373,8 +1390,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 370,
-        "y": 217,
+        "x": 410,
+        "y": 197,
         "wires": [
             [
                 "ddeb66f0f282da2c"
@@ -1392,8 +1409,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 570,
-        "y": 217,
+        "x": 610,
+        "y": 197,
         "wires": [
             [
                 "1a6d28956a0d6589"
@@ -1412,7 +1429,7 @@
         "finalize": "",
         "libs": [],
         "x": 870,
-        "y": 339,
+        "y": 319,
         "wires": [
             [
                 "d998e00625e40a86"
@@ -1440,7 +1457,7 @@
         "repair": false,
         "outputs": 2,
         "x": 620,
-        "y": 360,
+        "y": 340,
         "wires": [
             [
                 "acb080769cfd96f3"
@@ -1455,14 +1472,14 @@
         "type": "function",
         "z": "7f5557aca01f4737",
         "name": "Parse request body",
-        "func": "msg.device_id = msg.payload.device_id;\n\nreturn msg;",
+        "func": "msg.device_id = msg.payload.device_id;\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 350,
-        "y": 115,
+        "x": 390,
+        "y": 95,
         "wires": [
             [
                 "659446935b848402"
@@ -1474,14 +1491,14 @@
         "type": "function",
         "z": "7f5557aca01f4737",
         "name": "Parse request body",
-        "func": "msg.device_id = msg.payload.device_id;\n\nreturn msg;",
+        "func": "msg.device_id = msg.payload.device_id;\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
         "x": 310,
-        "y": 876,
+        "y": 556,
         "wires": [
             [
                 "4eb5c88f1b01827b"
@@ -1497,13 +1514,13 @@
             "6383f89379246b18"
         ],
         "x": 775,
-        "y": 379,
+        "y": 359,
         "wires": []
     },
     {
-        "id": "8fa0ba1f6467e577",
+        "id": "8d3e52ed971b346e",
         "type": "debug",
-        "z": "50de4a0fb7daeabc",
+        "z": "7bfe80d199363eac",
         "name": "[EXIT 1] Merge dataset of last 1 hour",
         "active": false,
         "tosidebar": true,
@@ -1518,308 +1535,6 @@
         "wires": []
     },
     {
-        "id": "711dd25edc78321d",
-        "type": "comment",
-        "z": "7f5557aca01f4737",
-        "name": "Get device power expend",
-        "info": "",
-        "x": 150,
-        "y": 535,
-        "wires": []
-    },
-    {
-        "id": "7f2c19c053817b45",
-        "type": "http in",
-        "z": "7f5557aca01f4737",
-        "name": "",
-        "url": "/device-expend",
-        "method": "get",
-        "upload": false,
-        "swaggerDoc": "",
-        "x": 130,
-        "y": 575,
-        "wires": [
-            [
-                "7eb671d1f0ef8e80"
-            ]
-        ]
-    },
-    {
-        "id": "7eb671d1f0ef8e80",
-        "type": "function",
-        "z": "7f5557aca01f4737",
-        "name": "Parse request body",
-        "func": "msg.device_id = msg.payload.device_id;\nmsg.interval  = msg.payload.interval; // in minutes\n\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 330,
-        "y": 575,
-        "wires": [
-            [
-                "27512d3eece118a2"
-            ]
-        ]
-    },
-    {
-        "id": "c2140a9dec5196f7",
-        "type": "function",
-        "z": "7f5557aca01f4737",
-        "name": "Set query",
-        "func": "function format_date(timestamp) {\n    const year = timestamp.getFullYear();\n    const mon  = `0${timestamp.getMonth()+1}`.slice(-2);\n    const day  = `0${timestamp.getDate()}`.slice(-2);\n    const hour = `0${timestamp.getHours()}`.slice(-2);\n    const min  = `0${timestamp.getMinutes()}`.slice(-2);\n    const sec  = `0${timestamp.getSeconds()}`.slice(-2);\n    \n    return `${year}-${mon}-${day} ${hour}:${min}:${sec}`;\n}\n\nconst threshold = msg.threshold;\nconst interval  = msg.interval;\nconst device_id = msg.device_id;\n\nconst end   = format_date(threshold);\nconst begin = format_date(new Date(threshold - 1000 * 60 * interval));\n\nmsg.payload = `SELECT POWER_EXPEND, INSERTION_TIME\n               FROM SENSORS_DATA_INTERVAL\n               WHERE DEVICE_ID = ${device_id}\n               AND (INSERTION_TIME AT TIME ZONE 'CST') > (TO_TIMESTAMP('${begin}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST')\n               AND (INSERTION_TIME AT TIME ZONE 'CST') <= (TO_TIMESTAMP('${end}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST')\n               ORDER BY INSERTION_TIME`;\n               \nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 680,
-        "y": 575,
-        "wires": [
-            [
-                "7d040294bc085d18"
-            ]
-        ]
-    },
-    {
-        "id": "7d040294bc085d18",
-        "type": "subflow:bab6ffe5b7ae3a28",
-        "z": "7f5557aca01f4737",
-        "name": "",
-        "env": [],
-        "x": 820,
-        "y": 575,
-        "wires": [
-            [
-                "cc412d879d10623a"
-            ]
-        ]
-    },
-    {
-        "id": "cc412d879d10623a",
-        "type": "link out",
-        "z": "7f5557aca01f4737",
-        "name": "OUT (1) Get device power expend",
-        "links": [
-            "1ad4e0b8625d240b"
-        ],
-        "x": 915,
-        "y": 575,
-        "wires": []
-    },
-    {
-        "id": "1ad4e0b8625d240b",
-        "type": "link in",
-        "z": "7f5557aca01f4737",
-        "name": "IN (1) Get device power expend",
-        "links": [
-            "cc412d879d10623a"
-        ],
-        "x": 55,
-        "y": 657,
-        "wires": [
-            [
-                "756183b64169968e"
-            ]
-        ]
-    },
-    {
-        "id": "048a71ce6e6ca5ae",
-        "type": "function",
-        "z": "7f5557aca01f4737",
-        "name": "Group data by 12 hours",
-        "func": "const dataset   = msg.dataset;\nconst threshold = msg.threshold;\nconst n_groups  = msg.interval / (60 * 12);\nconst hop       = 1000 * 60 * 60 * 12; // milliseconds * seconds * minutes * hours\n\n// Create groups\n\nlet i;\nlet groups = [];\n\nfor (i = n_groups-1; i >= 0; i--) {\n    const timestamp = new Date(threshold - hop * (i+1));\n    const expend = [];\n    \n    groups.push({ timestamp, expend });\n}\n\n// Group data\n\ni = 0;\n\ndataset.forEach(data => {\n    const timestamp = data.timestamp;\n    \n    for (i; i < groups.length && timestamp >= groups[i].timestamp; i++);\n\n    if (i === 0) {\n        groups[i].expend.push(data);\n    } else {\n        groups[i-1].expend.push(data);\n    }\n});\n\n// Sum values\ngroups = groups.map(group => {\n    const expend_sum = group.expend.reduce((acc, cur) => acc + cur.expend, 0);\n    \n    group.expend = expend_sum;\n    \n    return group;\n});\n\nmsg.dataset = groups;\nmsg.hop     = hop;\n\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 650,
-        "y": 635,
-        "wires": [
-            [
-                "358c09adb5397882"
-            ]
-        ]
-    },
-    {
-        "id": "442ca2e1113dc53f",
-        "type": "switch",
-        "z": "7f5557aca01f4737",
-        "name": "Group by 12 hours?",
-        "property": "interval",
-        "propertyType": "msg",
-        "rules": [
-            {
-                "t": "gt",
-                "v": "1440",
-                "vt": "num"
-            },
-            {
-                "t": "else"
-            }
-        ],
-        "checkall": "false",
-        "repair": false,
-        "outputs": 2,
-        "x": 400,
-        "y": 657,
-        "wires": [
-            [
-                "048a71ce6e6ca5ae"
-            ],
-            [
-                "959a6c9d2f3fcc28"
-            ]
-        ]
-    },
-    {
-        "id": "756183b64169968e",
-        "type": "function",
-        "z": "7f5557aca01f4737",
-        "name": "Group data by hour",
-        "func": "const dataset   = msg.payload;\nconst threshold = msg.threshold;\nconst n_groups  = msg.interval / 60;\nconst hop       = 1000 * 60 * 60;\n\n// Create groups\n\nlet i;\nlet groups = [];\n\nfor (i = n_groups-1; i >= 0; i--) {\n    const timestamp = new Date(threshold - hop * (i+1));\n    const expend = [];\n    \n    groups.push({ timestamp, expend });\n}\n\n// Group data\n\ni = 0;\n\ndataset.forEach(data => {\n    const timestamp = new Date(data.insertion_time);\n    \n    for (i; i < groups.length && timestamp > groups[i].timestamp; i++);\n\n    if (i === 0) {\n        groups[i].expend.push(data);\n    } else {\n        groups[i-1].expend.push(data);\n    }\n});\n\n// Sum values\ngroups = groups.map(group => {\n    const expend_sum = group.expend.reduce((acc, cur) => acc + cur.power_expend, 0);\n    \n    group.expend = expend_sum;\n    \n    return group;\n});\n\nmsg.dataset = groups;\nmsg.hop     = hop;\n\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 190,
-        "y": 657,
-        "wires": [
-            [
-                "442ca2e1113dc53f"
-            ]
-        ]
-    },
-    {
-        "id": "aace7251b58696f9",
-        "type": "function",
-        "z": "7f5557aca01f4737",
-        "name": "Create labels",
-        "func": "function format_date(timestamp) {\n    const hour = `0${timestamp.getHours()}`.slice(-2);\n    const min  = `0${timestamp.getMinutes()}`.slice(-2);\n    const day  = `0${timestamp.getDate()}`.slice(-2);\n    const mon  = `0${timestamp.getMonth()+1}`.slice(-2);\n    \n    return `${hour}:${min} ${day}/${mon}`;\n}\n\nlet dataset = msg.dataset;\nconst hop = msg.hop;\n\ndataset = dataset.map(data => {\n    const timestamp = data.timestamp;\n    \n    const begin = format_date(timestamp);\n    timestamp.setTime(timestamp.getTime() + hop);\n    const final = format_date(timestamp);\n    \n    data.label = `${begin} à ${final}`;\n    \n    delete data.timestamp;\n    \n    return data;\n});\n\nmsg.dataset = dataset;\n\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 170,
-        "y": 735,
-        "wires": [
-            [
-                "f35e3c679c28b258"
-            ]
-        ]
-    },
-    {
-        "id": "358c09adb5397882",
-        "type": "link out",
-        "z": "7f5557aca01f4737",
-        "name": "OUT (2) Get device power expend",
-        "links": [
-            "99da356c15f5b108"
-        ],
-        "x": 795,
-        "y": 635,
-        "wires": []
-    },
-    {
-        "id": "959a6c9d2f3fcc28",
-        "type": "link out",
-        "z": "7f5557aca01f4737",
-        "name": "OUT (3) Get device power expend",
-        "links": [
-            "99da356c15f5b108"
-        ],
-        "x": 555,
-        "y": 678,
-        "wires": []
-    },
-    {
-        "id": "99da356c15f5b108",
-        "type": "link in",
-        "z": "7f5557aca01f4737",
-        "name": "IN (2) Get device power expend",
-        "links": [
-            "358c09adb5397882",
-            "959a6c9d2f3fcc28"
-        ],
-        "x": 55,
-        "y": 735,
-        "wires": [
-            [
-                "aace7251b58696f9"
-            ]
-        ]
-    },
-    {
-        "id": "486315fd3ba755bc",
-        "type": "http response",
-        "z": "7f5557aca01f4737",
-        "name": "Send response",
-        "statusCode": "",
-        "headers": {},
-        "x": 540,
-        "y": 735,
-        "wires": []
-    },
-    {
-        "id": "f58a050482bf3036",
-        "type": "debug",
-        "z": "7f5557aca01f4737",
-        "name": "[EXIT] Get device power expend",
-        "active": false,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "true",
-        "targetType": "full",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 770,
-        "y": 736,
-        "wires": []
-    },
-    {
-        "id": "27512d3eece118a2",
-        "type": "function",
-        "z": "7f5557aca01f4737",
-        "name": "Define threshold",
-        "func": "const interval  = msg.interval;\n\nlet threshold = new Date();\nthreshold.setMinutes(0);\nthreshold.setSeconds(0);\nthreshold.setMilliseconds(0);\n\nif (interval > 1440) {\n    const hour = threshold.getHours();\n    \n    if (hour > 18) { // Hour between 18:00 and 00:00\n        threshold.setHours(18);\n    } else if (hour > 6) { // Hour between 06:00 and 18:00\n        threshold.setHours(6);\n    } else { // Hour between 00:00 and 06:00\n        threshold.setDate(threshold.getDate()-1);\n        threshold.setHours(18);\n    }\n}\n\nmsg.threshold = threshold;\n\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 520,
-        "y": 575,
-        "wires": [
-            [
-                "c2140a9dec5196f7"
-            ]
-        ]
-    },
-    {
-        "id": "f35e3c679c28b258",
-        "type": "function",
-        "z": "7f5557aca01f4737",
-        "name": "Prepare response",
-        "func": "const dataset = msg.dataset;\n\nlabels = dataset.map(data => data.label);\nvalues = dataset.map(data => data.expend);\n\nmsg.payload = { labels, values };\n\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 350,
-        "y": 735,
-        "wires": [
-            [
-                "f58a050482bf3036"
-            ]
-        ]
-    },
-    {
         "id": "0b5d0e0c0b5c98b1",
         "type": "function",
         "z": "7f5557aca01f4737",
@@ -1831,7 +1546,7 @@
         "finalize": "",
         "libs": [],
         "x": 410,
-        "y": 360,
+        "y": 340,
         "wires": [
             [
                 "7996fe3e5aafa142"
@@ -1850,7 +1565,7 @@
         "finalize": "",
         "libs": [],
         "x": 170,
-        "y": 436,
+        "y": 416,
         "wires": [
             [
                 "3d4b27a94f96d759"
@@ -1869,7 +1584,7 @@
         "finalize": "",
         "libs": [],
         "x": 350,
-        "y": 436,
+        "y": 416,
         "wires": [
             [
                 "47e86d41591c2ef2",
@@ -1878,9 +1593,9 @@
         ]
     },
     {
-        "id": "74a7720e8d6dadce",
+        "id": "321102acad131081",
         "type": "function",
-        "z": "50de4a0fb7daeabc",
+        "z": "7bfe80d199363eac",
         "name": "Get current minute",
         "func": "const timestamp = msg.timestamp;\nconst date      = new Date(timestamp);\n\nmsg.payload = date.getMinutes();\n\nreturn msg;",
         "outputs": 1,
@@ -1892,14 +1607,14 @@
         "y": 95,
         "wires": [
             [
-                "d76c06b50bb83d9c"
+                "19d3181cd080c2b0"
             ]
         ]
     },
     {
-        "id": "d76c06b50bb83d9c",
+        "id": "19d3181cd080c2b0",
         "type": "switch",
-        "z": "50de4a0fb7daeabc",
+        "z": "7bfe80d199363eac",
         "name": "Execute flow?",
         "property": "payload",
         "propertyType": "msg",
@@ -1917,7 +1632,7 @@
         "y": 95,
         "wires": [
             [
-                "1046435b385a96f0"
+                "595d6b6ee38f20b2"
             ]
         ]
     },
@@ -1940,7 +1655,7 @@
         "type": "function",
         "z": "8813ec2835daae18",
         "name": "Get device status",
-        "func": "const device_id = msg.sensor_output.device_id;\n\nmsg.payload = `SELECT STATUS\n               FROM DEVICES_INVENTORY\n               WHERE DEVICE_ID = ${device_id}`;\n\nreturn msg;",
+        "func": "const device_id = msg.sensor_output.device_id;\n\nmsg.payload = `SELECT STATUS FROM DEVICES_INVENTORY WHERE DEVICE_ID = ${device_id}`;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1994,19 +1709,129 @@
         "wires": []
     },
     {
-        "id": "bb3a8d2b7854dccb",
-        "type": "mydb",
-        "z": "bab6ffe5b7ae3a28",
-        "name": "Execute Query",
-        "style": "mustache",
-        "substEnvVars": false,
-        "query": "{{{ msg.query }}};",
-        "mydbConfig": "21c629e3be9268f3",
-        "x": 360,
-        "y": 100,
+        "id": "f5156e76dfeb05aa",
+        "type": "comment",
+        "z": "7f5557aca01f4737",
+        "name": "On/Off button",
+        "info": "",
+        "x": 110,
+        "y": 796,
+        "wires": []
+    },
+    {
+        "id": "203f3008458c76e9",
+        "type": "http in",
+        "z": "7f5557aca01f4737",
+        "name": "",
+        "url": "/devices/info/locations",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 150,
+        "y": 636,
         "wires": [
             [
-                "dcf9a148a61be9fc"
+                "c7e9ca453addc88e"
+            ]
+        ]
+    },
+    {
+        "id": "5319bc27fd7349fd",
+        "type": "subflow:bab6ffe5b7ae3a28",
+        "z": "7f5557aca01f4737",
+        "name": "",
+        "env": [],
+        "x": 680,
+        "y": 636,
+        "wires": [
+            [
+                "b3c2d212a7837e51"
+            ]
+        ]
+    },
+    {
+        "id": "057baee8b1ebe845",
+        "type": "function",
+        "z": "7f5557aca01f4737",
+        "name": "Set query",
+        "func": "const type = msg.type;\n\nmsg.payload = `SELECT DISTINCT ${type} FROM DEVICES_INVENTORY`;\n\nif (type === 'district') {\n    const zone = msg.zone;\n    msg.payload += ` WHERE ZONE = '${zone}'`;\n}\n\nmsg.payload += ` ORDER BY ${type}`;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 540,
+        "y": 636,
+        "wires": [
+            [
+                "5319bc27fd7349fd"
+            ]
+        ]
+    },
+    {
+        "id": "117494a16d472669",
+        "type": "http response",
+        "z": "7f5557aca01f4737",
+        "name": "Send response",
+        "statusCode": "",
+        "headers": {},
+        "x": 1000,
+        "y": 636,
+        "wires": []
+    },
+    {
+        "id": "183cae93968adc2b",
+        "type": "debug",
+        "z": "7f5557aca01f4737",
+        "name": "[EXIT 2] Get devices informations",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1240,
+        "y": 636,
+        "wires": []
+    },
+    {
+        "id": "c7e9ca453addc88e",
+        "type": "function",
+        "z": "7f5557aca01f4737",
+        "name": "Parse request body",
+        "func": "msg.type = msg.payload.type;\n\nif (msg.type === 'district') {\n    msg.zone = msg.payload.zone;\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 370,
+        "y": 636,
+        "wires": [
+            [
+                "057baee8b1ebe845"
+            ]
+        ]
+    },
+    {
+        "id": "b3c2d212a7837e51",
+        "type": "function",
+        "z": "7f5557aca01f4737",
+        "name": "Parse result",
+        "func": "const query_result = msg.payload;\nconst type = msg.type;\n\nmsg.payload = query_result.map(row => row[type]);\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 830,
+        "y": 636,
+        "wires": [
+            [
+                "183cae93968adc2b",
+                "117494a16d472669"
             ]
         ]
     }

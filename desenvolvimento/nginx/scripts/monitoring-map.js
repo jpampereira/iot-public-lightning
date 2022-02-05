@@ -15,7 +15,7 @@ function create_map () {
 /******************* ON PAGE REQUEST *******************/
 
 function update_map(device_id) {
-	request('/device-info', { device_id }, 'get')
+	request('/devices/info', { device_id }, 'get')
 	.then(res => {
 		const device_data = res[0];
 

@@ -44,7 +44,7 @@ btn.onclick = function() {
 
 		const device_id = form.elements.current_id.value;
 
-		request('/change-status', { device_id, action }, 'get')
+		request('/devices/actions/on-off', { device_id, action }, 'get')
 		.then()
 		.catch(console.log);
 	}

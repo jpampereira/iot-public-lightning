@@ -29,7 +29,7 @@ function create_charts(chart_config) {
 /********** ON PAGE REQUEST / IN BACKGROUND ************/
 
 function update_gauge_charts(device_id) {
-	request('/sensors-data/last', { device_id }, 'get')
+	request('/devices/measures/last', { device_id }, 'get')
 	.then(res => {
 		const data = res[0];
 
@@ -55,7 +55,7 @@ function update_gauge_charts(device_id) {
 }
 
 function update_line_charts(device_id, interval) {
-	request('/sensors-data/interval', { device_id, interval }, 'get')
+	request('/devices/measures/interval', { device_id, interval }, 'get')
 	.then(res => {
 		const labels = res.labels;
 		const values = res.values;
