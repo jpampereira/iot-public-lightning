@@ -481,8 +481,7 @@
         "y": 556,
         "wires": [
             [
-                "fd5c74c4ecda2310",
-                "a54251fe8fe370a5"
+                "94a44686fd3a0972"
             ]
         ]
     },
@@ -491,7 +490,7 @@
         "type": "function",
         "z": "7f5557aca01f4737",
         "name": "Set query",
-        "func": "const device_id = msg.device_id;\n\nmsg.payload = `SELECT COORDINATES, STREET, DISTRICT, STATUS FROM DEVICES_INVENTORY WHERE DEVICE_ID = ${device_id}`;\n\nreturn msg;",
+        "func": "const device_id = msg.device_id;\n\nmsg.payload = `SELECT COORDINATES, STREET, DISTRICT, ZONE, STATUS FROM DEVICES_INVENTORY WHERE DEVICE_ID = ${device_id}`;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -512,7 +511,7 @@
         "name": "Send response",
         "statusCode": "",
         "headers": {},
-        "x": 780,
+        "x": 940,
         "y": 556,
         "wires": []
     },
@@ -962,7 +961,7 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1020,
+        "x": 1180,
         "y": 556,
         "wires": []
     },
@@ -1513,8 +1512,8 @@
         "links": [
             "6383f89379246b18"
         ],
-        "x": 775,
-        "y": 359,
+        "x": 0,
+        "y": 0,
         "wires": []
     },
     {
@@ -1832,6 +1831,26 @@
             [
                 "183cae93968adc2b",
                 "117494a16d472669"
+            ]
+        ]
+    },
+    {
+        "id": "94a44686fd3a0972",
+        "type": "function",
+        "z": "7f5557aca01f4737",
+        "name": "Parse result",
+        "func": "const device_info = msg.payload[0];\n\nif (device_info !== undefined) {\n    device_info.status = device_info.status === true ? 'OPERACIONAL' : 'NÃO OPERACIONAL';\n    msg.payload = device_info;\n} else {\n    msg.payload = {};\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 770,
+        "y": 556,
+        "wires": [
+            [
+                "a54251fe8fe370a5",
+                "fd5c74c4ecda2310"
             ]
         ]
     }

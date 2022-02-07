@@ -1,63 +1,60 @@
-const card  = window.document.getElementsByClassName('info')[0];
+const labels = { street: 'ENDEREÇO', district: 'BAIRRO', zone: 'ZONA', status: 'STATUS' }
 
-function add_content(...elements) {
-	for (let element of elements) {
-		card.appendChild(element);
+const info_card = window.document.getElementsByClassName('info')[0];
+
+function add_content(elems) {
+	for (let elem of elems) {
+		info_card.appendChild(elem);
 	}
 }
 
 function rmv_content() {
-	const texts = window.document.querySelectorAll('.info > *');
+	const elems = window.document.querySelectorAll('.info > *');
 
-	for (let text of texts) {
-		card.removeChild(text);
+	for (let elem of elems) {
+		info_card.removeChild(elem);
 	}
 }
 
-function update_info_card(device_info) {
-	// Parse device information
-	const street   = device_info.street.toUpperCase();
-	const district = device_info.district.toUpperCase();
-	const status   = device_info.status === true ? 'OPERACIONAL' : 'NÃO OPERACIONAL';
-
-	// Create device information HTML elements
-	const street_label   = window.document.createElement('p');
-	const street_elem    = window.document.createElement('p');
-	const district_label = window.document.createElement('p');
-	const district_elem  = window.document.createElement('p');
-	const status_label   = window.document.createElement('p');
-	const status_elem    = window.document.createElement('p');
-
-	// Insert device information in HTML elements
-	street_label.innerHTML   = 'ENDEREÇO:';
-	street_elem.innerHTML    = street;
-	district_label.innerHTML = 'BAIRRO:';
-	district_elem.innerHTML  = district;
-	status_label.innerHTML   = 'STATUS:';
-	status_elem.innerHTML    = status;
-
-	// Styling status information
-	status_elem.style.fontWeight = 'bold';
+function update_info_card(infos) {
+	const infos_array = Object.entries(infos);
+	infos_array.shift() // remove coordinates info
 	
-	if (status === 'OPERACIONAL') {
-		status_elem.style.color = 'green';
-	} else {
-		status_elem.style.color = 'red';
-	}
+	const elems = infos_array.map(info => {
+		const label = info[0];
+		const value = info[1];
+		
+		const div_elem   = window.document.createElement('div');
+		const label_elem = window.document.createElement('p');
+		const value_elem = window.document.createElement('p');
+		
+		label_elem.innerHTML = `${labels[label]}:`;
+		value_elem.innerHTML = value;
+		
+		if (label === 'status') {			
+			value_elem.classList.add(value.replace(/\s+/, '_'));
+		}
+		
+		div_elem.appendChild(label_elem);
+		div_elem.appendChild(value_elem);
+		
+		return div_elem;
+	});
 
-	// Remove current content in info-card
 	rmv_content();
 
-	// Add new content in card
-	add_content(street_label, street_elem, district_label, district_elem, status_label, status_elem);
+	add_content(elems);
 }
 
 function reset_info_card() {
 	rmv_content();
 
-	// Create alert message to show in card
-	const alert_msg = window.document.createElement('p');
-	alert_msg.innerHTML = 'Dispositivo não encontrado :(';
+	const div = window.document.createElement('div');
+	const p = window.document.createElement('p');
 
-	add_content(alert_msg);
+	p.innerHTML = 'Dispositivo não encontrado :(';
+
+	div.appendChild(p);
+
+	add_content([div]);
 }

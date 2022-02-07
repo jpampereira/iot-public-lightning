@@ -31,7 +31,7 @@ body > header {
 	flex-wrap:        wrap;
 	justify-content:  center;
 	background-color: var(--headers-color);
-	width: 100%;
+	width:            100%;
 	padding:          30px 0px;
 }
 
@@ -117,12 +117,26 @@ section {
 	color:     #808080;
 }
 
-.info > p {
+.info > div {
+	width: 100%;
+}
+
+.info > div > p {
 	width:   100%;
 	padding: 0px 10px;
 }
 
-.info > p:nth-child(odd) {
+.info > div > p:nth-child(1) {
+	font-weight: bold;
+}
+
+.OPERACIONAL {
+	color:     green;
+	font-weight: bold;
+}
+
+.NÃO_OPERACIONAL {
+	color:     red;
 	font-weight: bold;
 }
 

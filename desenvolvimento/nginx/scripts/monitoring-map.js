@@ -17,9 +17,9 @@ function create_map () {
 function update_map(device_id) {
 	request('/devices/info', { device_id }, 'get')
 	.then(res => {
-		const device_data = res[0];
+		const device_data = res;
 
-		if (device_data !== undefined) {
+		if (Object.keys(device_data).length > 0) {
 			update_info_card(device_data);
 
 			const [lat, lng] = device_data.coordinates.split(/\s*;\s*/).map(coordinate => parseFloat(coordinate));
