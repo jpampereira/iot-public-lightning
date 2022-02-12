@@ -153,7 +153,7 @@
         "z": "8813ec2835daae18",
         "name": "Sensors Output",
         "topic": "pgc_ufabc/devices/measures",
-        "qos": "2",
+        "qos": "0",
         "datatype": "json",
         "broker": "df4bdf4be0d4150f",
         "nl": false,
@@ -334,7 +334,7 @@
         "scope": null,
         "uncaught": false,
         "x": 100,
-        "y": 976,
+        "y": 1016,
         "wires": [
             [
                 "1705d89c23ac2369"
@@ -348,7 +348,7 @@
         "name": "Exceptions Treatment",
         "info": "",
         "x": 140,
-        "y": 935,
+        "y": 975,
         "wires": []
     },
     {
@@ -365,7 +365,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 250,
-        "y": 976,
+        "y": 1016,
         "wires": []
     },
     {
@@ -374,7 +374,7 @@
         "z": "7f5557aca01f4737",
         "name": "Sensors Input",
         "topic": "",
-        "qos": "",
+        "qos": "0",
         "retain": "",
         "respTopic": "",
         "contentType": "",
@@ -383,7 +383,7 @@
         "expiry": "",
         "broker": "df4bdf4be0d4150f",
         "x": 740,
-        "y": 776,
+        "y": 816,
         "wires": []
     },
     {
@@ -393,7 +393,7 @@
         "name": "##### Devices actions [/devices/actions] #####",
         "info": "",
         "x": 220,
-        "y": 695,
+        "y": 735,
         "wires": []
     },
     {
@@ -406,7 +406,7 @@
         "upload": false,
         "swaggerDoc": "",
         "x": 310,
-        "y": 756,
+        "y": 796,
         "wires": [
             [
                 "2ea58b854874e1f9"
@@ -425,7 +425,7 @@
         "finalize": "",
         "libs": [],
         "x": 530,
-        "y": 756,
+        "y": 796,
         "wires": [
             [
                 "d72bcdcd084b8be6",
@@ -441,7 +441,7 @@
         "statusCode": "",
         "headers": {},
         "x": 940,
-        "y": 736,
+        "y": 776,
         "wires": []
     },
     {
@@ -454,7 +454,7 @@
         "upload": false,
         "swaggerDoc": "",
         "x": 120,
-        "y": 516,
+        "y": 556,
         "wires": [
             [
                 "4a2f6b921cc7b9aa"
@@ -468,7 +468,7 @@
         "name": "##### Get devices informations [/devices/info] #####",
         "info": "",
         "x": 230,
-        "y": 475,
+        "y": 515,
         "wires": []
     },
     {
@@ -478,7 +478,7 @@
         "name": "",
         "env": [],
         "x": 620,
-        "y": 516,
+        "y": 556,
         "wires": [
             [
                 "94a44686fd3a0972"
@@ -497,7 +497,7 @@
         "finalize": "",
         "libs": [],
         "x": 480,
-        "y": 516,
+        "y": 556,
         "wires": [
             [
                 "ede3351d6c899062"
@@ -512,7 +512,7 @@
         "statusCode": "",
         "headers": {},
         "x": 940,
-        "y": 516,
+        "y": 556,
         "wires": []
     },
     {
@@ -940,7 +940,7 @@
         "finalize": "",
         "libs": [],
         "x": 750,
-        "y": 736,
+        "y": 776,
         "wires": [
             [
                 "aecf27c4524c85ed",
@@ -962,7 +962,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 1180,
-        "y": 516,
+        "y": 556,
         "wires": []
     },
     {
@@ -979,7 +979,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 1140,
-        "y": 736,
+        "y": 776,
         "wires": []
     },
     {
@@ -1021,7 +1021,7 @@
         "upload": false,
         "swaggerDoc": "",
         "x": 171,
-        "y": 197,
+        "y": 233,
         "wires": [
             [
                 "96bdf6630c129c17"
@@ -1033,14 +1033,14 @@
         "type": "function",
         "z": "7f5557aca01f4737",
         "name": "Set query",
-        "func": "function format_date(timestamp) {\n    const year = timestamp.getFullYear();\n    const mon  = `0${timestamp.getMonth()+1}`.slice(-2);\n    const day  = `0${timestamp.getDate()}`.slice(-2);\n    const hour = `0${timestamp.getHours()}`.slice(-2);\n    const min  = `0${timestamp.getMinutes()}`.slice(-2);\n    const sec  = `0${timestamp.getSeconds()}`.slice(-2);\n    \n    return `${year}-${mon}-${day} ${hour}:${min}:${sec}`;\n}\n\nconst threshold = msg.threshold;\nconst interval  = msg.interval;\nconst device_id = msg.device_id;\n\nconst end   = format_date(threshold);\nconst begin = format_date(new Date(threshold - 1000 * 60 * interval));\n\nmsg.payload = `SELECT VOLTAGE_MIN, VOLTAGE_MAX, VOLTAGE_AVG, CURRENT_MIN, CURRENT_MAX, CURRENT_AVG, LIGHTNESS_MIN, LIGHTNESS_MAX, LIGHTNESS_AVG, POWER_MIN, POWER_MAX, POWER_AVG, NUM_REGISTRIES, INSERTION_TIME\n               FROM SENSORS_DATA_INTERVAL\n               WHERE DEVICE_ID = ${device_id} \n               AND (INSERTION_TIME AT TIME ZONE 'CST') > (TO_TIMESTAMP('${begin}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST') \n               AND (INSERTION_TIME AT TIME ZONE 'CST') <= (TO_TIMESTAMP('${end}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST')\n               ORDER BY INSERTION_TIME`;\n               \nreturn msg;",
+        "func": "// Get data from last 24 hours or week\n\nfunction format_date (timestamp) {\n    const year = timestamp.getFullYear();\n    const mon  = `0${timestamp.getMonth()+1}`.slice(-2);\n    const day  = `0${timestamp.getDate()}`.slice(-2);\n    const hour = `0${timestamp.getHours()}`.slice(-2);\n    const min  = `0${timestamp.getMinutes()}`.slice(-2);\n    const sec  = `0${timestamp.getSeconds()}`.slice(-2);\n    \n    return `${year}-${mon}-${day} ${hour}:${min}:${sec}`;\n}\n\nconst threshold = msg.threshold;\nconst interval  = msg.interval;\nconst device_id = msg.device_id;\n\nconst end   = format_date(threshold);\nconst begin = format_date(new Date(threshold - 1000 * 60 * interval));\n\nmsg.payload = `SELECT VOLTAGE_MIN, VOLTAGE_MAX, VOLTAGE_AVG, CURRENT_MIN, CURRENT_MAX, CURRENT_AVG, LIGHTNESS_MIN, LIGHTNESS_MAX, LIGHTNESS_AVG, POWER_MIN, POWER_MAX, POWER_AVG, POWER_EXPEND, NUM_REGISTRIES, INSERTION_TIME\n               FROM SENSORS_DATA_INTERVAL\n               WHERE DEVICE_ID = ${device_id} \n               AND (INSERTION_TIME AT TIME ZONE 'CST') > (TO_TIMESTAMP('${begin}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST') \n               AND (INSERTION_TIME AT TIME ZONE 'CST') <= (TO_TIMESTAMP('${end}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST')\n               ORDER BY INSERTION_TIME`;\n               \nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1000,
-        "y": 218,
+        "x": 1020,
+        "y": 212,
         "wires": [
             [
                 "6ec488a047717083"
@@ -1055,7 +1055,7 @@
         "statusCode": "",
         "headers": {},
         "x": 540,
-        "y": 376,
+        "y": 415,
         "wires": []
     },
     {
@@ -1063,8 +1063,8 @@
         "type": "subflow:bab6ffe5b7ae3a28",
         "z": "7f5557aca01f4737",
         "name": "",
-        "x": 1160,
-        "y": 195,
+        "x": 1180,
+        "y": 212,
         "wires": [
             [
                 "7cdff54cf4f12948"
@@ -1085,7 +1085,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 750,
-        "y": 376,
+        "y": 415,
         "wires": []
     },
     {
@@ -1102,20 +1102,28 @@
                 "vt": "num"
             },
             {
+                "t": "lt",
+                "v": "44640",
+                "vt": "num"
+            },
+            {
                 "t": "else"
             }
         ],
         "checkall": "false",
         "repair": false,
-        "outputs": 2,
-        "x": 810,
-        "y": 197,
+        "outputs": 3,
+        "x": 830,
+        "y": 212,
         "wires": [
             [
                 "57ce85e61299af4e"
             ],
             [
                 "ddca169b2eed6b38"
+            ],
+            [
+                "9e05e185a3257074"
             ]
         ]
     },
@@ -1124,14 +1132,14 @@
         "type": "function",
         "z": "7f5557aca01f4737",
         "name": "Set query",
-        "func": "function format_date(timestamp) {\n    const year = timestamp.getFullYear();\n    const mon  = `0${timestamp.getMonth()+1}`.slice(-2);\n    const day  = `0${timestamp.getDate()}`.slice(-2);\n    const hour = `0${timestamp.getHours()}`.slice(-2);\n    const min  = `0${timestamp.getMinutes()}`.slice(-2);\n    const sec  = `0${timestamp.getSeconds()}`.slice(-2);\n    \n    return `${year}-${mon}-${day} ${hour}:${min}:${sec}`;\n}\n\nconst threshold = msg.threshold;\nconst interval  = msg.interval;\nconst device_id = msg.device_id;\n\nconst end   = format_date(threshold);\nconst begin = format_date(new Date(threshold - 1000 * 60 * interval));\n\nmsg.payload = `SELECT VOLTAGE, CURRENT, LIGHTNESS, INSERTION_TIME\n               FROM SENSORS_DATA_REAL_TIME\n               WHERE DEVICE_ID = ${device_id} \n               AND (INSERTION_TIME AT TIME ZONE 'CST') >= (TO_TIMESTAMP('${begin}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST') \n               AND (INSERTION_TIME AT TIME ZONE 'CST') < (TO_TIMESTAMP('${end}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST')\n               ORDER BY INSERTION_TIME`;\n\nreturn msg;",
+        "func": "// Get data from last hour\n\nfunction format_date (timestamp) {\n    const year = timestamp.getFullYear();\n    const mon  = `0${timestamp.getMonth()+1}`.slice(-2);\n    const day  = `0${timestamp.getDate()}`.slice(-2);\n    const hour = `0${timestamp.getHours()}`.slice(-2);\n    const min  = `0${timestamp.getMinutes()}`.slice(-2);\n    const sec  = `0${timestamp.getSeconds()}`.slice(-2);\n    \n    return `${year}-${mon}-${day} ${hour}:${min}:${sec}`;\n}\n\nconst threshold = msg.threshold;\nconst interval  = msg.interval;\nconst device_id = msg.device_id;\n\nconst end   = format_date(threshold);\nconst begin = format_date(new Date(threshold - 1000 * 60 * interval));\n\nmsg.payload = `SELECT VOLTAGE, CURRENT, LIGHTNESS, INSERTION_TIME\n               FROM SENSORS_DATA_REAL_TIME\n               WHERE DEVICE_ID = ${device_id} \n               AND (INSERTION_TIME AT TIME ZONE 'CST') >= (TO_TIMESTAMP('${begin}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST') \n               AND (INSERTION_TIME AT TIME ZONE 'CST') < (TO_TIMESTAMP('${end}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST')\n               ORDER BY INSERTION_TIME`;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1000,
-        "y": 175,
+        "x": 1020,
+        "y": 174,
         "wires": [
             [
                 "6ec488a047717083"
@@ -1150,7 +1158,7 @@
         "finalize": "",
         "libs": [],
         "x": 410,
-        "y": 275,
+        "y": 315,
         "wires": [
             [
                 "97320d78a0801902"
@@ -1178,13 +1186,13 @@
         "repair": false,
         "outputs": 2,
         "x": 190,
-        "y": 297,
+        "y": 337,
         "wires": [
             [
                 "1bb825e2928759bb"
             ],
             [
-                "0b5d0e0c0b5c98b1"
+                "6cf164c9f164c150"
             ]
         ]
     },
@@ -1197,7 +1205,7 @@
             "7cdff54cf4f12948"
         ],
         "x": 55,
-        "y": 297,
+        "y": 337,
         "wires": [
             [
                 "f37dd2752270a5c8"
@@ -1212,8 +1220,8 @@
         "links": [
             "2d413cccf4985d24"
         ],
-        "x": 1255,
-        "y": 195,
+        "x": 1275,
+        "y": 212,
         "wires": []
     },
     {
@@ -1224,8 +1232,8 @@
         "links": [
             "6383f89379246b18"
         ],
-        "x": 495,
-        "y": 318,
+        "x": 715,
+        "y": 358,
         "wires": []
     },
     {
@@ -1237,7 +1245,7 @@
             "6383f89379246b18"
         ],
         "x": 695,
-        "y": 275,
+        "y": 315,
         "wires": []
     },
     {
@@ -1246,12 +1254,11 @@
         "z": "7f5557aca01f4737",
         "name": "IN (2) Get sensors data",
         "links": [
-            "14237c631ef6b8a9",
             "6b6db413a491a12d",
             "d998e00625e40a86"
         ],
         "x": 55,
-        "y": 376,
+        "y": 415,
         "wires": [
             [
                 "5f90a25a42bb5326"
@@ -1270,7 +1277,7 @@
         "finalize": "",
         "libs": [],
         "x": 590,
-        "y": 275,
+        "y": 315,
         "wires": [
             [
                 "6b6db413a491a12d"
@@ -1342,8 +1349,8 @@
         "y": 95,
         "wires": [
             [
-                "270828bcb3beacf1",
-                "9853d4fc5f5b1ebf"
+                "9853d4fc5f5b1ebf",
+                "270828bcb3beacf1"
             ]
         ]
     },
@@ -1380,17 +1387,20 @@
         "type": "function",
         "z": "7f5557aca01f4737",
         "name": "Parse request body",
-        "func": "msg.device_id = msg.payload.device_id;\nmsg.interval  = parseInt(msg.payload.interval); // in minutes\n\nreturn msg;",
-        "outputs": 1,
+        "func": "msg.device_id = msg.payload.device_id;\nmsg.interval  = parseInt(msg.payload.interval); // in minutes\n\nconst allowed_intervals = [60, 1440, 10080, 44640];\n\nif (allowed_intervals.includes(msg.interval)) {\n    return [msg, null];\n}\n\nmsg.payload = 'Interval not allowed';\n\nreturn [null, msg];",
+        "outputs": 2,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
         "x": 410,
-        "y": 197,
+        "y": 233,
         "wires": [
             [
                 "ddeb66f0f282da2c"
+            ],
+            [
+                "4e293f940e64d152"
             ]
         ]
     },
@@ -1405,8 +1415,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 610,
-        "y": 197,
+        "x": 630,
+        "y": 212,
         "wires": [
             [
                 "1a6d28956a0d6589"
@@ -1444,7 +1454,7 @@
         "finalize": "",
         "libs": [],
         "x": 310,
-        "y": 516,
+        "y": 556,
         "wires": [
             [
                 "4eb5c88f1b01827b"
@@ -1473,14 +1483,14 @@
         "type": "function",
         "z": "7f5557aca01f4737",
         "name": "Group data",
-        "func": "const dataset   = msg.payload;\nconst threshold = msg.threshold;\nconst n_groups  = msg.interval / (60 * (msg.interval > 1440 ? 12 : 1));\nconst hop       = 1000 * 60 * 60 * (msg.interval > 1440 ? 12 : 1);\n\n// Create groups\n\nlet i;\nlet groups = [];\n\nfor (i = n_groups; i > 0; i--) {\n    const timestamp = new Date(threshold - hop * i);\n    const measures  = [];\n    \n    groups.push({ timestamp, measures, records: 0 });\n}\n\n// Group data\n\ni = 1;\n\ndataset.forEach(data => {\n    const timestamp = new Date(data.insertion_time);\n    \n    for (i; i < groups.length && timestamp > groups[i].timestamp; i++);\n\n    groups[i-1].measures.push(data);\n    groups[i-1].records += data.num_registries;\n});\n\n// Sum values\n\nconst min = dataset => Math.min(...dataset) !==  Infinity ? Math.min(...dataset) : 0;\nconst max = dataset => Math.max(...dataset) !== -Infinity ? Math.max(...dataset) : 0;\nconst avg = dataset => (dataset.reduce((acc, cur) => acc + cur, 0) / dataset.length) || 0;\n\ngroups = groups.map(group => {\n    voltage_min   = min(group.measures.map(data => data.voltage_min));\n    voltage_max   = max(group.measures.map(data => data.voltage_max));\n    voltage_avg   = Math.round(avg(group.measures.map(data => data.voltage_avg)));\n    current_min   = min(group.measures.map(data => data.current_min)).toFixed(2);\n    current_max   = max(group.measures.map(data => data.current_max)).toFixed(2);\n    current_avg   = parseFloat((avg(group.measures.map(data => data.current_avg))).toFixed(2));\n    lightness_min = min(group.measures.map(data => data.lightness_min));\n    lightness_max = max(group.measures.map(data => data.lightness_max));\n    lightness_avg = Math.round(avg(group.measures.map(data => data.lightness_avg)));\n    power_min     = min(group.measures.map(data => data.power_min));\n    power_max     = max(group.measures.map(data => data.power_max));\n    power_avg     = Math.round(avg(group.measures.map(data => data.power_avg)));\n    \n    group.measures = {\n        voltage_min,\n        voltage_max,\n        voltage_avg,\n        current_min,\n        current_max,\n        current_avg,\n        lightness_min,\n        lightness_max,\n        lightness_avg,\n        power_min,\n        power_max,\n        power_avg,\n    }\n    \n    return group;\n});\n\nmsg.dataset = groups;\nmsg.hop     = hop;\n\nreturn msg;",
+        "func": "const dataset   = msg.payload;\nconst threshold = msg.threshold;\nconst n_groups  = msg.n_groups;\nconst hop       = msg.hop;\nconst interval  = msg.interval;\n\n// Create groups\n\nlet i;\nlet groups = [];\n\nfor (i = n_groups; i > 0; i--) {\n    const timestamp = new Date(threshold - hop * i);\n    const measures  = [];\n    \n    groups.push({ timestamp, measures, records: 0 });\n}\n\n// Group data\n\ni = 1;\n\ndataset.forEach(data => {\n    const timestamp = new Date(data.insertion_time);\n    \n    for (i; i < groups.length && timestamp > groups[i].timestamp; i++);\n\n    groups[i-1].measures.push(data);\n    groups[i-1].records += data.num_registries;\n});\n\n// Sum values\n\nconst min = dataset => Math.min(...dataset) !==  Infinity ? Math.min(...dataset) : 0;\nconst max = dataset => Math.max(...dataset) !== -Infinity ? Math.max(...dataset) : 0;\nconst avg = dataset => (dataset.reduce((acc, cur) => acc + cur, 0) / dataset.length) || 0;\n\ngroups = groups.map(group => {\n    voltage_min   = min(group.measures.map(data => data.voltage_min));\n    voltage_max   = max(group.measures.map(data => data.voltage_max));\n    voltage_avg   = Math.round(avg(group.measures.map(data => data.voltage_avg)));\n    current_min   = min(group.measures.map(data => data.current_min)).toFixed(2);\n    current_max   = max(group.measures.map(data => data.current_max)).toFixed(2);\n    current_avg   = parseFloat((avg(group.measures.map(data => data.current_avg))).toFixed(2));\n    lightness_min = min(group.measures.map(data => data.lightness_min));\n    lightness_max = max(group.measures.map(data => data.lightness_max));\n    lightness_avg = Math.round(avg(group.measures.map(data => data.lightness_avg)));\n    power_min     = min(group.measures.map(data => data.power_min));\n    power_max     = max(group.measures.map(data => data.power_max));\n    power_avg     = Math.round(avg(group.measures.map(data => data.power_avg)));\n    power_expend  = group.measures.reduce((acc, cur) => acc + cur.power_expend, 0);\n    \n    group.measures = {\n        voltage_min,\n        voltage_max,\n        voltage_avg,\n        current_min,\n        current_max,\n        current_avg,\n        lightness_min,\n        lightness_max,\n        lightness_avg,\n        power_min,\n        power_max,\n        power_avg,\n        power_expend\n    }\n    \n    return group;\n});\n\nmsg.dataset = groups;\nmsg.hop     = hop;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 390,
-        "y": 318,
+        "x": 610,
+        "y": 358,
         "wires": [
             [
                 "d998e00625e40a86"
@@ -1492,14 +1502,14 @@
         "type": "function",
         "z": "7f5557aca01f4737",
         "name": "Create labels",
-        "func": "function format_date(timestamp, interval) {\n    const hour = `0${timestamp.getHours()}`.slice(-2);\n    const min  = `0${timestamp.getMinutes()}`.slice(-2);\n    const day  = `0${timestamp.getDate()}`.slice(-2);\n    const mon  = `0${timestamp.getMonth()+1}`.slice(-2);\n    \n    if (interval === 60) {\n        return `${hour}:${min}`;\n    } else {\n        return `${hour}:${min} ${day}/${mon}`;\n    }\n}\n\nconst interval = msg.interval;\nconst hop      = msg.hop;\n\nlet dataset = msg.dataset;\n\ndataset = dataset.map(data => {\n    const timestamp = data.timestamp;\n    \n    const begin = format_date(timestamp, interval);\n    \n    if (interval === 60) {\n        data.label = `${begin} (Número de Registros: ${data.records})`;\n    } else {\n        timestamp.setTime(timestamp.getTime() + hop);\n        const final = format_date(timestamp, interval);\n        \n        data.label = `${begin} à ${final} (Número de Registros: ${data.records})`;\n    }\n    \n    delete data.timestamp;\n    \n    return data;\n});\n\nmsg.dataset = dataset;\n\nreturn msg;",
+        "func": "function format_date(timestamp, interval) {\n    const hour = `0${timestamp.getHours()}`.slice(-2);\n    const min  = `0${timestamp.getMinutes()}`.slice(-2);\n    \n    if (interval === 60) {\n        return `${hour}:${min}`;\n    } else {\n        const day  = `0${timestamp.getDate()}`.slice(-2);\n        const mon  = `0${timestamp.getMonth()+1}`.slice(-2);\n        \n        return `${hour}:${min} ${day}/${mon}`;\n    }\n}\n\nconst interval = msg.interval;\nconst hop      = msg.hop;\n\nlet dataset = msg.dataset;\n\ndataset = dataset.map((data, i) => {\n    const timestamp = data.timestamp;\n    \n    const begin = format_date(timestamp, interval);\n    \n    if (interval === 60) {\n        data.label = `${begin} (Número de Registros: ${data.records})`;\n    } else {\n        timestamp.setTime(timestamp.getTime() + hop);\n        const final = format_date(timestamp, interval);\n        \n        data.label = `${begin} à ${final} (Número de Registros: ${data.records})`;\n    }\n    \n    delete data.timestamp;\n    \n    return data;\n});\n\nmsg.dataset = dataset;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
         "x": 170,
-        "y": 376,
+        "y": 415,
         "wires": [
             [
                 "3d4b27a94f96d759"
@@ -1511,18 +1521,18 @@
         "type": "function",
         "z": "7f5557aca01f4737",
         "name": "Prepare response",
-        "func": "const dataset  = msg.dataset;\nconst interval = msg.interval;\n\nconst labels = dataset.map(data => data.label);\n\nlet values;\n\nif (interval === 60) {\n    values = {\n        voltage:   dataset.map(data => data.measures.voltage),\n        current:   dataset.map(data => data.measures.current),\n        lightness: dataset.map(data => data.measures.lightness),\n        power:     dataset.map(data => data.measures.power)\n    }\n} else {\n    values = {\n        voltage: {\n            min: dataset.map(data => data.measures.voltage_min),\n            max: dataset.map(data => data.measures.voltage_max),\n            avg: dataset.map(data => data.measures.voltage_avg)\n        },\n        current: {\n            min: dataset.map(data => data.measures.current_min),\n            max: dataset.map(data => data.measures.current_max),\n            avg: dataset.map(data => data.measures.current_avg)       \n        },\n        lightness: {\n            min: dataset.map(data => data.measures.lightness_min),\n            max: dataset.map(data => data.measures.lightness_max),\n            avg: dataset.map(data => data.measures.lightness_avg)      \n        },\n        power: {\n            min: dataset.map(data => data.measures.power_min),\n            max: dataset.map(data => data.measures.power_max),\n            avg: dataset.map(data => data.measures.power_avg)          \n        }\n    }\n}\n\nmsg.payload = { labels, values };\n\nreturn msg;",
+        "func": "const dataset  = msg.dataset;\nconst interval = msg.interval;\n\nconst labels = dataset.map(data => data.label);\n\nlet values;\n\nif (interval === 60) {\n    values = {\n        voltage:   dataset.map(data => data.measures.voltage),\n        current:   dataset.map(data => data.measures.current),\n        lightness: dataset.map(data => data.measures.lightness),\n        power:     dataset.map(data => data.measures.power)\n    }\n} else {\n    values = {\n        voltage: {\n            min: dataset.map(data => data.measures.voltage_min),\n            max: dataset.map(data => data.measures.voltage_max),\n            avg: dataset.map(data => data.measures.voltage_avg)\n        },\n        current: {\n            min: dataset.map(data => data.measures.current_min),\n            max: dataset.map(data => data.measures.current_max),\n            avg: dataset.map(data => data.measures.current_avg)       \n        },\n        lightness: {\n            min: dataset.map(data => data.measures.lightness_min),\n            max: dataset.map(data => data.measures.lightness_max),\n            avg: dataset.map(data => data.measures.lightness_avg)      \n        },\n        power: {\n            min: dataset.map(data => data.measures.power_min),\n            max: dataset.map(data => data.measures.power_max),\n            avg: dataset.map(data => data.measures.power_avg)          \n        },\n        power_expend: dataset.map((data, i) => {\n            const value    = data.measures.power_expend;\n            const sum_prev = dataset.slice(0, i).reduce((acc, cur) => acc + cur.measures.power_expend, 0);\n    \n            return (value + sum_prev).toFixed(2);\n        })\n    }\n}\n\nmsg.payload = { labels, values };\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
         "x": 350,
-        "y": 376,
+        "y": 415,
         "wires": [
             [
-                "47e86d41591c2ef2",
-                "dc71772a94af1a6d"
+                "dc71772a94af1a6d",
+                "47e86d41591c2ef2"
             ]
         ]
     },
@@ -1649,7 +1659,7 @@
         "name": "On/Off button",
         "info": "",
         "x": 110,
-        "y": 756,
+        "y": 796,
         "wires": []
     },
     {
@@ -1662,7 +1672,7 @@
         "upload": false,
         "swaggerDoc": "",
         "x": 150,
-        "y": 596,
+        "y": 636,
         "wires": [
             [
                 "c7e9ca453addc88e"
@@ -1676,7 +1686,7 @@
         "name": "",
         "env": [],
         "x": 680,
-        "y": 596,
+        "y": 636,
         "wires": [
             [
                 "b3c2d212a7837e51"
@@ -1695,7 +1705,7 @@
         "finalize": "",
         "libs": [],
         "x": 540,
-        "y": 596,
+        "y": 636,
         "wires": [
             [
                 "5319bc27fd7349fd"
@@ -1710,7 +1720,7 @@
         "statusCode": "",
         "headers": {},
         "x": 1000,
-        "y": 596,
+        "y": 636,
         "wires": []
     },
     {
@@ -1727,7 +1737,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 1240,
-        "y": 596,
+        "y": 636,
         "wires": []
     },
     {
@@ -1742,7 +1752,7 @@
         "finalize": "",
         "libs": [],
         "x": 370,
-        "y": 596,
+        "y": 636,
         "wires": [
             [
                 "057baee8b1ebe845"
@@ -1761,7 +1771,7 @@
         "finalize": "",
         "libs": [],
         "x": 830,
-        "y": 596,
+        "y": 636,
         "wires": [
             [
                 "183cae93968adc2b",
@@ -1781,12 +1791,61 @@
         "finalize": "",
         "libs": [],
         "x": 770,
-        "y": 516,
+        "y": 556,
         "wires": [
             [
                 "a54251fe8fe370a5",
                 "fd5c74c4ecda2310"
             ]
         ]
+    },
+    {
+        "id": "9e05e185a3257074",
+        "type": "function",
+        "z": "7f5557aca01f4737",
+        "name": "Set query",
+        "func": "// Get data from current month\n\nfunction format_date (timestamp) {\n    const year = timestamp.getFullYear();\n    const mon  = `0${timestamp.getMonth()+1}`.slice(-2);\n    const day  = `0${timestamp.getDate()}`.slice(-2);\n    const hour = `0${timestamp.getHours()}`.slice(-2);\n    const min  = `0${timestamp.getMinutes()}`.slice(-2);\n    const sec  = `0${timestamp.getSeconds()}`.slice(-2);\n    \n    return `${year}-${mon}-${day} ${hour}:${min}:${sec}`;\n}\n\nconst device_id = msg.device_id;\nconst threshold = msg.threshold;\n\nconst end = format_date(threshold);\n\nlet begin = new Date(threshold);\nbegin.setDate(1);\nbegin = format_date(begin);\n\nmsg.payload = `SELECT VOLTAGE_MIN, VOLTAGE_MAX, VOLTAGE_AVG, CURRENT_MIN, CURRENT_MAX, CURRENT_AVG, LIGHTNESS_MIN, LIGHTNESS_MAX, LIGHTNESS_AVG, POWER_MIN, POWER_MAX, POWER_AVG, POWER_EXPEND, NUM_REGISTRIES, INSERTION_TIME\n               FROM SENSORS_DATA_INTERVAL\n               WHERE DEVICE_ID = ${device_id} \n               AND (INSERTION_TIME AT TIME ZONE 'CST') > (TO_TIMESTAMP('${begin}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST') \n               AND (INSERTION_TIME AT TIME ZONE 'CST') <= (TO_TIMESTAMP('${end}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST')\n               ORDER BY INSERTION_TIME`;\n               \nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1019.75,
+        "y": 250.25,
+        "wires": [
+            [
+                "6ec488a047717083"
+            ]
+        ]
+    },
+    {
+        "id": "6cf164c9f164c150",
+        "type": "function",
+        "z": "7f5557aca01f4737",
+        "name": "Set n_groups and hop",
+        "func": "const interval = msg.interval;\n\nlet n_groups;\nlet hop;\n\nswitch (interval) {\n    case 1440:\n        n_groups = 24;\n        hop = 1000 * 60 * 60 * 1; // 1 hour (millseconds * seconds * minutes * hours)\n        break;\n    case 10080:\n        n_groups = 14;\n        hop = 1000 * 60 * 60 * 12; // 12 hours\n        break;\n    case 44640:\n        n_groups = (new Date(msg.threshold)).getDate() * 2 - 1;\n        hop = 1000 * 60 * 60 * 12; // 12 hours\n        break;\n}\n\nmsg.n_groups = n_groups;\nmsg.hop      = hop;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 358,
+        "wires": [
+            [
+                "0b5d0e0c0b5c98b1"
+            ]
+        ]
+    },
+    {
+        "id": "4e293f940e64d152",
+        "type": "http response",
+        "z": "7f5557aca01f4737",
+        "name": "Send response",
+        "statusCode": "",
+        "headers": {},
+        "x": 620,
+        "y": 255,
+        "wires": []
     }
 ]

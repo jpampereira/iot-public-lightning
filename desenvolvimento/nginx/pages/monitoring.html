@@ -6,23 +6,32 @@
 	<title>Monitoração</title>
 	<link rel="shortcut icon" href="../images/monitoring-favicon.ico" type="image/x-icon">
 	
+	<!-- CSS Script -->
 	<link rel="stylesheet" href="../styles/monitoring.css">
 	
-	<!-- Map library -->
-	<script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDGf2F6gJHjEJETRBsRqR00hWQAfHaZcVU&callback=create_map&v=weekly"></script>
-
-	<!-- Axios library -->
-	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-
-	<!-- Chart libraries -->
-	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-	<script src="https://unpkg.com/chart.js@2.8.0/dist/Chart.bundle.js"></script>
-	<script src="https://unpkg.com/chartjs-gauge@0.3.0/dist/chartjs-gauge.js"></script>
+	<!-- Map Library -->
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDGf2F6gJHjEJETRBsRqR00hWQAfHaZcVU&callback=create_map&v=weekly" async></script>
+	
+	<!-- Axios Library -->
+	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js" defer></script>
+	
+	<!-- Chart Libraries -->
+	<script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+	<script src="https://unpkg.com/chart.js@2.8.0/dist/Chart.bundle.js" defer></script>
+	<script src="https://unpkg.com/chartjs-gauge@0.3.0/dist/chartjs-gauge.js" defer></script>
+	
+	<!-- JS Scripts -->
+	<script src="../scripts/requests.js" defer></script>
+	<script src="../scripts/monitoring-info-card.js" defer></script>
+	<script src="../scripts/monitoring-map.js" defer></script>
+	<script src="../scripts/monitoring-status-btn.js" defer></script>
+	<script src="../scripts/charts.js" defer></script>
+	<script src="../scripts/monitoring-main.js" defer></script>
 </head>
 <body>
 	<header>
 		<form>
-			<input type="text"   name="device_id" placeholder="Identificador do Setor">
+			<input type="text"   name="device_id" placeholder="Identificador do Dispositivo">
 			<input type="hidden" name="current_id">
 			<button>Buscar</button>
 		</form>
@@ -79,13 +88,5 @@
 	<footer>
 		<p>Desenvolvido por João Pedro de Abreu Martins Pereira &ltjpampereira@gmail.com&gt</p>
 	</footer>
-
-	<script src="../scripts/requests.js"></script>
-	<script src="../scripts/monitoring-info-card.js"></script>
-	<script src="../scripts/monitoring-map.js"></script>
-	<script src="../scripts/monitoring-status-btn.js"></script>
-	<script src="../scripts/charts.js"></script>
-	<script src="../scripts/monitoring-main.js"></script>
-
 </body>
 </html>

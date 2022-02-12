@@ -1,9 +1,16 @@
 const form = window.document.forms[0];
 
-/******************* ON PAGE LOAD **********************/
+/******************* ON PAGE LOAD / CHART CONFIGS **********************/
+
+const measures = {
+	voltage:   { minValue: 0, maxValue: 200, unit: 'V',   configs: {} },
+	current:   { minValue: 0, maxValue: 1,   unit: 'A',   configs: {} },
+	lightness: { minValue: 0, maxValue: 300, unit: 'Lux', configs: {} },
+	power:     { minValue: 0, maxValue: 200, unit: 'W',   configs: {} },
+};
 
 const chart_config = function (type, measure) {
-	const config = { type: type, data: {}, options: {}};
+	const config = { type: type, data: {}, options: {} };
 
 	if (type === 'gauge') {
 		config.data = {
@@ -55,7 +62,6 @@ const chart_config = function (type, measure) {
 				yAxes: [{
 					ticks: {
 						steps: 10,
-						max: measure.maxValue,
 					}
 				}],
 				xAxes: [{
@@ -81,7 +87,7 @@ window.onload = function () {
 	create_charts(chart_config);
 }
 
-/******************** IN BACKGROUND ********************/
+/**************************** IN BACKGROUND ****************************/
 
 let gauges_interval;
 let lines_interval;
@@ -96,7 +102,7 @@ function lines_interval_function () {
 	update_line_charts(device_id, 60);
 }
 
-/******************* ON PAGE REQUEST *******************/
+/*************************** ON PAGE REQUEST ***************************/
 
 form.onsubmit = function (e) {
 	e.preventDefault();
@@ -114,7 +120,7 @@ form.onsubmit = function (e) {
 
 		current_id.value = device_id; // Store last device searched for data updating
 
-		gauges_interval = setInterval(gauges_interval_function, 1000 * 2); // 2 seconds
+		gauges_interval = setInterval(gauges_interval_function, 1000 * 5); // 5 seconds
 		lines_interval  = setInterval(lines_interval_function, 1000 * 60 * 1) // 1 minute
 	}
 }

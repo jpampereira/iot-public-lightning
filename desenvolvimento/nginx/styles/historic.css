@@ -45,18 +45,18 @@ form > div > div:nth-child(1) {
 	display:         flex;
 	justify-content: space-between;
 	flex-wrap:       wrap;
-	width:           410px;
+	width:           450px;
 	margin-bottom:   10px;
 }
 
 form > div > div:nth-child(2) {
-	display: flex;
+	display:         flex;
 	justify-content: center;
-	width: 410px;
+	width:           510px;
 }
 
 input, select, option {
-	width:         200px;
+	width:         220px;
 	border-radius: 5px;
 	border:        none;
 	font-size:     1em;
@@ -70,10 +70,10 @@ button {
 }
 
 button:hover {
-	background-color:   var(--btn-hover);
-	font-weight:        bold;
-	color:              var(--headers-color);
-	cursor: 			pointer;
+	background-color: var(--btn-hover);
+	font-weight:      bold;
+	color:            var(--headers-color);
+	cursor: 	      pointer;
 }
 
 button:active {

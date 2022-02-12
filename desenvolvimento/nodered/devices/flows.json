@@ -91,7 +91,7 @@
         "id": "77c0714f80783889",
         "type": "debug",
         "z": "f6f2187d.f17ca8",
-        "name": "",
+        "name": "[EXIT 1] Simulate devices",
         "active": false,
         "tosidebar": true,
         "console": false,
@@ -100,7 +100,7 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 969,
+        "x": 1029,
         "y": 56,
         "wires": []
     },
@@ -108,14 +108,14 @@
         "id": "7b6898a61964476b",
         "type": "inject",
         "z": "f6f2187d.f17ca8",
-        "name": "Every 600 milliseconds",
+        "name": "Every 10 seconds",
         "props": [],
-        "repeat": "0.6",
+        "repeat": "10",
         "crontab": "",
         "once": true,
         "onceDelay": 0.1,
         "topic": "",
-        "x": 175,
+        "x": 155,
         "y": 156,
         "wires": [
             [
@@ -134,7 +134,7 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 820,
+        "x": 780,
         "y": 156,
         "wires": [
             [
@@ -146,7 +146,7 @@
         "id": "36f723663c2236d0",
         "type": "debug",
         "z": "f6f2187d.f17ca8",
-        "name": "",
+        "name": "[EXIT 2] Simulate devices",
         "active": false,
         "tosidebar": true,
         "console": false,
@@ -155,7 +155,7 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 430,
+        "x": 490,
         "y": 216,
         "wires": []
     },
@@ -165,7 +165,7 @@
         "z": "f6f2187d.f17ca8",
         "name": "Send measure to Broker MQTT",
         "topic": "pgc_ufabc/devices/measures",
-        "qos": "",
+        "qos": "0",
         "retain": "",
         "respTopic": "",
         "contentType": "",
@@ -312,7 +312,7 @@
         "arraySpltType": "len",
         "stream": false,
         "addname": "",
-        "x": 630,
+        "x": 590,
         "y": 156,
         "wires": [
             [
@@ -331,7 +331,7 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 430,
+        "x": 390,
         "y": 156,
         "wires": [
             [
@@ -364,7 +364,7 @@
         "links": [
             "12423f63a3d35f50"
         ],
-        "x": 955,
+        "x": 915,
         "y": 156,
         "wires": []
     },
@@ -374,7 +374,7 @@
         "z": "929f53a6eaff0271",
         "name": "Receive action messages",
         "topic": "pgc_ufabc/devices/actions/+",
-        "qos": "2",
+        "qos": "0",
         "datatype": "utf8",
         "broker": "5881b3f4325c9978",
         "nl": false,
@@ -411,7 +411,7 @@
         "id": "560a959be3be9a5f",
         "type": "debug",
         "z": "929f53a6eaff0271",
-        "name": "",
+        "name": "[EXIT] Set state based in On/Off button click",
         "active": false,
         "tosidebar": true,
         "console": false,
@@ -420,7 +420,7 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 550,
+        "x": 670,
         "y": 276,
         "wires": []
     },
@@ -497,7 +497,7 @@
         "id": "13cdee3a5da82e37",
         "type": "debug",
         "z": "929f53a6eaff0271",
-        "name": "",
+        "name": "[EXIT] Set state based in hour",
         "active": false,
         "tosidebar": true,
         "console": false,
@@ -506,7 +506,7 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 570,
+        "x": 650,
         "y": 116,
         "wires": []
     },

@@ -5,28 +5,35 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Histórico</title>
 	<link rel="shortcut icon" href="../images/historic-favicon.ico" type="image/x-icon">
-
+	
+	<!-- CSS Script -->
 	<link rel="stylesheet" href="../styles/historic.css">
-
-	<!-- Axios library -->
-	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-
-	<!-- Chart libraries -->
-	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-	<script src="https://unpkg.com/chart.js@2.8.0/dist/Chart.bundle.js"></script>
-	<script src="https://unpkg.com/chartjs-gauge@0.3.0/dist/chartjs-gauge.js"></script>
+	
+	<!-- Axios Libraries -->
+	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js" defer></script>
+	
+	<!-- Chart Libraries -->
+	<script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+	<script src="https://unpkg.com/chart.js@2.8.0/dist/Chart.bundle.js" defer></script>
+	<script src="https://unpkg.com/chartjs-gauge@0.3.0/dist/chartjs-gauge.js" defer></script>
+	
+	<!-- JS Scripts -->
+	<script src="../scripts/requests.js" defer></script>
+	<script src="../scripts/charts.js" defer></script>
+	<script src="../scripts/historic-main.js" defer></script>
 </head>
 <body>
 	<header>
 		<form>
 			<div>
 				<div>
-					<input type="text" name="device_id" placeholder="Identificador do setor">
+					<input type="text" name="device_id" placeholder="Identificador do Dispositivo">
+					<input type="hidden" name="current_id">
 					<select name="interval">
 						<option value="" selected hidden>Selecionar período</option>
 						<option value="1440">Últimas 24 horas</option>
 						<option value="10080">Última semana</option>
-						<option value="43200">Últimos 30 dias</option>
+						<option value="44640">Mês atual</option>
 					</select>
 				</div>
 				<div>
@@ -52,12 +59,11 @@
 			<header><h1>Potência (Watts)</h1></header>
 			<canvas data-measure="power" data-type="line" class="charts" ></canvas>
 		</div>
+		<div class="chart-card">
+			<header><h1>Gasto de Energia (Quilowatt-hora)</h1></header>
+			<canvas data-measure="power_expend" data-type="line" class="charts" ></canvas>
+		</div>
 	</main>
 	<footer>Desenvolvido por João Pedro de Abreu Martins Pereira &ltjpampereira@gmail.com&gt</footer>
-
-	<script src="../scripts/requests.js"></script>
-	<script src="../scripts/charts.js"></script>
-	<script src="../scripts/historic-main.js"></script>
-	
 </body>
 </html>

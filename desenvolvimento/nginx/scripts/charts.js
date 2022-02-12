@@ -3,13 +3,6 @@
  * - https://www.npmjs.com/package/chartjs-gauge
  */
 
-const measures = {
-	voltage:   { minValue: 0, maxValue: 200, unit: 'V',   configs: {}},
-	current:   { minValue: 0, maxValue: 1,   unit: 'A',   configs: {}},
-	lightness: { minValue: 0, maxValue: 300, unit: 'Lux', configs: {}},
-	power:     { minValue: 0, maxValue: 200, unit: 'W',   configs: {}},
-};
-
 /******************* ON PAGE LOAD **********************/
 
 function create_charts(chart_config) {
