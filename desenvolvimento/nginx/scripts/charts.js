@@ -21,8 +21,8 @@ function create_charts(chart_config) {
 
 /********** ON PAGE REQUEST / IN BACKGROUND ************/
 
-function update_gauge_charts(device_id) {
-	request('/devices/measures/last', { device_id }, 'get')
+function update_gauge_charts(device_name) {
+	request('/devices/measures/last', { device_name }, 'get')
 	.then(res => {
 		const data = res[0];
 
@@ -47,8 +47,8 @@ function update_gauge_charts(device_id) {
 	});
 }
 
-function update_line_charts(device_id, interval) {
-	request('/devices/measures/interval', { device_id, interval }, 'get')
+function update_line_charts(device_name, interval) {
+	request('/devices/measures/interval', { device_name, interval }, 'get')
 	.then(res => {
 		const labels = res.labels;
 		const values = res.values;

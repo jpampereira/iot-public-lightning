@@ -42,9 +42,9 @@ btn.onclick = function() {
 			action = 'L';
 		}
 
-		const device_id = form.elements.current_id.value;
+		const device_name = form.elements.current_name.value;
 
-		request('/devices/actions/on-off', { device_id, action }, 'get')
+		request('/devices/actions/on-off', { device_name, action }, 'get')
 		.then()
 		.catch(console.log);
 	}

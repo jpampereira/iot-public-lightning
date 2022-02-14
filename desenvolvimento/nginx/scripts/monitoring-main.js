@@ -93,13 +93,13 @@ let gauges_interval;
 let lines_interval;
 
 function gauges_interval_function () {
-	const device_id = form.elements.current_id.value;
-	update_gauge_charts(device_id);
+	const device_name = form.elements.current_name.value;
+	update_gauge_charts(device_name);
 }
 
 function lines_interval_function () {
-	const device_id = form.elements.current_id.value;
-	update_line_charts(device_id, 60);
+	const device_name = form.elements.current_name.value;
+	update_line_charts(device_name, 60);
 }
 
 /*************************** ON PAGE REQUEST ***************************/
@@ -107,18 +107,18 @@ function lines_interval_function () {
 form.onsubmit = function (e) {
 	e.preventDefault();
 	
-	const device_id  = form.elements.device_id.value;
-	const current_id = form.elements.current_id;
+	const device_name  = form.elements.device_name.value;
+	const current_name = form.elements.current_name;
 
-	if (device_id !== current_id && device_id !== "") {
+	if (device_name !== current_name && device_name !== "") {
 		clearInterval(gauges_interval);
 		clearInterval(lines_interval);
 
-		update_map(device_id);
-		update_gauge_charts(device_id);
-		update_line_charts(device_id, 60);
+		update_map(device_name);
+		update_gauge_charts(device_name);
+		update_line_charts(device_name, 60);
 
-		current_id.value = device_id; // Store last device searched for data updating
+		current_name.value = device_name; // Store last device searched for data updating
 
 		gauges_interval = setInterval(gauges_interval_function, 1000 * 5); // 5 seconds
 		lines_interval  = setInterval(lines_interval_function, 1000 * 60 * 1) // 1 minute

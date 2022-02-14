@@ -334,7 +334,7 @@
         "scope": null,
         "uncaught": false,
         "x": 100,
-        "y": 1016,
+        "y": 1036,
         "wires": [
             [
                 "1705d89c23ac2369"
@@ -348,7 +348,7 @@
         "name": "Exceptions Treatment",
         "info": "",
         "x": 140,
-        "y": 975,
+        "y": 995,
         "wires": []
     },
     {
@@ -365,7 +365,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 250,
-        "y": 1016,
+        "y": 1036,
         "wires": []
     },
     {
@@ -382,7 +382,7 @@
         "correl": "",
         "expiry": "",
         "broker": "df4bdf4be0d4150f",
-        "x": 740,
+        "x": 1040,
         "y": 816,
         "wires": []
     },
@@ -409,7 +409,7 @@
         "y": 796,
         "wires": [
             [
-                "2ea58b854874e1f9"
+                "9303e5e1209fd13a"
             ]
         ]
     },
@@ -418,13 +418,13 @@
         "type": "function",
         "z": "7f5557aca01f4737",
         "name": "Parse request body",
-        "func": "const action = msg.payload.action;\nconst device_id = msg.payload.device_id;\n\nmsg.topic = `pgc_ufabc/devices/actions/${device_id}`;\nmsg.payload = action;\n\nreturn msg;",
+        "func": "const device_id = msg.payload[0].id;\nconst action    = msg.action;\n\nmsg.topic = `pgc_ufabc/devices/actions/${device_id}`;\nmsg.payload = action;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 530,
+        "x": 830,
         "y": 796,
         "wires": [
             [
@@ -440,7 +440,7 @@
         "name": "Send response",
         "statusCode": "",
         "headers": {},
-        "x": 940,
+        "x": 1240,
         "y": 776,
         "wires": []
     },
@@ -490,7 +490,7 @@
         "type": "function",
         "z": "7f5557aca01f4737",
         "name": "Set query",
-        "func": "const device_id = msg.device_id;\n\nmsg.payload = `SELECT COORDINATES, STREET, DISTRICT, ZONE, STATUS FROM DEVICES_INVENTORY WHERE DEVICE_ID = ${device_id}`;\n\nreturn msg;",
+        "func": "const device_name = msg.device_name;\n\nmsg.payload = `SELECT DI.COORDINATES, DI.STREET, D.DISTRICT, Z.ZONE, DI.INTERVAL, DI.STATUS\n               FROM DEVICES_INVENTORY AS DI JOIN DISTRICTS AS D ON DI.DISTRICT_ID = D.ID\n               JOIN ZONES AS Z ON D.ZONE_ID = Z.ID\n               WHERE DEVICE_NAME = '${device_name}'`;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -569,7 +569,7 @@
         "type": "function",
         "z": "7bfe80d199363eac",
         "name": "Get active devices",
-        "func": "msg.payload = `SELECT DEVICE_ID FROM DEVICES_INVENTORY WHERE STATUS = '1'`;\nreturn msg;",
+        "func": "msg.payload = `SELECT ID FROM DEVICES_INVENTORY WHERE STATUS = '1'`;\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -648,7 +648,7 @@
         "type": "function",
         "z": "7bfe80d199363eac",
         "name": "Get devices id",
-        "func": "const active_devices = msg.payload;\n\nconst devices_id = active_devices.map(row => row.device_id);\n\nmsg.payload = devices_id;\n\nreturn msg;",
+        "func": "const active_devices = msg.payload;\n\nconst devices_id = active_devices.map(row => row.id);\n\nmsg.payload = devices_id;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -939,12 +939,12 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 750,
+        "x": 1050,
         "y": 776,
         "wires": [
             [
-                "aecf27c4524c85ed",
-                "c67c3c1b66b9ba58"
+                "c67c3c1b66b9ba58",
+                "aecf27c4524c85ed"
             ]
         ]
     },
@@ -978,7 +978,7 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1140,
+        "x": 1440,
         "y": 776,
         "wires": []
     },
@@ -1021,7 +1021,7 @@
         "upload": false,
         "swaggerDoc": "",
         "x": 171,
-        "y": 233,
+        "y": 235,
         "wires": [
             [
                 "96bdf6630c129c17"
@@ -1033,14 +1033,14 @@
         "type": "function",
         "z": "7f5557aca01f4737",
         "name": "Set query",
-        "func": "// Get data from last 24 hours or week\n\nfunction format_date (timestamp) {\n    const year = timestamp.getFullYear();\n    const mon  = `0${timestamp.getMonth()+1}`.slice(-2);\n    const day  = `0${timestamp.getDate()}`.slice(-2);\n    const hour = `0${timestamp.getHours()}`.slice(-2);\n    const min  = `0${timestamp.getMinutes()}`.slice(-2);\n    const sec  = `0${timestamp.getSeconds()}`.slice(-2);\n    \n    return `${year}-${mon}-${day} ${hour}:${min}:${sec}`;\n}\n\nconst threshold = msg.threshold;\nconst interval  = msg.interval;\nconst device_id = msg.device_id;\n\nconst end   = format_date(threshold);\nconst begin = format_date(new Date(threshold - 1000 * 60 * interval));\n\nmsg.payload = `SELECT VOLTAGE_MIN, VOLTAGE_MAX, VOLTAGE_AVG, CURRENT_MIN, CURRENT_MAX, CURRENT_AVG, LIGHTNESS_MIN, LIGHTNESS_MAX, LIGHTNESS_AVG, POWER_MIN, POWER_MAX, POWER_AVG, POWER_EXPEND, NUM_REGISTRIES, INSERTION_TIME\n               FROM SENSORS_DATA_INTERVAL\n               WHERE DEVICE_ID = ${device_id} \n               AND (INSERTION_TIME AT TIME ZONE 'CST') > (TO_TIMESTAMP('${begin}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST') \n               AND (INSERTION_TIME AT TIME ZONE 'CST') <= (TO_TIMESTAMP('${end}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST')\n               ORDER BY INSERTION_TIME`;\n               \nreturn msg;",
+        "func": "// Get data from last 24 hours or week\n\nfunction format_date (timestamp) {\n    const year = timestamp.getFullYear();\n    const mon  = `0${timestamp.getMonth()+1}`.slice(-2);\n    const day  = `0${timestamp.getDate()}`.slice(-2);\n    const hour = `0${timestamp.getHours()}`.slice(-2);\n    const min  = `0${timestamp.getMinutes()}`.slice(-2);\n    const sec  = `0${timestamp.getSeconds()}`.slice(-2);\n    \n    return `${year}-${mon}-${day} ${hour}:${min}:${sec}`;\n}\n\nconst threshold   = msg.threshold;\nconst interval    = msg.interval;\nconst device_name = msg.device_name;\n\nconst end   = format_date(threshold);\nconst begin = format_date(new Date(threshold - 1000 * 60 * interval));\n\nmsg.payload = `SELECT SDI.DEVICE_ID, SDI.VOLTAGE_MIN, SDI.VOLTAGE_MAX, SDI.VOLTAGE_AVG, SDI.CURRENT_MIN, SDI.CURRENT_MAX, SDI.CURRENT_AVG, SDI.LIGHTNESS_MIN, SDI.LIGHTNESS_MAX, SDI.LIGHTNESS_AVG, SDI.POWER_MIN, SDI.POWER_MAX, SDI.POWER_AVG, SDI.POWER_EXPEND, SDI.NUM_REGISTRIES, SDI.INSERTION_TIME\n               FROM SENSORS_DATA_INTERVAL AS SDI JOIN DEVICES_INVENTORY AS DI ON SDI.DEVICE_ID = DI.ID \n               WHERE DI.DEVICE_NAME = '${device_name}'\n               AND (SDI.INSERTION_TIME AT TIME ZONE 'CST') > (TO_TIMESTAMP('${begin}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST') \n               AND (SDI.INSERTION_TIME AT TIME ZONE 'CST') <= (TO_TIMESTAMP('${end}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST')\n               ORDER BY SDI.INSERTION_TIME`;\n               \nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
         "x": 1020,
-        "y": 212,
+        "y": 214,
         "wires": [
             [
                 "6ec488a047717083"
@@ -1064,7 +1064,7 @@
         "z": "7f5557aca01f4737",
         "name": "",
         "x": 1180,
-        "y": 212,
+        "y": 214,
         "wires": [
             [
                 "7cdff54cf4f12948"
@@ -1114,7 +1114,7 @@
         "repair": false,
         "outputs": 3,
         "x": 830,
-        "y": 212,
+        "y": 214,
         "wires": [
             [
                 "57ce85e61299af4e"
@@ -1132,14 +1132,14 @@
         "type": "function",
         "z": "7f5557aca01f4737",
         "name": "Set query",
-        "func": "// Get data from last hour\n\nfunction format_date (timestamp) {\n    const year = timestamp.getFullYear();\n    const mon  = `0${timestamp.getMonth()+1}`.slice(-2);\n    const day  = `0${timestamp.getDate()}`.slice(-2);\n    const hour = `0${timestamp.getHours()}`.slice(-2);\n    const min  = `0${timestamp.getMinutes()}`.slice(-2);\n    const sec  = `0${timestamp.getSeconds()}`.slice(-2);\n    \n    return `${year}-${mon}-${day} ${hour}:${min}:${sec}`;\n}\n\nconst threshold = msg.threshold;\nconst interval  = msg.interval;\nconst device_id = msg.device_id;\n\nconst end   = format_date(threshold);\nconst begin = format_date(new Date(threshold - 1000 * 60 * interval));\n\nmsg.payload = `SELECT VOLTAGE, CURRENT, LIGHTNESS, INSERTION_TIME\n               FROM SENSORS_DATA_REAL_TIME\n               WHERE DEVICE_ID = ${device_id} \n               AND (INSERTION_TIME AT TIME ZONE 'CST') >= (TO_TIMESTAMP('${begin}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST') \n               AND (INSERTION_TIME AT TIME ZONE 'CST') < (TO_TIMESTAMP('${end}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST')\n               ORDER BY INSERTION_TIME`;\n\nreturn msg;",
+        "func": "// Get data from last hour\n\nfunction format_date (timestamp) {\n    const year = timestamp.getFullYear();\n    const mon  = `0${timestamp.getMonth()+1}`.slice(-2);\n    const day  = `0${timestamp.getDate()}`.slice(-2);\n    const hour = `0${timestamp.getHours()}`.slice(-2);\n    const min  = `0${timestamp.getMinutes()}`.slice(-2);\n    const sec  = `0${timestamp.getSeconds()}`.slice(-2);\n    \n    return `${year}-${mon}-${day} ${hour}:${min}:${sec}`;\n}\n\nconst threshold   = msg.threshold;\nconst interval    = msg.interval;\nconst device_name = msg.device_name;\n\nconst end   = format_date(threshold);\nconst begin = format_date(new Date(threshold - 1000 * 60 * interval));\n\nmsg.payload = `SELECT SDRT.DEVICE_ID, SDRT.VOLTAGE, SDRT.CURRENT, SDRT.LIGHTNESS, SDRT.RELE_STATE, SDRT.INSERTION_TIME\n               FROM SENSORS_DATA_REAL_TIME AS SDRT JOIN DEVICES_INVENTORY AS DI ON SDRT.DEVICE_ID = DI.ID \n               WHERE DI.DEVICE_NAME = '${device_name}'\n               AND (INSERTION_TIME AT TIME ZONE 'CST') >= (TO_TIMESTAMP('${begin}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST') \n               AND (INSERTION_TIME AT TIME ZONE 'CST') < (TO_TIMESTAMP('${end}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST')\n               ORDER BY INSERTION_TIME`;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
         "x": 1020,
-        "y": 174,
+        "y": 176,
         "wires": [
             [
                 "6ec488a047717083"
@@ -1221,7 +1221,7 @@
             "2d413cccf4985d24"
         ],
         "x": 1275,
-        "y": 212,
+        "y": 214,
         "wires": []
     },
     {
@@ -1306,7 +1306,7 @@
         "type": "function",
         "z": "7f5557aca01f4737",
         "name": "Set query",
-        "func": "const device_id = msg.device_id;\n\nmsg.payload = `SELECT VOLTAGE, CURRENT, LIGHTNESS, RELE_STATE\n               FROM SENSORS_DATA_REAL_TIME\n               WHERE DEVICE_ID = ${device_id} \n               AND (INSERTION_TIME AT TIME ZONE 'CST') > (CURRENT_TIMESTAMP AT TIME ZONE 'CST') - INTERVAL '1 min'\n               ORDER BY INSERTION_TIME DESC\n               LIMIT 1`;\n\nreturn msg;",
+        "func": "const device_name = msg.device_name;\n\nmsg.payload = `SELECT SDRT.VOLTAGE, SDRT.CURRENT, SDRT.LIGHTNESS, SDRT.RELE_STATE\n               FROM SENSORS_DATA_REAL_TIME AS SDRT JOIN DEVICES_INVENTORY AS DI ON SDRT.DEVICE_ID = DI.ID\n               WHERE DI.DEVICE_NAME = '${device_name}'\n               AND (SDRT.INSERTION_TIME AT TIME ZONE 'CST') > (CURRENT_TIMESTAMP AT TIME ZONE 'CST') - INTERVAL '1 min'\n               ORDER BY SDRT.INSERTION_TIME DESC\n               LIMIT 1;`;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1387,14 +1387,14 @@
         "type": "function",
         "z": "7f5557aca01f4737",
         "name": "Parse request body",
-        "func": "msg.device_id = msg.payload.device_id;\nmsg.interval  = parseInt(msg.payload.interval); // in minutes\n\nconst allowed_intervals = [60, 1440, 10080, 44640];\n\nif (allowed_intervals.includes(msg.interval)) {\n    return [msg, null];\n}\n\nmsg.payload = 'Interval not allowed';\n\nreturn [null, msg];",
+        "func": "msg.device_name = msg.payload.device_name;\nmsg.interval    = parseInt(msg.payload.interval); // in minutes\n\nconst allowed_intervals = [60, 1440, 10080, 44640];\n\nif (allowed_intervals.includes(msg.interval)) {\n    return [msg, null];\n}\n\nmsg.payload = 'Interval not allowed';\n\nreturn [null, msg];",
         "outputs": 2,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
         "x": 410,
-        "y": 233,
+        "y": 235,
         "wires": [
             [
                 "ddeb66f0f282da2c"
@@ -1416,7 +1416,7 @@
         "finalize": "",
         "libs": [],
         "x": 630,
-        "y": 212,
+        "y": 214,
         "wires": [
             [
                 "1a6d28956a0d6589"
@@ -1428,7 +1428,7 @@
         "type": "function",
         "z": "7f5557aca01f4737",
         "name": "Parse request body",
-        "func": "msg.device_id = msg.payload.device_id;\nreturn msg;",
+        "func": "msg.device_name = msg.payload.device_name;\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1447,7 +1447,7 @@
         "type": "function",
         "z": "7f5557aca01f4737",
         "name": "Parse request body",
-        "func": "msg.device_id = msg.payload.device_id;\nreturn msg;",
+        "func": "msg.device_name = msg.payload.device_name;\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1599,7 +1599,7 @@
         "type": "function",
         "z": "8813ec2835daae18",
         "name": "Get device status",
-        "func": "const device_id = msg.sensor_output.device_id;\n\nmsg.payload = `SELECT STATUS FROM DEVICES_INVENTORY WHERE DEVICE_ID = ${device_id}`;\n\nreturn msg;",
+        "func": "const device_id = msg.sensor_output.device_id;\n\nmsg.payload = `SELECT STATUS FROM DEVICES_INVENTORY WHERE ID = ${device_id}`;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1804,14 +1804,14 @@
         "type": "function",
         "z": "7f5557aca01f4737",
         "name": "Set query",
-        "func": "// Get data from current month\n\nfunction format_date (timestamp) {\n    const year = timestamp.getFullYear();\n    const mon  = `0${timestamp.getMonth()+1}`.slice(-2);\n    const day  = `0${timestamp.getDate()}`.slice(-2);\n    const hour = `0${timestamp.getHours()}`.slice(-2);\n    const min  = `0${timestamp.getMinutes()}`.slice(-2);\n    const sec  = `0${timestamp.getSeconds()}`.slice(-2);\n    \n    return `${year}-${mon}-${day} ${hour}:${min}:${sec}`;\n}\n\nconst device_id = msg.device_id;\nconst threshold = msg.threshold;\n\nconst end = format_date(threshold);\n\nlet begin = new Date(threshold);\nbegin.setDate(1);\nbegin = format_date(begin);\n\nmsg.payload = `SELECT VOLTAGE_MIN, VOLTAGE_MAX, VOLTAGE_AVG, CURRENT_MIN, CURRENT_MAX, CURRENT_AVG, LIGHTNESS_MIN, LIGHTNESS_MAX, LIGHTNESS_AVG, POWER_MIN, POWER_MAX, POWER_AVG, POWER_EXPEND, NUM_REGISTRIES, INSERTION_TIME\n               FROM SENSORS_DATA_INTERVAL\n               WHERE DEVICE_ID = ${device_id} \n               AND (INSERTION_TIME AT TIME ZONE 'CST') > (TO_TIMESTAMP('${begin}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST') \n               AND (INSERTION_TIME AT TIME ZONE 'CST') <= (TO_TIMESTAMP('${end}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST')\n               ORDER BY INSERTION_TIME`;\n               \nreturn msg;",
+        "func": "// Get data from current month\n\nfunction format_date (timestamp) {\n    const year = timestamp.getFullYear();\n    const mon  = `0${timestamp.getMonth()+1}`.slice(-2);\n    const day  = `0${timestamp.getDate()}`.slice(-2);\n    const hour = `0${timestamp.getHours()}`.slice(-2);\n    const min  = `0${timestamp.getMinutes()}`.slice(-2);\n    const sec  = `0${timestamp.getSeconds()}`.slice(-2);\n    \n    return `${year}-${mon}-${day} ${hour}:${min}:${sec}`;\n}\n\nconst threshold   = msg.threshold;\nconst device_name = msg.device_name;\n\nconst end = format_date(threshold);\n\nlet begin = new Date(threshold);\nbegin.setDate(1);\nbegin = format_date(begin);\n\nmsg.payload = `SELECT SDI.DEVICE_ID, SDI.VOLTAGE_MIN, SDI.VOLTAGE_MAX, SDI.VOLTAGE_AVG, SDI.CURRENT_MIN, SDI.CURRENT_MAX, SDI.CURRENT_AVG, SDI.LIGHTNESS_MIN, SDI.LIGHTNESS_MAX, SDI.LIGHTNESS_AVG, SDI.POWER_MIN, SDI.POWER_MAX, SDI.POWER_AVG, SDI.POWER_EXPEND, SDI.NUM_REGISTRIES, SDI.INSERTION_TIME\n               FROM SENSORS_DATA_INTERVAL AS SDI JOIN DEVICES_INVENTORY AS DI ON SDI.DEVICE_ID = DI.ID\n               WHERE DI.DEVICE_NAME = '${device_name}'\n               AND (SDI.INSERTION_TIME AT TIME ZONE 'CST') > (TO_TIMESTAMP('${begin}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST') \n               AND (SDI.INSERTION_TIME AT TIME ZONE 'CST') <= (TO_TIMESTAMP('${end}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST')\n               ORDER BY SDI.INSERTION_TIME`;\n               \nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
         "x": 1019.75,
-        "y": 250.25,
+        "y": 252.25,
         "wires": [
             [
                 "6ec488a047717083"
@@ -1845,7 +1845,40 @@
         "statusCode": "",
         "headers": {},
         "x": 620,
-        "y": 255,
+        "y": 257,
         "wires": []
+    },
+    {
+        "id": "9303e5e1209fd13a",
+        "type": "function",
+        "z": "7f5557aca01f4737",
+        "name": "Get device id",
+        "func": "const action      = msg.payload.action;\nconst device_name = msg.payload.device_name;\n\nmsg.payload = `SELECT ID FROM DEVICES_INVENTORY WHERE DEVICE_NAME = '${device_name}'`;\n\nmsg.action      = action;\nmsg.device_name = device_name;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 510,
+        "y": 796,
+        "wires": [
+            [
+                "764c3912f3c93c68"
+            ]
+        ]
+    },
+    {
+        "id": "764c3912f3c93c68",
+        "type": "subflow:bab6ffe5b7ae3a28",
+        "z": "7f5557aca01f4737",
+        "name": "",
+        "env": [],
+        "x": 660,
+        "y": 796,
+        "wires": [
+            [
+                "2ea58b854874e1f9"
+            ]
+        ]
     }
 ]

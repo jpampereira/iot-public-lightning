@@ -71,13 +71,13 @@ window.onload = function () {
 form.onsubmit = function (e) {
 	e.preventDefault();
 	
-	const device_id  = form.elements.device_id.value;
-	const current_id = form.elements.current_id;
-	const interval   = form.elements.interval.value;
+	const device_name  = form.elements.device_name.value;
+	const current_name = form.elements.current_name;
+	const interval     = form.elements.interval.value;
 	
-	if (device_id !== current_id && device_id !== "") {
-		update_line_charts(device_id, interval);
+	if (device_name !== current_name && device_name !== "") {
+		update_line_charts(device_name, interval);
 
-		current_id.value = device_id; // Store last device searched
+		current_name.value = device_name; // Store last device searched
 	}
 }

@@ -14,11 +14,11 @@ function create_map () {
 
 /******************* ON PAGE REQUEST *******************/
 
-function update_map(device_id) {
-	request('/devices/info', { device_id }, 'get')
+function update_map(device_name) {
+	request('/devices/info', { device_name }, 'get')
 	.then(res => {
 		const device_data = res;
-
+		
 		if (Object.keys(device_data).length > 0) {
 			update_info_card(device_data);
 

@@ -18,28 +18,34 @@ function rmv_content() {
 
 function update_info_card(infos) {
 	const infos_array = Object.entries(infos);
-	infos_array.shift() // remove coordinates info
 	
-	const elems = infos_array.map(info => {
+	let elems = infos_array.map(info => {
 		const label = info[0];
-		const value = info[1];
 		
-		const div_elem   = window.document.createElement('div');
-		const label_elem = window.document.createElement('p');
-		const value_elem = window.document.createElement('p');
-		
-		label_elem.innerHTML = `${labels[label]}:`;
-		value_elem.innerHTML = value;
-		
-		if (label === 'status') {			
-			value_elem.classList.add(value.replace(/\s+/, '_'));
+		if (labels[label] !== undefined) {
+			const value = info[1];
+
+			const div_elem   = window.document.createElement('div');
+			const label_elem = window.document.createElement('p');
+			const value_elem = window.document.createElement('p');
+			
+			label_elem.innerHTML = `${labels[label]}:`;
+			value_elem.innerHTML = value;
+			
+			if (label === 'status') {			
+				value_elem.classList.add(value.replace(/\s+/, '_'));
+			}
+			
+			div_elem.appendChild(label_elem);
+			div_elem.appendChild(value_elem);
+			
+			return div_elem;
 		}
-		
-		div_elem.appendChild(label_elem);
-		div_elem.appendChild(value_elem);
-		
-		return div_elem;
+
+		return undefined;
 	});
+
+	elems = elems.filter(elem => elem !== undefined);
 
 	rmv_content();
 
