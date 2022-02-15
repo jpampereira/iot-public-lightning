@@ -5,8 +5,89 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Configurações</title>
 	<link rel="shortcut icon" href="../images/configs-favicon.ico" type="image/x-icon">
+	
+	<!-- CSS Scripts -->
+	<link rel="stylesheet" href="../styles/configs.css">
+
+	<!-- Axios Libraries -->
+	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js" defer></script>
+
+	<!-- JS Scripts -->
+	<script src="../scripts/requests.js" defer></script>
+	<script src="../scripts/configs.js" defer></script>
 </head>
 <body>
-	<h1>Configurações</h1>
+	<div id="container">
+		<main>
+			<header><h1>Configurações dos Dispositivos</h1></header>
+			<form>
+				<div id="action">
+					<div>
+						<div>
+							<label for="create">Novo</label>
+							<input type="radio" name="action" value="create" id="create" checked>
+						</div>
+						<div>
+							<label for="update">Editar</label>
+							<input type="radio" name="action" value="update" id="update">
+						</div>
+					</div>
+				</div>
+				<div id="data">
+					<div class="line">
+						<div>
+							<label for="device_name">Nome do Dispositivo</label>
+							<input type="text" name="device_name" id="device_name">
+						</div>
+						<div>
+							<label for="status">Status Operacional</label>
+							<select name="status" id="status">
+								<option>OPERACIONAL</option>
+								<option>NÃO OPERACIONAL</option>
+							</select>
+						</div>
+					</div>
+					<div class="line">
+						<div>
+							<label for="street">Endereço</label>
+							<input type="text" name="street" id="street">
+						</div>
+						<div>
+							<label for="coordinates">Coordenadas</label>
+							<input type="text" name="coordinates" id="coordinates" placeholder="Latitude;Longitude">
+						</div>
+					</div>
+					<div class="line">
+						<div>
+							<label for="zone">Zona</label>
+							<select name="zone" id="zone">
+								<option value="" selected hidden>Selecionar zona</option>
+							</select>
+						</div>
+						<div>
+							<label for="district">Bairro</label>
+							<select name="district" id="district">
+								<option value="" selected hidden>Selecionar bairro</option>
+							</select>
+						</div>
+					</div>
+					<div class="line">
+						<div>
+							<label for="interval">Intervalo de Envio (Mínimo: 1000 ms)</label>
+							<input type="number" name="interval" id="interval" min="1000" value="1000">
+						</div>
+					</div>
+				</div>
+				<div id="buttons">
+					<div>
+						<div id="set" class="button">Enviar</div>
+					</div>
+					<div >
+						<div id="reset" class="button">Limpar</div>
+					</div>
+				</div>
+			</form>
+		</main>
+	</div>
 </body>
 </html>

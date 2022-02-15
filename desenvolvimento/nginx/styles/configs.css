@@ -1,0 +1,147 @@
+@charset "utf-8";
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+:root {
+	--background-color: #242424;
+	--cards-color:      #1d1d1d;
+	--headers-color:    #097479;
+	--btn-hover:        #085c61;
+	--btn-active:       #06474b;
+	--font:               Roboto, Arial, sans-serif;
+}
+
+* {
+	padding:     0px;
+	margin:      0px;
+	box-sizing:  border-box;
+	font-family: var(--font);
+	user-select: none;
+}
+
+html, body {
+	height: 100%;
+}
+
+#container {
+	display:          flex;
+	flex-wrap:        wrap;
+	align-items:      center;
+	justify-content:  center;
+	height:           100%;
+	background-color: var(--background-color);
+}
+
+#container > main {
+	width:            750px;
+	height:           600px;
+	background-color: var(--cards-color);
+	border-radius:    20px;
+	box-shadow:       1px 0.5px 5px 1px rgba(51, 51, 51, 0.349);
+}
+
+#container > main > header {
+	background-color: var(--headers-color);
+	border-radius:    20px 20px 0px 0px;
+	padding:          8px 0px;
+	font-size:        0.8em;
+	color:            var(--cards-color);
+	text-align:       center;
+}
+
+#container > main > form {
+	display:          flex;
+	flex-wrap:        wrap;
+	align-items:      center;
+	justify-content:  center;
+	padding:          10px;
+}
+
+#action {
+	display:         flex;
+	justify-content: center;
+	width:           100%;
+	padding:         10px;
+}
+
+#action > div {
+	display:          flex;
+	align-items:      center;
+	justify-content:  space-between;
+	background-color: var(--headers-color);
+	width:            23%;
+	padding:          10px 20px;
+	border-radius:    20px;
+}
+
+#data {
+	display:         flex;
+	align-items:     center;
+	justify-content: center;
+	flex-direction:  column;
+	width:           100%;
+	padding:         10px 30px;
+}
+
+.line {
+	display:         flex;
+	align-items:     center;
+	justify-content: space-between;
+	width:           100%;
+	padding:         12px 0px;
+}
+
+.line > div {
+	display:        flex;
+	flex-direction: column;
+	width:          50%;
+}
+
+.line > div > label {
+	color:       #808080;
+	margin-bottom: 6px;
+}
+
+.line > div > :nth-child(2) {
+	width: 300px;
+	height:           35px;
+	background-color: var(--background-color);
+	border:           2px solid #808080b6;
+	color:          #808080;
+	border-radius:    5px;
+}
+
+#buttons {
+	display:         flex;
+	flex-direction:  column;
+	align-items:     center;
+	justify-content: center;
+	width:           100%;
+	padding:         10px 30px;
+}
+
+#buttons > :nth-child(1) {
+	display:         flex;
+	justify-content: center;
+	width:           40%;
+	margin-bottom:   10px;
+}
+
+.button {
+	width:            130px;
+	height:           40px;
+	background-color: var(--headers-color);
+	padding:          10px 40px;
+	border-radius:    15px;
+}
+
+.button:hover {
+	background-color: var(--btn-hover);
+	cursor:           pointer;
+}
+
+.button:active {
+	font-weight: bold;
+	padding:     8px 38px;
+	border:      2px solid var(--btn-active);
+}
