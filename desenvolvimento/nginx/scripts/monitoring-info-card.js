@@ -22,7 +22,7 @@ function update_info_card(infos) {
 	let elems = infos_array.map(info => {
 		const label = info[0];
 		
-		if (labels[label] !== undefined) {
+		if (labels[label] !== undefined) { // Ignore information that will not be displayed 
 			const value = info[1];
 
 			const div_elem   = window.document.createElement('div');
