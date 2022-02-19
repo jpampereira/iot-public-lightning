@@ -1,4 +1,4 @@
-"device_name","coordinates","street",district_id,interval,status,is_real
+"name","coordinates","street",district_id,interval,status,is_real
 "ZSVA0001","-23.62387246384708;-46.73480698739778","Rua Charles Spencer Chaplin",1,10000,True,True
 "ZSVA0002","-23.62434735053875;-46.7359215318322","Rua Abdo Ambuba",1,10000,False,False
 "ZSVA0003","-23.634735633502423;-46.73236741834121","Rua Alcantarilla",1,10000,True,False
