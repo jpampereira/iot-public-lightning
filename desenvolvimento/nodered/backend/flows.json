@@ -174,7 +174,7 @@
         "rap": true,
         "rh": 0,
         "x": 120,
-        "y": 117,
+        "y": 137,
         "wires": [
             [
                 "187acea3920b5c2c"
@@ -189,7 +189,7 @@
         "scope": null,
         "uncaught": false,
         "x": 101,
-        "y": 496,
+        "y": 536,
         "wires": [
             [
                 "4fed0b38fbbe8ae3"
@@ -203,7 +203,7 @@
         "name": "########## Exceptions Treatment",
         "info": "",
         "x": 180,
-        "y": 435,
+        "y": 475,
         "wires": []
     },
     {
@@ -220,7 +220,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 251,
-        "y": 496,
+        "y": 536,
         "wires": []
     },
     {
@@ -235,7 +235,7 @@
         "finalize": "",
         "libs": [],
         "x": 290,
-        "y": 117,
+        "y": 137,
         "wires": [
             [
                 "42c1b1a281ba72f5"
@@ -249,7 +249,7 @@
         "name": "########## Store sensors data",
         "info": "",
         "x": 170,
-        "y": 235,
+        "y": 255,
         "wires": []
     },
     {
@@ -261,7 +261,7 @@
             "88a5b57865658712"
         ],
         "x": 975,
-        "y": 95,
+        "y": 115,
         "wires": []
     },
     {
@@ -273,7 +273,7 @@
             "4f84135b11c27312"
         ],
         "x": 55,
-        "y": 275,
+        "y": 315,
         "wires": [
             [
                 "96803667e593d0dc"
@@ -292,7 +292,7 @@
         "finalize": "",
         "libs": [],
         "x": 160,
-        "y": 275,
+        "y": 315,
         "wires": [
             [
                 "fea15522f7bc9730"
@@ -306,7 +306,7 @@
         "name": "",
         "env": [],
         "x": 300,
-        "y": 275,
+        "y": 315,
         "wires": [
             [
                 "8885c9540ad9bf99"
@@ -327,7 +327,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 490,
-        "y": 275,
+        "y": 315,
         "wires": []
     },
     {
@@ -436,7 +436,7 @@
         "type": "function",
         "z": "7bfe80d199363eac",
         "name": "Get active devices",
-        "func": "msg.payload = `SELECT ID FROM DEVICES_INVENTORY WHERE STATUS = '1'`;\nreturn msg;",
+        "func": "msg.payload = `SELECT ID FROM DEVICES WHERE STATUS = '1'`;\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -836,7 +836,7 @@
         "type": "function",
         "z": "7f5557aca01f4737",
         "name": "Set query",
-        "func": "// Get data from last 24 hours or week\n\nfunction format_date (timestamp) {\n    const year = timestamp.getFullYear();\n    const mon  = `0${timestamp.getMonth()+1}`.slice(-2);\n    const day  = `0${timestamp.getDate()}`.slice(-2);\n    const hour = `0${timestamp.getHours()}`.slice(-2);\n    const min  = `0${timestamp.getMinutes()}`.slice(-2);\n    const sec  = `0${timestamp.getSeconds()}`.slice(-2);\n    \n    return `${year}-${mon}-${day} ${hour}:${min}:${sec}`;\n}\n\nconst threshold   = msg.threshold;\nconst interval    = msg.interval;\nconst device_name = msg.device_name;\n\nconst end   = format_date(threshold);\nconst begin = format_date(new Date(threshold - 1000 * 60 * interval));\n\nmsg.payload = `SELECT SDI.DEVICE_ID, SDI.VOLTAGE_MIN, SDI.VOLTAGE_MAX, SDI.VOLTAGE_AVG, SDI.CURRENT_MIN, SDI.CURRENT_MAX, SDI.CURRENT_AVG, SDI.LIGHTNESS_MIN, SDI.LIGHTNESS_MAX, SDI.LIGHTNESS_AVG, SDI.POWER_MIN, SDI.POWER_MAX, SDI.POWER_AVG, SDI.POWER_EXPEND, SDI.NUM_REGISTRIES, SDI.INSERTION_TIME\n               FROM SENSORS_DATA_INTERVAL AS SDI \n               JOIN DEVICES_INVENTORY AS DI ON SDI.DEVICE_ID = DI.ID \n               WHERE DI.DEVICE_NAME = '${device_name}'\n               AND (SDI.INSERTION_TIME AT TIME ZONE 'CST') > (TO_TIMESTAMP('${begin}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST') \n               AND (SDI.INSERTION_TIME AT TIME ZONE 'CST') <= (TO_TIMESTAMP('${end}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST')\n               ORDER BY SDI.INSERTION_TIME`;\n               \nreturn msg;",
+        "func": "// Get data from last 24 hours or week\n\nfunction format_date (timestamp) {\n    const year = timestamp.getFullYear();\n    const mon  = `0${timestamp.getMonth()+1}`.slice(-2);\n    const day  = `0${timestamp.getDate()}`.slice(-2);\n    const hour = `0${timestamp.getHours()}`.slice(-2);\n    const min  = `0${timestamp.getMinutes()}`.slice(-2);\n    const sec  = `0${timestamp.getSeconds()}`.slice(-2);\n    \n    return `${year}-${mon}-${day} ${hour}:${min}:${sec}`;\n}\n\nconst threshold   = msg.threshold;\nconst interval    = msg.interval;\nconst device_name = msg.device_name;\n\nconst end   = format_date(threshold);\nconst begin = format_date(new Date(threshold - 1000 * 60 * interval));\n\nmsg.payload = `SELECT SDI.VOLTAGE_MIN, SDI.VOLTAGE_MAX, SDI.VOLTAGE_AVG, SDI.CURRENT_MIN, SDI.CURRENT_MAX, SDI.CURRENT_AVG, SDI.LIGHTNESS_MIN, SDI.LIGHTNESS_MAX, SDI.LIGHTNESS_AVG, SDI.POWER_MIN, SDI.POWER_MAX, SDI.POWER_AVG, SDI.POWER_EXPEND, SDI.NUM_REGISTRIES, SDI.INSERTION_TIME\n               FROM SENSORS_DATA_INTERVAL AS SDI \n               JOIN DEVICES AS D ON SDI.DEVICE_ID = D.ID \n               WHERE D.NAME = '${device_name}'\n               AND (SDI.INSERTION_TIME AT TIME ZONE 'CST') > (TO_TIMESTAMP('${begin}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST') \n               AND (SDI.INSERTION_TIME AT TIME ZONE 'CST') <= (TO_TIMESTAMP('${end}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST')\n               ORDER BY SDI.INSERTION_TIME`;\n               \nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -935,7 +935,7 @@
         "type": "function",
         "z": "7f5557aca01f4737",
         "name": "Set query",
-        "func": "// Get data from last hour\n\nfunction format_date (timestamp) {\n    const year = timestamp.getFullYear();\n    const mon  = `0${timestamp.getMonth()+1}`.slice(-2);\n    const day  = `0${timestamp.getDate()}`.slice(-2);\n    const hour = `0${timestamp.getHours()}`.slice(-2);\n    const min  = `0${timestamp.getMinutes()}`.slice(-2);\n    const sec  = `0${timestamp.getSeconds()}`.slice(-2);\n    \n    return `${year}-${mon}-${day} ${hour}:${min}:${sec}`;\n}\n\nconst threshold   = msg.threshold;\nconst interval    = msg.interval;\nconst device_name = msg.device_name;\n\nconst end   = format_date(threshold);\nconst begin = format_date(new Date(threshold - 1000 * 60 * interval));\n\nmsg.payload = `SELECT SDRT.DEVICE_ID, SDRT.VOLTAGE, SDRT.CURRENT, SDRT.LIGHTNESS, SDRT.RELE_STATE, SDRT.INSERTION_TIME\n               FROM SENSORS_DATA_REAL_TIME AS SDRT \n               JOIN DEVICES_INVENTORY AS DI ON SDRT.DEVICE_ID = DI.ID \n               WHERE DI.DEVICE_NAME = '${device_name}'\n               AND (INSERTION_TIME AT TIME ZONE 'CST') >= (TO_TIMESTAMP('${begin}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST') \n               AND (INSERTION_TIME AT TIME ZONE 'CST') < (TO_TIMESTAMP('${end}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST')\n               ORDER BY INSERTION_TIME`;\n\nreturn msg;",
+        "func": "// Get data from last hour\n\nfunction format_date (timestamp) {\n    const year = timestamp.getFullYear();\n    const mon  = `0${timestamp.getMonth()+1}`.slice(-2);\n    const day  = `0${timestamp.getDate()}`.slice(-2);\n    const hour = `0${timestamp.getHours()}`.slice(-2);\n    const min  = `0${timestamp.getMinutes()}`.slice(-2);\n    const sec  = `0${timestamp.getSeconds()}`.slice(-2);\n    \n    return `${year}-${mon}-${day} ${hour}:${min}:${sec}`;\n}\n\nconst threshold   = msg.threshold;\nconst interval    = msg.interval;\nconst device_name = msg.device_name;\n\nconst end   = format_date(threshold);\nconst begin = format_date(new Date(threshold - 1000 * 60 * interval));\n\nmsg.payload = `SELECT SDRT.VOLTAGE, SDRT.CURRENT, SDRT.LIGHTNESS, SDRT.RELE_STATE, SDRT.INSERTION_TIME\n               FROM SENSORS_DATA_REAL_TIME AS SDRT \n               JOIN DEVICES AS D ON SDRT.DEVICE_ID = D.ID \n               WHERE D.NAME = '${device_name}'\n               AND (SDRT.INSERTION_TIME AT TIME ZONE 'CST') >= (TO_TIMESTAMP('${begin}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST') \n               AND (SDRT.INSERTION_TIME AT TIME ZONE 'CST') < (TO_TIMESTAMP('${end}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST')\n               ORDER BY SDRT.INSERTION_TIME`;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1109,7 +1109,7 @@
         "type": "function",
         "z": "7f5557aca01f4737",
         "name": "Set query",
-        "func": "const device_name = msg.device_name;\n\nmsg.payload = `SELECT SDRT.VOLTAGE, SDRT.CURRENT, SDRT.LIGHTNESS, SDRT.RELE_STATE\n               FROM SENSORS_DATA_REAL_TIME AS SDRT \n               JOIN DEVICES_INVENTORY AS DI ON SDRT.DEVICE_ID = DI.ID\n               WHERE DI.DEVICE_NAME = '${device_name}'\n               AND (SDRT.INSERTION_TIME AT TIME ZONE 'CST') > (CURRENT_TIMESTAMP AT TIME ZONE 'CST') - INTERVAL '1 min'\n               ORDER BY SDRT.INSERTION_TIME DESC\n               LIMIT 1;`;\n\nreturn msg;",
+        "func": "const device_name = msg.device_name;\n\nmsg.payload = `SELECT SDRT.VOLTAGE, SDRT.CURRENT, SDRT.LIGHTNESS, SDRT.RELE_STATE\n               FROM SENSORS_DATA_REAL_TIME AS SDRT \n               JOIN DEVICES AS D ON SDRT.DEVICE_ID = D.ID\n               WHERE D.NAME = '${device_name}'\n               AND (SDRT.INSERTION_TIME AT TIME ZONE 'CST') > (CURRENT_TIMESTAMP AT TIME ZONE 'CST') - INTERVAL '1 min'\n               ORDER BY SDRT.INSERTION_TIME DESC\n               LIMIT 1;`;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1371,7 +1371,7 @@
         "name": "",
         "env": [],
         "x": 640,
-        "y": 117,
+        "y": 137,
         "wires": [
             [
                 "e3c40742d52ebe20"
@@ -1383,14 +1383,14 @@
         "type": "function",
         "z": "8813ec2835daae18",
         "name": "Get device status",
-        "func": "const device_id = msg.sensor_output.device_id;\n\nmsg.payload = `SELECT STATUS FROM DEVICES_INVENTORY WHERE ID = ${device_id}`;\n\nreturn msg;",
+        "func": "const device_id = msg.sensor_output.device_id;\n\nmsg.payload = `SELECT STATUS FROM DEVICES WHERE ID = ${device_id}`;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
         "x": 470,
-        "y": 117,
+        "y": 137,
         "wires": [
             [
                 "136e50967fd0d184"
@@ -1409,7 +1409,7 @@
         "finalize": "",
         "libs": [],
         "x": 820,
-        "y": 117,
+        "y": 137,
         "wires": [
             [
                 "4f84135b11c27312"
@@ -1433,7 +1433,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 1080,
-        "y": 138,
+        "y": 158,
         "wires": []
     },
     {
@@ -1441,7 +1441,7 @@
         "type": "function",
         "z": "7f5557aca01f4737",
         "name": "Set query",
-        "func": "// Get data from current month\n\nfunction format_date (timestamp) {\n    const year = timestamp.getFullYear();\n    const mon  = `0${timestamp.getMonth()+1}`.slice(-2);\n    const day  = `0${timestamp.getDate()}`.slice(-2);\n    const hour = `0${timestamp.getHours()}`.slice(-2);\n    const min  = `0${timestamp.getMinutes()}`.slice(-2);\n    const sec  = `0${timestamp.getSeconds()}`.slice(-2);\n    \n    return `${year}-${mon}-${day} ${hour}:${min}:${sec}`;\n}\n\nconst threshold   = msg.threshold;\nconst device_name = msg.device_name;\n\nconst end = format_date(threshold);\n\nlet begin = new Date(threshold);\nbegin.setDate(1);\nbegin = format_date(begin);\n\nmsg.payload = `SELECT SDI.DEVICE_ID, SDI.VOLTAGE_MIN, SDI.VOLTAGE_MAX, SDI.VOLTAGE_AVG, SDI.CURRENT_MIN, SDI.CURRENT_MAX, SDI.CURRENT_AVG, SDI.LIGHTNESS_MIN, SDI.LIGHTNESS_MAX, SDI.LIGHTNESS_AVG, SDI.POWER_MIN, SDI.POWER_MAX, SDI.POWER_AVG, SDI.POWER_EXPEND, SDI.NUM_REGISTRIES, SDI.INSERTION_TIME\n               FROM SENSORS_DATA_INTERVAL AS SDI \n               JOIN DEVICES_INVENTORY AS DI ON SDI.DEVICE_ID = DI.ID\n               WHERE DI.DEVICE_NAME = '${device_name}'\n               AND (SDI.INSERTION_TIME AT TIME ZONE 'CST') > (TO_TIMESTAMP('${begin}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST') \n               AND (SDI.INSERTION_TIME AT TIME ZONE 'CST') <= (TO_TIMESTAMP('${end}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST')\n               ORDER BY SDI.INSERTION_TIME`;\n               \nreturn msg;",
+        "func": "// Get data from current month\n\nfunction format_date (timestamp) {\n    const year = timestamp.getFullYear();\n    const mon  = `0${timestamp.getMonth()+1}`.slice(-2);\n    const day  = `0${timestamp.getDate()}`.slice(-2);\n    const hour = `0${timestamp.getHours()}`.slice(-2);\n    const min  = `0${timestamp.getMinutes()}`.slice(-2);\n    const sec  = `0${timestamp.getSeconds()}`.slice(-2);\n    \n    return `${year}-${mon}-${day} ${hour}:${min}:${sec}`;\n}\n\nconst threshold   = msg.threshold;\nconst device_name = msg.device_name;\n\nconst end = format_date(threshold);\n\nlet begin = new Date(threshold);\nbegin.setDate(1);\nbegin = format_date(begin);\n\nmsg.payload = `SELECT SDI.VOLTAGE_MIN, SDI.VOLTAGE_MAX, SDI.VOLTAGE_AVG, SDI.CURRENT_MIN, SDI.CURRENT_MAX, SDI.CURRENT_AVG, SDI.LIGHTNESS_MIN, SDI.LIGHTNESS_MAX, SDI.LIGHTNESS_AVG, SDI.POWER_MIN, SDI.POWER_MAX, SDI.POWER_AVG, SDI.POWER_EXPEND, SDI.NUM_REGISTRIES, SDI.INSERTION_TIME\n               FROM SENSORS_DATA_INTERVAL AS SDI \n               JOIN DEVICES AS D ON SDI.DEVICE_ID = D.ID\n               WHERE D.NAME = '${device_name}'\n               AND (SDI.INSERTION_TIME AT TIME ZONE 'CST') > (TO_TIMESTAMP('${begin}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST') \n               AND (SDI.INSERTION_TIME AT TIME ZONE 'CST') <= (TO_TIMESTAMP('${end}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST')\n               ORDER BY SDI.INSERTION_TIME`;\n               \nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1531,7 +1531,7 @@
         "type": "function",
         "z": "4a674aaa9e667dd6",
         "name": "Set query",
-        "func": "const device_name = msg.device_name;\n\nmsg.payload = `SELECT DI.COORDINATES, DI.STREET, Z.ZONE, D.DISTRICT, DI.INTERVAL, DI.STATUS\n               FROM DEVICES_INVENTORY AS DI \n               JOIN DISTRICTS AS D ON DI.DISTRICT_ID = D.ID\n               JOIN ZONES AS Z ON D.ZONE_ID = Z.ID\n               WHERE DEVICE_NAME = '${device_name}'`;\n\nreturn msg;",
+        "func": "const device_name = msg.device_name;\n\nmsg.payload = `SELECT D.COORDINATES, D.STREET, Z.ZONE, DI.DISTRICT, D.INTERVAL, D.STATUS\n               FROM DEVICES AS D\n               JOIN DISTRICTS AS DI ON D.DISTRICT_ID = DI.ID\n               JOIN ZONES AS Z ON DI.ZONE_ID = Z.ID\n               WHERE NAME = '${device_name}'`;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1602,7 +1602,7 @@
         "upload": false,
         "swaggerDoc": "",
         "x": 150,
-        "y": 856,
+        "y": 936,
         "wires": [
             [
                 "c25aa9a97958c4e6"
@@ -1616,7 +1616,7 @@
         "name": "",
         "env": [],
         "x": 740,
-        "y": 856,
+        "y": 936,
         "wires": [
             [
                 "86ba935683dc8e83"
@@ -1631,7 +1631,7 @@
         "statusCode": "",
         "headers": {},
         "x": 1060,
-        "y": 856,
+        "y": 936,
         "wires": []
     },
     {
@@ -1648,7 +1648,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 1280,
-        "y": 856,
+        "y": 936,
         "wires": []
     },
     {
@@ -1663,7 +1663,7 @@
         "finalize": "",
         "libs": [],
         "x": 550,
-        "y": 835,
+        "y": 915,
         "wires": [
             [
                 "b5500c0de884707c"
@@ -1682,7 +1682,7 @@
         "finalize": "",
         "libs": [],
         "x": 890,
-        "y": 856,
+        "y": 936,
         "wires": [
             [
                 "3f76da596363637a",
@@ -1733,7 +1733,7 @@
         "repair": false,
         "outputs": 2,
         "x": 350,
-        "y": 856,
+        "y": 936,
         "wires": [
             [
                 "bb96314b45690cfe"
@@ -1755,7 +1755,7 @@
         "finalize": "",
         "libs": [],
         "x": 550,
-        "y": 878,
+        "y": 958,
         "wires": [
             [
                 "b5500c0de884707c"
@@ -1784,7 +1784,7 @@
         "type": "function",
         "z": "4a674aaa9e667dd6",
         "name": "Search for device",
-        "func": "const device_info = msg.payload.params;\n\nmsg.payload = `SELECT COUNT(*) \n               FROM DEVICES_INVENTORY \n               WHERE DEVICE_NAME = '${device_info.device_name}'`;\n               \nmsg.device_info = device_info;\n               \nreturn msg;",
+        "func": "const device_info = msg.payload.params;\n\nmsg.payload = `SELECT COUNT(*) \n               FROM DEVICES \n               WHERE NAME = '${device_info.device_name}'`;\n               \nmsg.device_info = device_info;\n               \nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1896,7 +1896,7 @@
         "type": "function",
         "z": "4a674aaa9e667dd6",
         "name": "Insert device",
-        "func": "const device_info = msg.device_info;\n\nconst device_name = device_info.device_name;\nconst coordinates = device_info.coordinates;\nconst street      = device_info.street;\nconst district    = msg.payload[0].id;\nconst interval    = device_info.interval;\nconst status      = device_info.status === 'OPERACIONAL' ? true : false;\n\nmsg.payload = `INSERT\n               INTO DEVICES_INVENTORY (DEVICE_NAME, COORDINATES, STREET, DISTRICT_ID, INTERVAL, STATUS)\n               VALUES ('${device_name}', '${coordinates}', '${street}', ${district}, ${interval}, ${status})`;\n\nreturn msg;",
+        "func": "const device_info = msg.device_info;\n\nconst device_name = device_info.device_name;\nconst coordinates = device_info.coordinates;\nconst street      = device_info.street;\nconst district    = msg.payload[0].id;\nconst interval    = device_info.interval;\nconst status      = device_info.status === 'OPERACIONAL' ? true : false;\n\nmsg.payload = `INSERT\n               INTO DEVICES (NAME, COORDINATES, STREET, DISTRICT_ID, INTERVAL, STATUS)\n               VALUES ('${device_name}', '${coordinates}', '${street}', ${district}, ${interval}, ${status})`;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -2073,7 +2073,7 @@
         "type": "function",
         "z": "e27b09cd4ecd866a",
         "name": "Parse request body",
-        "func": "const device_id = msg.payload[0].id;\nconst action    = msg.action;\n\nmsg.topic = `pgc_ufabc/devices/actions/${device_id}`;\nmsg.payload = action;\n\nreturn msg;",
+        "func": "const device_id = msg.payload[0].id;\nconst action    = msg.action;\n\nmsg.topic = `pgc_ufabc/devices/actions/change_state/${device_id}`;\nmsg.payload = action;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -2134,7 +2134,7 @@
         "type": "function",
         "z": "e27b09cd4ecd866a",
         "name": "Get device id",
-        "func": "const action      = msg.payload.action;\nconst device_name = msg.payload.device_name;\n\nmsg.payload = `SELECT ID FROM DEVICES_INVENTORY WHERE DEVICE_NAME = '${device_name}'`;\n\nmsg.action      = action;\nmsg.device_name = device_name;\n\nreturn msg;",
+        "func": "const action      = msg.payload.action;\nconst device_name = msg.payload.device_name;\n\nmsg.payload = `SELECT ID FROM DEVICES WHERE NAME = '${device_name}'`;\n\nmsg.action      = action;\nmsg.device_name = device_name;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -2187,7 +2187,7 @@
         "scope": null,
         "uncaught": false,
         "x": 100,
-        "y": 1096,
+        "y": 1176,
         "wires": [
             [
                 "d1e16d213602f942"
@@ -2201,7 +2201,7 @@
         "name": "########## Exceptions Treatment",
         "info": "",
         "x": 180,
-        "y": 1035,
+        "y": 1115,
         "wires": []
     },
     {
@@ -2218,7 +2218,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 630,
-        "y": 1096,
+        "y": 1176,
         "wires": []
     },
     {
@@ -2229,7 +2229,7 @@
         "scope": null,
         "uncaught": false,
         "x": 100,
-        "y": 376,
+        "y": 596,
         "wires": [
             [
                 "54d530db04013318"
@@ -2243,7 +2243,7 @@
         "name": "########## Exceptions Treatment",
         "info": "",
         "x": 180,
-        "y": 315,
+        "y": 535,
         "wires": []
     },
     {
@@ -2260,7 +2260,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 630,
-        "y": 376,
+        "y": 596,
         "wires": []
     },
     {
@@ -2300,7 +2300,7 @@
         "name": "########## Get geographic info",
         "info": "",
         "x": 170,
-        "y": 775,
+        "y": 855,
         "wires": []
     },
     {
@@ -2315,7 +2315,7 @@
         "finalize": "",
         "libs": [],
         "x": 270,
-        "y": 1096,
+        "y": 1176,
         "wires": [
             [
                 "ae3acdea4e84f4b4",
@@ -2331,7 +2331,7 @@
         "statusCode": "",
         "headers": {},
         "x": 460,
-        "y": 1096,
+        "y": 1176,
         "wires": []
     },
     {
@@ -2377,7 +2377,7 @@
         "finalize": "",
         "libs": [],
         "x": 270,
-        "y": 376,
+        "y": 596,
         "wires": [
             [
                 "783d881f4f37ed3b",
@@ -2393,7 +2393,7 @@
         "statusCode": "",
         "headers": {},
         "x": 460,
-        "y": 376,
+        "y": 596,
         "wires": []
     },
     {
@@ -2428,7 +2428,7 @@
         "type": "function",
         "z": "4a674aaa9e667dd6",
         "name": "Search for device",
-        "func": "const device_info = msg.payload.params;\n\nmsg.payload = `SELECT COUNT(*) \n               FROM DEVICES_INVENTORY \n               WHERE DEVICE_NAME = '${device_info.device_name}'`;\n               \nmsg.device_info = device_info;\n               \nreturn msg;",
+        "func": "const device_info = msg.payload.params;\n\nmsg.payload = `SELECT COUNT(*) \n               FROM DEVICES \n               WHERE NAME = '${device_info.device_name}'`;\n               \nmsg.device_info = device_info;\n               \nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -2585,14 +2585,14 @@
         "type": "function",
         "z": "4a674aaa9e667dd6",
         "name": "Update device",
-        "func": "const device_info = msg.device_info;\n\nconst device_name = device_info.device_name;\nconst coordinates = device_info.coordinates;\nconst street      = device_info.street;\nconst district    = msg.payload[0].id;\nconst interval    = device_info.interval;\nconst status      = device_info.status === 'OPERACIONAL' ? true : false;\n\nmsg.payload = `UPDATE DEVICES_INVENTORY\n               SET DEVICE_NAME = '${device_name}',\n                   COORDINATES = '${coordinates}',\n                   STREET = '${street}',\n                   DISTRICT_ID = ${district},\n                   INTERVAL = ${interval},\n                   STATUS = ${status}\n               WHERE DEVICE_NAME = '${device_name}'`;\n\nreturn msg;",
+        "func": "const device_info = msg.device_info;\n\nconst device_name = device_info.device_name;\nconst coordinates = device_info.coordinates;\nconst street      = device_info.street;\nconst district    = msg.payload[0].id;\nconst interval    = device_info.interval;\nconst status      = device_info.status === 'OPERACIONAL' ? true : false;\n\nmsg.payload = `UPDATE DEVICES\n               SET NAME = '${device_name}',\n                   COORDINATES = '${coordinates}',\n                   STREET = '${street}',\n                   DISTRICT_ID = ${district},\n                   INTERVAL = ${interval},\n                   STATUS = ${status}\n               WHERE NAME = '${device_name}'`;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
         "x": 180,
-        "y": 676,
+        "y": 716,
         "wires": [
             [
                 "a7a9fdad92d0bee0"
@@ -2608,7 +2608,7 @@
             "3fd0be4cc0f3bdbc"
         ],
         "x": 55,
-        "y": 676,
+        "y": 716,
         "wires": [
             [
                 "7d354790d19477dd"
@@ -2622,7 +2622,7 @@
         "name": "",
         "env": [],
         "x": 340,
-        "y": 676,
+        "y": 716,
         "wires": [
             [
                 "5e444f6f03c677da"
@@ -2642,8 +2642,8 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 910,
-        "y": 676,
+        "x": 750,
+        "y": 756,
         "wires": []
     },
     {
@@ -2658,10 +2658,11 @@
         "finalize": "",
         "libs": [],
         "x": 510,
-        "y": 676,
+        "y": 716,
         "wires": [
             [
                 "f1ec79581a0d0359",
+                "428c91e378be6650",
                 "f9f8c81bf4bd0380"
             ]
         ]
@@ -2673,8 +2674,134 @@
         "name": "Send response",
         "statusCode": "",
         "headers": {},
-        "x": 700,
+        "x": 720,
+        "y": 716,
+        "wires": []
+    },
+    {
+        "id": "428c91e378be6650",
+        "type": "link out",
+        "z": "4a674aaa9e667dd6",
+        "name": "OUT (2) Update a device",
+        "links": [
+            "e94d04fcb7ddddd9"
+        ],
+        "x": 655,
         "y": 676,
+        "wires": []
+    },
+    {
+        "id": "e94d04fcb7ddddd9",
+        "type": "link in",
+        "z": "e27b09cd4ecd866a",
+        "name": "BEGIN Update messages interval",
+        "links": [
+            "428c91e378be6650"
+        ],
+        "x": 55,
+        "y": 335,
+        "wires": [
+            [
+                "d6c15f789150113c"
+            ]
+        ]
+    },
+    {
+        "id": "e38621aa38a6a1c2",
+        "type": "comment",
+        "z": "e27b09cd4ecd866a",
+        "name": "########## Update messages interval",
+        "info": "",
+        "x": 190,
+        "y": 276,
+        "wires": []
+    },
+    {
+        "id": "d6c15f789150113c",
+        "type": "function",
+        "z": "e27b09cd4ecd866a",
+        "name": "Get device info",
+        "func": "const device_name = msg.device_info.device_name;\n\nmsg.payload = `SELECT ID, INTERVAL FROM DEVICES WHERE NAME = '${device_name}'`;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 180,
+        "y": 335,
+        "wires": [
+            [
+                "e3504661b768ac18"
+            ]
+        ]
+    },
+    {
+        "id": "e3504661b768ac18",
+        "type": "subflow:bab6ffe5b7ae3a28",
+        "z": "e27b09cd4ecd866a",
+        "name": "",
+        "env": [],
+        "x": 340,
+        "y": 335,
+        "wires": [
+            [
+                "4f29d941c74707a5"
+            ]
+        ]
+    },
+    {
+        "id": "4f29d941c74707a5",
+        "type": "function",
+        "z": "e27b09cd4ecd866a",
+        "name": "Prepare message",
+        "func": "const device_id = msg.payload[0].id;\nconst interval  = msg.payload[0].interval;\n\nmsg.topic = `pgc_ufabc/devices/actions/change_interval/${device_id}`;\nmsg.payload = interval;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 510,
+        "y": 335,
+        "wires": [
+            [
+                "4bc37b961a472284",
+                "b644f813a9b949c7"
+            ]
+        ]
+    },
+    {
+        "id": "4bc37b961a472284",
+        "type": "mqtt out",
+        "z": "e27b09cd4ecd866a",
+        "name": "Sensors Input",
+        "topic": "",
+        "qos": "0",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "df4bdf4be0d4150f",
+        "x": 700,
+        "y": 335,
+        "wires": []
+    },
+    {
+        "id": "b644f813a9b949c7",
+        "type": "debug",
+        "z": "e27b09cd4ecd866a",
+        "name": "[EXIT] Update messages interval",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 940,
+        "y": 336,
         "wires": []
     }
 ]

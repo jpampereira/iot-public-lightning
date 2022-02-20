@@ -5,7 +5,8 @@ volumes:
   db-data:
   db-client-data:
   backend-data:
-  devices-data:
+  devices_nodered-data:
+  devices_redis-data:
 
 ### SERVICES ############################################################
 services:
@@ -28,7 +29,6 @@ services:
       - ../postgres/dumps:/dumps
       - ../postgres/scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
 
-  ## DATABASE CLIENT ##############################
   db-client:
     container_name: db-client
     image: dpage/pgadmin4:6.1 # https://hub.docker.com/r/dpage/pgadmin4/
@@ -74,8 +74,8 @@ services:
       - backend
 
   ## DEVICES SIMULATION ##############################
-  devices:
-    container_name: devices
+  devices_nodered:
+    container_name: devices_nodered
     image: nodered/node-red:2.0.6 # https://hub.docker.com/r/nodered/node-red
     restart: always
     environment:
@@ -83,8 +83,21 @@ services:
     ports:
       - 1881:1880
     volumes:
-      - devices-data:/data
+      - devices_nodered-data:/data
     links:
       - db
+      - devices_redis
     depends_on:
       - db
+      - devices_redis
+      
+  devices_redis:
+    container_name: devices_redis
+    image: redislabs/rejson:latest # https://hub.docker.com/r/redislabs/rejson/
+    restart: always
+    ports:
+      - 6379:6379
+    volumes:
+      - ../redis/devices/redis.conf:/usr/local/etc/redis.conf
+      - devices_redis-data:/data
+    command: "redis-server /usr/local/etc/redis.conf"
