@@ -24,8 +24,8 @@
 				<div id="action">
 					<div>
 						<div>
-							<label for="create">Novo</label>
-							<input type="radio" name="action" value="create" id="create" checked>
+							<label for="insert">Novo</label>
+							<input type="radio" name="action" value="insert" id="insert" checked>
 						</div>
 						<div>
 							<label for="update">Editar</label>
@@ -36,9 +36,11 @@
 				<div id="data">
 					<div class="line">
 						<div>
-							<label for="device_name">Nome do Dispositivo</label>
-							<input type="text" name="device_name" id="device_name">
+							<label for="name">Nome do Dispositivo</label>
+							<input type="text" name="name" id="name" class="disabled">
 						</div>
+					</div>
+					<div class="line">
 						<div>
 							<label for="status">Status Operacional</label>
 							<select name="status" id="status">
@@ -46,34 +48,32 @@
 								<option>NÃO OPERACIONAL</option>
 							</select>
 						</div>
-					</div>
-					<div class="line">
 						<div>
 							<label for="street">Endereço</label>
 							<input type="text" name="street" id="street">
-						</div>
-						<div>
-							<label for="coordinates">Coordenadas</label>
-							<input type="text" name="coordinates" id="coordinates" placeholder="Latitude;Longitude">
 						</div>
 					</div>
 					<div class="line">
 						<div>
 							<label for="zone">Zona</label>
 							<select name="zone" id="zone">
-								<option value="" selected hidden>Selecionar zona</option>
+								<option value="" hidden>Selecionar zona</option>
 							</select>
 						</div>
 						<div>
 							<label for="district">Bairro</label>
-							<select name="district" id="district">
-								<option value="" selected hidden>Selecionar bairro</option>
+							<select name="district" id="district" disabled>
+								<option value="" hidden>Selecionar bairro</option>
 							</select>
 						</div>
 					</div>
 					<div class="line">
 						<div>
-							<label for="interval">Intervalo de Envio (Mínimo: 1000 ms)</label>
+							<label for="coordinates">Coordenadas</label>
+							<input type="text" name="coordinates" id="coordinates" placeholder="Latitude;Longitude">
+						</div>
+						<div>
+							<label for="interval">Intervalo de Envio (em milissegundos)</label>
 							<input type="number" name="interval" id="interval" min="1000" value="1000">
 						</div>
 					</div>

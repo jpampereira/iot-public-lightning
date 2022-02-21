@@ -111,6 +111,10 @@ html, body {
 	border-radius:    5px;
 }
 
+.line > div > :nth-child(2)[disabled] {
+	opacity: 0.7;
+}
+
 #buttons {
 	display:         flex;
 	flex-direction:  column;

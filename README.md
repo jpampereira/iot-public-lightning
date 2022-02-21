@@ -5,5 +5,3 @@ Próximos passos:
 
 - Redis para consulta em tempo real e de alarmes
 - Alarmística
-- Página para edição de equipamentos
-- Inserir mais equipamentos no inventário
