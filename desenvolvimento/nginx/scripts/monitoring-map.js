@@ -22,7 +22,7 @@ function update_map(device_name) {
 		if (Object.keys(device_data).length > 0) {
 			update_info_card(device_data);
 
-			const [lat, lng] = device_data.coordinates.split(/\s*;\s*/).map(coordinate => parseFloat(coordinate));
+			const [lat, lng] = device_data.coordinates.split(/\s*,\s*/).map(coordinate => parseFloat(coordinate));
 
 			window.map.setCenter({ lat, lng });
 			window.map.setZoom(17);

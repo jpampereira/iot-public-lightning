@@ -1,11 +1,97 @@
-﻿id,"district",zone_id
-1,"Vila Andrade",5
-2,"Campo Belo",5
-3,"Butantã",4
-4,"Vila Leopoldina",4
-5,"Itaquera",2
-6,"Mooca",2
-7,"Brás",1
-8,"República",1
-9,"Santana",3
-10,"São Miguel Paulista",3
+﻿"district";zone_id
+"Barra Funda";1
+"Bela Vista";1
+"Bom Retiro";1
+"Brás";1
+"Consolação";1
+"Liberdade";1
+"Pari";1
+"República";1
+"Santa Cecília";1
+"Sé";1
+"Água Rasa";2
+"Aricanduva";2
+"Artur Alvim";2
+"Belém";2
+"Cangaíba";2
+"Carrão";2
+"Cidade Líder";2
+"Cidade Tiradentes";2
+"Ermelino Matarazzo";2
+"Guaianazes";2
+"Iguatemi";2
+"Itaim Paulista";2
+"Itaquera";2
+"Jardim Helena";2
+"José Bonifácio";2
+"Lajeado";2
+"Moóca";2
+"Parque do Carmo";2
+"Penha";2
+"Ponte Rasa";2
+"Sapopemba";2
+"São Lucas";2
+"São Mateus";2
+"São Miguel";2
+"São Rafael";2
+"Tatuapé";2
+"Vila Curuçá";2
+"Vila Formosa";2
+"Vila Jacuí";2
+"Vila Matilde";2
+"Vila Prudente";2
+"Casa Verde";3
+"Jaçanã";3
+"Mandaqui";3
+"Santana";3
+"Tremembé";3
+"Tucuruvi";3
+"Vila Guilherme";3
+"Vila Maria";3
+"Vila Medeiros";3
+"Alto de Pinheiros";4
+"Anhanguera";4
+"Brasilândia";4
+"Butantã";4
+"Cachoeirinha";4
+"Freguesia do Ó";4
+"Jaguará";4
+"Jaguaré";4
+"Jaraguá";4
+"Lapa";4
+"Limão";4
+"Perdizes";4
+"Perus";4
+"Pinheiros";4
+"Pirituba";4
+"Raposo Tavares";4
+"Rio Pequeno";4
+"São Domingos";4
+"Vila Leopoldina";4
+"Cambuci";5
+"Campo Belo";5
+"Campo Grande";5
+"Campo Limpo";5
+"Capão Redondo";5
+"Cidade Ademar";5
+"Cidade Dutra";5
+"Cursino";5
+"Grajaú";5
+"Ipiranga";5
+"Itaim Bibi";5
+"Jabaquara";5
+"Jardim Ângela";5
+"Jardim Paulista";5
+"Jardim São Luis";5
+"Marsilac";5
+"Moema";5
+"Morumbi";5
+"Parelheiros";5
+"Pedreira";5
+"Sacomã";5
+"Santo Amaro";5
+"Saúde";5
+"Socorro";5
+"Vila Andrade";5
+"Vila Mariana";5
+"Vila Sônia";5
