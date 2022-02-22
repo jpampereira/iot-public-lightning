@@ -1,20 +1,27 @@
 [
     {
-        "id": "f6f2187d.f17ca8",
+        "id": "d54052ea6cb4b184",
         "type": "tab",
         "label": "Simulate devices",
         "disabled": false,
         "info": ""
     },
     {
-        "id": "929f53a6eaff0271",
+        "id": "ab0855462a34e9f7",
         "type": "tab",
         "label": "Device actions",
         "disabled": false,
         "info": ""
     },
     {
-        "id": "bab6ffe5b7ae3a28",
+        "id": "a444632620451a72",
+        "type": "tab",
+        "label": "Device errors",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "86696f385ff65db5",
         "type": "subflow",
         "name": "Database",
         "info": "",
@@ -25,7 +32,7 @@
                 "y": 100,
                 "wires": [
                     {
-                        "id": "2dc46f9c24f9eb35"
+                        "id": "acebf4880992c09a"
                     }
                 ]
             }
@@ -36,7 +43,7 @@
                 "y": 100,
                 "wires": [
                     {
-                        "id": "dcf9a148a61be9fc",
+                        "id": "a3af27511d4c1b33",
                         "port": 0
                     }
                 ]
@@ -47,7 +54,7 @@
         "color": "#DDAA99"
     },
     {
-        "id": "e22e266bc8e03a72",
+        "id": "185bd0a8b5a4b916",
         "type": "subflow",
         "name": "Database Redis",
         "info": "",
@@ -55,10 +62,10 @@
         "in": [
             {
                 "x": 60,
-                "y": 146,
+                "y": 166,
                 "wires": [
                     {
-                        "id": "4ff6e2dcf77fa978"
+                        "id": "3c546124752a49f4"
                     }
                 ]
             }
@@ -66,20 +73,20 @@
         "out": [
             {
                 "x": 1040,
-                "y": 783,
+                "y": 1163,
                 "wires": [
                     {
-                        "id": "1c3cb0c15be5e855",
+                        "id": "adc4c59772c6298c",
                         "port": 0
                     }
                 ]
             },
             {
                 "x": 120,
-                "y": 860,
+                "y": 1240,
                 "wires": [
                     {
-                        "id": "eaedca67499de3c1",
+                        "id": "ab7425eb7c0d4676",
                         "port": 0
                     }
                 ]
@@ -90,7 +97,7 @@
         "color": "#DDAA99"
     },
     {
-        "id": "5881b3f4325c9978",
+        "id": "0cae39fb33383cf0",
         "type": "mqtt-broker",
         "name": "MQTT Mosquitto",
         "broker": "test.mosquitto.org",
@@ -115,7 +122,7 @@
         "sessionExpiry": ""
     },
     {
-        "id": "21c629e3be9268f3",
+        "id": "a60982b15f334d52",
         "type": "mydbConfig",
         "name": "postgres@db:5432/PGC",
         "host": "db",
@@ -131,7 +138,7 @@
         "idle": "1000"
     },
     {
-        "id": "ed302c6abb601205",
+        "id": "a7cb2a42ddfd0d99",
         "type": "redis-config",
         "name": "Redis",
         "options": "{\"host\":\"devices_redis\"}",
@@ -139,30 +146,29 @@
         "optionsType": "json"
     },
     {
-        "id": "52cb4927a775e913",
+        "id": "32feb38f11d62b82",
         "type": "function",
-        "z": "f6f2187d.f17ca8",
+        "z": "d54052ea6cb4b184",
         "name": "Set measure values",
-        "func": "const device_id  = msg.device.id;\nconst rele_state = msg.device.rele_state;\n\nconst voltage   = rele_state ? Math.floor(Math.random() * (136 - 118) + 118) : 0;\nconst current   = parseFloat((rele_state ? Math.random() * (0.6 - 0.5) + 0.5 : 0).toFixed(1));\nconst lightness = rele_state ? 247: 150;\n\nmsg.payload = JSON.stringify({ device_id, voltage, current, lightness, rele_state });\n\nreturn msg;",
+        "func": "const measures = msg.payload;\n\nconst device_id  = msg.device.id;\nconst rele_state = msg.device.rele_state;\n\nmeasures.device_id  = device_id;\nmeasures.rele_state = rele_state;\n\nmeasures.voltage   = measures.voltage   !== -1 ? measures.voltage   : (rele_state ? Math.floor(Math.random() * (136 - 118) + 118) : 0);\nmeasures.current   = measures.current   !== -1 ? measures.current   : (parseFloat((rele_state ? Math.random() * (0.6 - 0.5) + 0.5 : 0).toFixed(1)));\nmeasures.lightness = measures.lightness !== -1 ? measures.lightness : (rele_state ? 247: 150);\n\nmsg.payload = JSON.stringify(measures);\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 200,
-        "y": 868,
+        "x": 560,
+        "y": 775,
         "wires": [
             [
-                "b34ee45083d0d0db",
-                "13b282405cb330d6",
-                "36f723663c2236d0"
+                "a270c0df9a2dc47e",
+                "127715ede839bcb6"
             ]
         ]
     },
     {
-        "id": "36f723663c2236d0",
+        "id": "d2e0b7fe107775ad",
         "type": "debug",
-        "z": "f6f2187d.f17ca8",
+        "z": "d54052ea6cb4b184",
         "name": "[EXIT 2] Generate measures in fake devices",
         "active": false,
         "tosidebar": true,
@@ -172,14 +178,14 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 510,
-        "y": 920,
+        "x": 290,
+        "y": 950,
         "wires": []
     },
     {
-        "id": "b34ee45083d0d0db",
+        "id": "a270c0df9a2dc47e",
         "type": "mqtt out",
-        "z": "f6f2187d.f17ca8",
+        "z": "d54052ea6cb4b184",
         "name": "Send measure to Broker MQTT",
         "topic": "pgc_ufabc/devices/measures",
         "qos": "0",
@@ -189,15 +195,15 @@
         "userProps": "",
         "correl": "",
         "expiry": "",
-        "broker": "5881b3f4325c9978",
-        "x": 470,
-        "y": 868,
+        "broker": "0cae39fb33383cf0",
+        "x": 830,
+        "y": 795,
         "wires": []
     },
     {
-        "id": "2dc46f9c24f9eb35",
+        "id": "acebf4880992c09a",
         "type": "function",
-        "z": "bab6ffe5b7ae3a28",
+        "z": "86696f385ff65db5",
         "name": "Set Query",
         "func": "msg.query = msg.payload;\nreturn msg;",
         "outputs": 1,
@@ -209,14 +215,14 @@
         "y": 100,
         "wires": [
             [
-                "bb3a8d2b7854dccb"
+                "0f60afc3ba8b5e2b"
             ]
         ]
     },
     {
-        "id": "dcf9a148a61be9fc",
+        "id": "a3af27511d4c1b33",
         "type": "function",
-        "z": "bab6ffe5b7ae3a28",
+        "z": "86696f385ff65db5",
         "name": "Get Query Response",
         "func": "const query_response = msg.payload.rows;\n\ndelete msg.query;\n\nmsg.payload = query_response;\n\nreturn msg;",
         "outputs": 1,
@@ -231,59 +237,59 @@
         ]
     },
     {
-        "id": "bb3a8d2b7854dccb",
+        "id": "0f60afc3ba8b5e2b",
         "type": "mydb",
-        "z": "bab6ffe5b7ae3a28",
+        "z": "86696f385ff65db5",
         "name": "Execute Query",
         "style": "mustache",
         "substEnvVars": false,
         "query": "{{{ msg.query }}};",
-        "mydbConfig": "21c629e3be9268f3",
+        "mydbConfig": "a60982b15f334d52",
         "x": 360,
         "y": 100,
         "wires": [
             [
-                "dcf9a148a61be9fc"
+                "a3af27511d4c1b33"
             ]
         ]
     },
     {
-        "id": "12423f63a3d35f50",
+        "id": "6c5cbba3d9e3d78a",
         "type": "link in",
-        "z": "f6f2187d.f17ca8",
+        "z": "d54052ea6cb4b184",
         "name": "IN (3) Generate measures in fake devices",
         "links": [
-            "01cfad97883fc878"
+            "be6ef9effcdd6438"
         ],
         "x": 55,
-        "y": 717,
+        "y": 657,
         "wires": [
             [
-                "f55643913dc8aa45"
+                "d47ce4ef42f4e2f6"
             ]
         ]
     },
     {
-        "id": "01cfad97883fc878",
+        "id": "be6ef9effcdd6438",
         "type": "link out",
-        "z": "f6f2187d.f17ca8",
+        "z": "d54052ea6cb4b184",
         "name": "OUT (2) Generate measures in fake devices",
         "links": [
-            "12423f63a3d35f50"
+            "6c5cbba3d9e3d78a"
         ],
         "x": 655,
-        "y": 576,
+        "y": 516,
         "wires": []
     },
     {
-        "id": "6fcdcdf981c597f3",
+        "id": "6dd4bce029a8103f",
         "type": "mqtt in",
-        "z": "929f53a6eaff0271",
+        "z": "ab0855462a34e9f7",
         "name": "Receive action messages",
         "topic": "pgc_ufabc/devices/actions/change_state/+",
         "qos": "0",
         "datatype": "utf8",
-        "broker": "5881b3f4325c9978",
+        "broker": "0cae39fb33383cf0",
         "nl": false,
         "rap": true,
         "rh": 0,
@@ -291,14 +297,14 @@
         "y": 138,
         "wires": [
             [
-                "d46f8f464a5c584c"
+                "370aab902010cd2b"
             ]
         ]
     },
     {
-        "id": "d46f8f464a5c584c",
+        "id": "370aab902010cd2b",
         "type": "function",
-        "z": "929f53a6eaff0271",
+        "z": "ab0855462a34e9f7",
         "name": "Set rele state of device",
         "func": "const deviceId = parseInt(msg.topic.match(/\\/(\\d+)$/)[1]);\n\nconst action   = msg.payload;\nconst newState = action === 'L' ? 1 : 0;\n\nconst params = [{\n    key: deviceId,\n    value: {\n        rele_state: newState\n    }\n}];\n\nmsg.payload = { action: 'JSON.UPDATE', params };\n\ndelete msg.topic;\n\nreturn msg;",
         "outputs": 1,
@@ -310,14 +316,14 @@
         "y": 138,
         "wires": [
             [
-                "dc7dbf3c57978f93"
+                "5fa5186b9968ce9f"
             ]
         ]
     },
     {
-        "id": "560a959be3be9a5f",
+        "id": "0863ee950d6711ce",
         "type": "debug",
-        "z": "929f53a6eaff0271",
+        "z": "ab0855462a34e9f7",
         "name": "[EXIT 1] Set state based in On/Off button click",
         "active": false,
         "tosidebar": true,
@@ -332,9 +338,9 @@
         "wires": []
     },
     {
-        "id": "0e76079e3f7666c0",
+        "id": "7f69f20ce0dfdbcd",
         "type": "comment",
-        "z": "929f53a6eaff0271",
+        "z": "ab0855462a34e9f7",
         "name": "########## Turn on/off lights remotely",
         "info": "",
         "x": 190,
@@ -342,34 +348,34 @@
         "wires": []
     },
     {
-        "id": "80a46d82ca4455ee",
+        "id": "7e8bbf2cc5824e31",
         "type": "catch",
-        "z": "f6f2187d.f17ca8",
+        "z": "d54052ea6cb4b184",
         "name": "",
         "scope": null,
         "uncaught": false,
         "x": 100,
-        "y": 1136,
+        "y": 1176,
         "wires": [
             [
-                "4fed0b38fbbe8ae3"
+                "217d63f100ed864d"
             ]
         ]
     },
     {
-        "id": "27e7cc799e913f9c",
+        "id": "efeea2a3692dbea5",
         "type": "comment",
-        "z": "f6f2187d.f17ca8",
+        "z": "d54052ea6cb4b184",
         "name": "########## Exceptions Treatment",
         "info": "",
         "x": 179,
-        "y": 1075,
+        "y": 1115,
         "wires": []
     },
     {
-        "id": "4fed0b38fbbe8ae3",
+        "id": "217d63f100ed864d",
         "type": "debug",
-        "z": "f6f2187d.f17ca8",
+        "z": "d54052ea6cb4b184",
         "name": "Exception",
         "active": true,
         "tosidebar": true,
@@ -380,13 +386,13 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 250,
-        "y": 1136,
+        "y": 1176,
         "wires": []
     },
     {
-        "id": "b46ca7eecdb18e77",
+        "id": "a0ca1f23f11ddcf8",
         "type": "catch",
-        "z": "929f53a6eaff0271",
+        "z": "ab0855462a34e9f7",
         "name": "",
         "scope": null,
         "uncaught": false,
@@ -394,14 +400,14 @@
         "y": 574,
         "wires": [
             [
-                "d3a94f73e85e211d"
+                "738994375aefe09e"
             ]
         ]
     },
     {
-        "id": "1e31fd1b2db76ae8",
+        "id": "4a5ab1e396c4bbad",
         "type": "comment",
-        "z": "929f53a6eaff0271",
+        "z": "ab0855462a34e9f7",
         "name": "########## Exceptions Treatment",
         "info": "",
         "x": 179,
@@ -409,9 +415,9 @@
         "wires": []
     },
     {
-        "id": "d3a94f73e85e211d",
+        "id": "738994375aefe09e",
         "type": "debug",
-        "z": "929f53a6eaff0271",
+        "z": "ab0855462a34e9f7",
         "name": "Exception",
         "active": true,
         "tosidebar": true,
@@ -426,10 +432,10 @@
         "wires": []
     },
     {
-        "id": "ec37f2e530c6a5b3",
+        "id": "62efccd00ae19dbf",
         "type": "redis-command",
-        "z": "e22e266bc8e03a72",
-        "server": "ed302c6abb601205",
+        "z": "185bd0a8b5a4b916",
+        "server": "a7cb2a42ddfd0d99",
         "command": "JSON.SET",
         "name": "JSON.INSERT",
         "topic": "",
@@ -438,18 +444,18 @@
         "payloadType": "json",
         "block": false,
         "x": 360,
-        "y": 395,
+        "y": 615,
         "wires": [
             [
-                "d84d225ad0dbea4b"
+                "bfbff7d80bac8776"
             ]
         ]
     },
     {
-        "id": "5040e80a10525f98",
+        "id": "8309511dc52a3b6b",
         "type": "redis-command",
-        "z": "e22e266bc8e03a72",
-        "server": "ed302c6abb601205",
+        "z": "185bd0a8b5a4b916",
+        "server": "a7cb2a42ddfd0d99",
         "command": "JSON.GET",
         "name": "JSON.GET",
         "topic": "",
@@ -458,17 +464,17 @@
         "payloadType": "json",
         "block": false,
         "x": 350,
-        "y": 355,
+        "y": 575,
         "wires": [
             [
-                "69234af3b25780af"
+                "14a4f1ea68611679"
             ]
         ]
     },
     {
-        "id": "503fc219bfc7e40c",
+        "id": "70d4f99473093739",
         "type": "switch",
-        "z": "e22e266bc8e03a72",
+        "z": "185bd0a8b5a4b916",
         "name": "What action?",
         "property": "query.action",
         "propertyType": "msg",
@@ -487,87 +493,103 @@
                 "t": "eq",
                 "v": "JSON.UPDATE",
                 "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "KEYS",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "JSON.ARRAPPEND",
+                "vt": "str"
             }
         ],
         "checkall": "false",
         "repair": false,
-        "outputs": 3,
-        "x": 1090,
-        "y": 153,
+        "outputs": 5,
+        "x": 170,
+        "y": 335,
         "wires": [
             [
-                "bd422227470fd539"
+                "a5646b720d61e23d"
             ],
             [
-                "d48768ddc061f45d"
+                "a712429cd9c00fb9"
             ],
             [
-                "fa2aeefec7812c7a"
+                "09579b2768fd57ec"
+            ],
+            [
+                "91256a108cc22c6f"
+            ],
+            [
+                "470e03096c22a255"
             ]
         ]
     },
     {
-        "id": "d80c8cc2819aea13",
+        "id": "1169e102e4d222c2",
         "type": "link in",
-        "z": "e22e266bc8e03a72",
+        "z": "185bd0a8b5a4b916",
         "name": "IN JSON.INSERT",
         "links": [
-            "5fb7f86204e8e1ba",
-            "d48768ddc061f45d"
+            "7cdfb2af0af8ec92",
+            "a712429cd9c00fb9"
         ],
         "x": 55,
-        "y": 395,
+        "y": 615,
         "wires": [
             [
-                "a6e3494dc148e66c"
+                "df7ff42e19db4df7"
             ]
         ]
     },
     {
-        "id": "c570d37106a7f613",
+        "id": "f4032c3893645be0",
         "type": "link in",
-        "z": "e22e266bc8e03a72",
+        "z": "185bd0a8b5a4b916",
         "name": "IN JSON.GET",
         "links": [
-            "bd422227470fd539",
-            "e648f8cb0f101a8f"
+            "a5646b720d61e23d",
+            "38cd626f498d07a0"
         ],
         "x": 55,
-        "y": 355,
+        "y": 575,
         "wires": [
             [
-                "21f2024d6d5d5112"
+                "95fbf9069438666b"
             ]
         ]
     },
     {
-        "id": "d48768ddc061f45d",
+        "id": "a712429cd9c00fb9",
         "type": "link out",
-        "z": "e22e266bc8e03a72",
-        "name": "OUT (2) Begin",
+        "z": "185bd0a8b5a4b916",
+        "name": "TO JSON.INSERT",
         "links": [
-            "d80c8cc2819aea13"
+            "1169e102e4d222c2"
         ],
-        "x": 1215,
-        "y": 153,
+        "x": 315,
+        "y": 295,
         "wires": []
     },
     {
-        "id": "bd422227470fd539",
+        "id": "a5646b720d61e23d",
         "type": "link out",
-        "z": "e22e266bc8e03a72",
-        "name": "OUT (1) Begin",
+        "z": "185bd0a8b5a4b916",
+        "name": "TO JSON.GET",
         "links": [
-            "c570d37106a7f613"
+            "f4032c3893645be0"
         ],
-        "x": 1215,
-        "y": 115,
+        "x": 315,
+        "y": 255,
         "wires": []
     },
     {
-        "id": "a6e3494dc148e66c",
+        "id": "df7ff42e19db4df7",
         "type": "function",
-        "z": "e22e266bc8e03a72",
+        "z": "185bd0a8b5a4b916",
         "name": "Prepare query",
         "func": "const counter = msg.counter;\nconst params  = msg.query.params[counter];\n\nmsg.payload = [params.key, \".\", JSON.stringify(params.value)];\n\nmsg.counter = counter+1;\nmsg.action  = 2;\n\nreturn msg;",
         "outputs": 1,
@@ -576,17 +598,17 @@
         "finalize": "",
         "libs": [],
         "x": 180,
-        "y": 395,
+        "y": 615,
         "wires": [
             [
-                "ec37f2e530c6a5b3"
+                "62efccd00ae19dbf"
             ]
         ]
     },
     {
-        "id": "21f2024d6d5d5112",
+        "id": "95fbf9069438666b",
         "type": "function",
-        "z": "e22e266bc8e03a72",
+        "z": "185bd0a8b5a4b916",
         "name": "Prepare query",
         "func": "const counter = msg.counter;\nconst params  = msg.query.params[counter];\n\nmsg.payload = [params.key];\n\nif (params.value !== undefined) {\n    msg.payload.push(params.value);    \n}\n\nmsg.counter = counter+1;\nmsg.action  = 1;\n\nreturn msg;",
         "outputs": 1,
@@ -595,129 +617,129 @@
         "finalize": "",
         "libs": [],
         "x": 180,
-        "y": 355,
+        "y": 575,
         "wires": [
             [
-                "5040e80a10525f98"
+                "8309511dc52a3b6b"
             ]
         ]
     },
     {
-        "id": "d84d225ad0dbea4b",
+        "id": "bfbff7d80bac8776",
         "type": "link out",
-        "z": "e22e266bc8e03a72",
+        "z": "185bd0a8b5a4b916",
         "name": "OUT JSON.INSERT",
         "links": [
-            "d942c936a031ea50"
+            "0aad452318b271e8"
         ],
         "x": 475,
-        "y": 395,
+        "y": 615,
         "wires": []
     },
     {
-        "id": "69234af3b25780af",
+        "id": "14a4f1ea68611679",
         "type": "link out",
-        "z": "e22e266bc8e03a72",
+        "z": "185bd0a8b5a4b916",
         "name": "OUT JSON.GET",
         "links": [
-            "d942c936a031ea50"
+            "0aad452318b271e8"
         ],
         "x": 455,
-        "y": 355,
+        "y": 575,
         "wires": []
     },
     {
-        "id": "f0fddd6cbc55624a",
+        "id": "451464678bbc3d93",
         "type": "catch",
-        "z": "e22e266bc8e03a72",
+        "z": "185bd0a8b5a4b916",
         "name": "",
         "scope": null,
         "uncaught": false,
         "x": 100,
-        "y": 1076,
+        "y": 1456,
         "wires": [
             [
-                "8fb1ee15dcf5fa67"
+                "5db875bc9d533019"
             ]
         ]
     },
     {
-        "id": "3b05b823c6a39b41",
+        "id": "fbc7b5775bf09c5d",
         "type": "comment",
-        "z": "e22e266bc8e03a72",
+        "z": "185bd0a8b5a4b916",
         "name": "###### Exceptions Treatment",
         "info": "",
         "x": 159,
-        "y": 1016,
+        "y": 1396,
         "wires": []
     },
     {
-        "id": "13cb73efca71883a",
+        "id": "3466a7f65bed9eac",
         "type": "link in",
-        "z": "e22e266bc8e03a72",
+        "z": "185bd0a8b5a4b916",
         "name": "IN (1) End",
         "links": [
-            "a667d3b5c84c8692"
+            "e13e3ccd568107d2"
         ],
         "x": 55,
-        "y": 777,
+        "y": 1157,
         "wires": [
             [
-                "2963e9c6388548d7"
+                "48b1a57359cc9abd"
             ]
         ]
     },
     {
-        "id": "eaedca67499de3c1",
+        "id": "ab7425eb7c0d4676",
         "type": "link in",
-        "z": "e22e266bc8e03a72",
+        "z": "185bd0a8b5a4b916",
         "name": "IN (2) End",
         "links": [
-            "8fb1ee15dcf5fa67"
+            "5db875bc9d533019"
         ],
         "x": 55,
-        "y": 860,
+        "y": 1240,
         "wires": [
             []
         ]
     },
     {
-        "id": "c89a83c426c0de24",
+        "id": "cba301d7724bd39b",
         "type": "comment",
-        "z": "e22e266bc8e03a72",
+        "z": "185bd0a8b5a4b916",
         "name": "Success",
         "info": "",
         "x": 1140,
-        "y": 783,
+        "y": 1163,
         "wires": []
     },
     {
-        "id": "c69b2e729bc80774",
+        "id": "dd6277508180fb7c",
         "type": "comment",
-        "z": "e22e266bc8e03a72",
+        "z": "185bd0a8b5a4b916",
         "name": "Insuccess",
         "info": "",
         "x": 220,
-        "y": 860,
+        "y": 1240,
         "wires": []
     },
     {
-        "id": "8fb1ee15dcf5fa67",
+        "id": "5db875bc9d533019",
         "type": "link out",
-        "z": "e22e266bc8e03a72",
+        "z": "185bd0a8b5a4b916",
         "name": "OUT Exceptions Treatment",
         "links": [
-            "eaedca67499de3c1"
+            "ab7425eb7c0d4676"
         ],
         "x": 195,
-        "y": 1076,
+        "y": 1456,
         "wires": []
     },
     {
-        "id": "cb331cfa7234671e",
+        "id": "09225a407ea571dc",
         "type": "redis-command",
-        "z": "e22e266bc8e03a72",
-        "server": "ed302c6abb601205",
+        "z": "185bd0a8b5a4b916",
+        "server": "a7cb2a42ddfd0d99",
         "command": "MULTI",
         "name": "MULTI",
         "topic": "",
@@ -726,18 +748,18 @@
         "payloadType": "json",
         "block": false,
         "x": 770,
-        "y": 124,
+        "y": 144,
         "wires": [
             [
-                "7ad2d93358724587"
+                "7a1c9d83a3613f33"
             ]
         ]
     },
     {
-        "id": "92f4d0fbddded6a0",
+        "id": "4c30f53bc0b8f715",
         "type": "redis-command",
-        "z": "e22e266bc8e03a72",
-        "server": "ed302c6abb601205",
+        "z": "185bd0a8b5a4b916",
+        "server": "a7cb2a42ddfd0d99",
         "command": "EXEC",
         "name": "EXEC",
         "topic": "",
@@ -746,17 +768,17 @@
         "payloadType": "json",
         "block": false,
         "x": 550,
-        "y": 755,
+        "y": 1135,
         "wires": [
             [
-                "768a37a03f9e40ad"
+                "071eddf0112438e8"
             ]
         ]
     },
     {
-        "id": "1c3cb0c15be5e855",
+        "id": "adc4c59772c6298c",
         "type": "function",
-        "z": "e22e266bc8e03a72",
+        "z": "185bd0a8b5a4b916",
         "name": "Prepare result",
         "func": "delete msg.query;\ndelete msg.action;\ndelete msg.counter;\ndelete msg.counterMax;\n\nreturn msg;",
         "outputs": 1,
@@ -765,15 +787,15 @@
         "finalize": "",
         "libs": [],
         "x": 920,
-        "y": 783,
+        "y": 1163,
         "wires": [
             []
         ]
     },
     {
-        "id": "3c0671a8405a763b",
+        "id": "d739577f0282bcd8",
         "type": "comment",
-        "z": "e22e266bc8e03a72",
+        "z": "185bd0a8b5a4b916",
         "name": "##### Begin",
         "info": "",
         "x": 110,
@@ -781,29 +803,29 @@
         "wires": []
     },
     {
-        "id": "6b0bcf4566b962cd",
+        "id": "49e5e7b7d2a08001",
         "type": "comment",
-        "z": "e22e266bc8e03a72",
+        "z": "185bd0a8b5a4b916",
         "name": "##### Functions",
         "info": "",
         "x": 120,
-        "y": 296,
+        "y": 516,
         "wires": []
     },
     {
-        "id": "9360c10ac5dc754f",
+        "id": "4f69d0a79d62082f",
         "type": "comment",
-        "z": "e22e266bc8e03a72",
+        "z": "185bd0a8b5a4b916",
         "name": "##### End",
         "info": "",
         "x": 100,
-        "y": 696,
+        "y": 1076,
         "wires": []
     },
     {
-        "id": "7ad2d93358724587",
+        "id": "7a1c9d83a3613f33",
         "type": "function",
-        "z": "e22e266bc8e03a72",
+        "z": "185bd0a8b5a4b916",
         "name": "Set counter",
         "func": "msg.counter    = 0;\nmsg.counterMax = msg.query.params.length\n\nreturn msg;",
         "outputs": 1,
@@ -812,17 +834,17 @@
         "finalize": "",
         "libs": [],
         "x": 930,
-        "y": 153,
+        "y": 173,
         "wires": [
             [
-                "503fc219bfc7e40c"
+                "67b41fa2bf4d76bc"
             ]
         ]
     },
     {
-        "id": "9a3843685d108cac",
+        "id": "2b42e25c9acdcf26",
         "type": "switch",
-        "z": "e22e266bc8e03a72",
+        "z": "185bd0a8b5a4b916",
         "name": "Execute again?",
         "property": "counter",
         "propertyType": "msg",
@@ -840,38 +862,40 @@
         "repair": false,
         "outputs": 2,
         "x": 180,
-        "y": 576,
+        "y": 924,
         "wires": [
             [
-                "13a6cbccd90ab5ab"
+                "79fd20871dc7a136"
             ],
             [
-                "a667d3b5c84c8692"
+                "e13e3ccd568107d2"
             ]
         ]
     },
     {
-        "id": "d942c936a031ea50",
+        "id": "0aad452318b271e8",
         "type": "link in",
-        "z": "e22e266bc8e03a72",
+        "z": "185bd0a8b5a4b916",
         "name": "IN (1) Functions",
         "links": [
-            "69234af3b25780af",
-            "d84d225ad0dbea4b",
-            "3bcaf63f481bd942"
+            "14a4f1ea68611679",
+            "bfbff7d80bac8776",
+            "a02f6fb69be119eb",
+            "fe2af213e574e51f",
+            "42c060b70aeae32d"
         ],
         "x": 55,
-        "y": 576,
+        "y": 924,
         "wires": [
             [
-                "9a3843685d108cac"
+                "2b42e25c9acdcf26"
             ]
         ]
     },
     {
-        "id": "13a6cbccd90ab5ab",
+        "id": "79fd20871dc7a136",
         "type": "switch",
-        "z": "e22e266bc8e03a72",
+        "z": "185bd0a8b5a4b916",
         "name": "What action?",
         "property": "action",
         "propertyType": "msg",
@@ -890,65 +914,81 @@
                 "t": "eq",
                 "v": "3",
                 "vt": "num"
+            },
+            {
+                "t": "eq",
+                "v": "4",
+                "vt": "num"
+            },
+            {
+                "t": "eq",
+                "v": "5",
+                "vt": "num"
             }
         ],
         "checkall": "false",
         "repair": false,
-        "outputs": 3,
+        "outputs": 5,
         "x": 370,
-        "y": 554,
+        "y": 893,
         "wires": [
             [
-                "e648f8cb0f101a8f"
+                "38cd626f498d07a0"
             ],
             [
-                "5fb7f86204e8e1ba"
+                "7cdfb2af0af8ec92"
             ],
             [
-                "3bddbb305759a32a"
+                "b066144a02a0bbf7"
+            ],
+            [
+                "560829592f1ac023"
+            ],
+            [
+                "16f13f2b46c404e0"
             ]
         ]
     },
     {
-        "id": "a667d3b5c84c8692",
+        "id": "e13e3ccd568107d2",
         "type": "link out",
-        "z": "e22e266bc8e03a72",
+        "z": "185bd0a8b5a4b916",
         "name": "OUT (3) Functions",
         "links": [
-            "13cb73efca71883a"
+            "3466a7f65bed9eac"
         ],
         "x": 315,
-        "y": 598,
+        "y": 955,
         "wires": []
     },
     {
-        "id": "e648f8cb0f101a8f",
+        "id": "38cd626f498d07a0",
         "type": "link out",
-        "z": "e22e266bc8e03a72",
-        "name": "OUT (1) Functions",
+        "z": "185bd0a8b5a4b916",
+        "name": "TO JSON.GET",
         "links": [
-            "c570d37106a7f613"
+            "f4032c3893645be0"
         ],
         "x": 515,
-        "y": 516,
+        "y": 815,
         "wires": []
     },
     {
-        "id": "5fb7f86204e8e1ba",
+        "id": "7cdfb2af0af8ec92",
         "type": "link out",
-        "z": "e22e266bc8e03a72",
-        "name": "OUT (2) Functions",
+        "z": "185bd0a8b5a4b916",
+        "name": "TO JSON.INSERT",
         "links": [
-            "d80c8cc2819aea13"
+            "1169e102e4d222c2"
         ],
         "x": 515,
-        "y": 554,
+        "y": 855,
         "wires": []
     },
     {
-        "id": "43489f1e4d02c246",
+        "id": "94a4714c3a3969b8",
         "type": "function",
-        "z": "e22e266bc8e03a72",
+        "z": "185bd0a8b5a4b916",
         "name": "Prepare query",
         "func": "msg.payload = [];\nreturn msg;",
         "outputs": 1,
@@ -957,17 +997,17 @@
         "finalize": "",
         "libs": [],
         "x": 400,
-        "y": 755,
+        "y": 1135,
         "wires": [
             [
-                "92f4d0fbddded6a0"
+                "4c30f53bc0b8f715"
             ]
         ]
     },
     {
-        "id": "2c98befae6f94264",
+        "id": "16d60375c4a1414f",
         "type": "function",
-        "z": "e22e266bc8e03a72",
+        "z": "185bd0a8b5a4b916",
         "name": "Enabled MULTI mode",
         "func": "msg.payload = [];\nreturn msg;",
         "outputs": 1,
@@ -976,49 +1016,49 @@
         "finalize": "",
         "libs": [],
         "x": 600,
-        "y": 124,
+        "y": 144,
         "wires": [
             [
-                "cb331cfa7234671e"
+                "09225a407ea571dc"
             ]
         ]
     },
     {
-        "id": "fa2aeefec7812c7a",
+        "id": "09579b2768fd57ec",
         "type": "link out",
-        "z": "e22e266bc8e03a72",
-        "name": "OUT (3) Begin",
+        "z": "185bd0a8b5a4b916",
+        "name": "TO JSON.UPDATE",
         "links": [
-            "b60d35d8ea0788df"
+            "779dad188b169279"
         ],
-        "x": 1215,
-        "y": 195,
+        "x": 315,
+        "y": 335,
         "wires": []
     },
     {
-        "id": "768a37a03f9e40ad",
+        "id": "071eddf0112438e8",
         "type": "function",
-        "z": "e22e266bc8e03a72",
+        "z": "185bd0a8b5a4b916",
         "name": "Map result with key",
-        "func": "function isJSON (string) {\n    try {\n        JSON.parse(string);\n        return true;\n    } catch (e) {\n        return false;\n    }\n}\n\nlet results = [].concat(msg.payload);\nlet keys    = msg.query.params.map(param => param.key);\n\nresults = results.map((result, i) => {\n    return {\n        key:    keys[i],\n        result: isJSON(result) ? JSON.parse(result) : result\n    }        \n});\n\nmsg.payload = results;\n\nreturn msg;",
+        "func": "function isJSON (string) {\n    try {\n        JSON.parse(string);\n        return true;\n    } catch (e) {\n        return false;\n    }\n}\n\nlet results = [].concat(msg.payload);\nlet keys    = msg.query.params.map(param => param.key);\n\nresults = results.map((result, i) => {\n    return {\n        key:    keys[i] || '',\n        result: isJSON(result) ? JSON.parse(result) : result\n    }        \n});\n\nmsg.payload = results;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
         "x": 730,
-        "y": 783,
+        "y": 1163,
         "wires": [
             [
-                "1c3cb0c15be5e855"
+                "adc4c59772c6298c"
             ]
         ]
     },
     {
-        "id": "5b1cc75e5c845242",
+        "id": "a302f13da39b1f7c",
         "type": "redis-command",
-        "z": "e22e266bc8e03a72",
-        "server": "ed302c6abb601205",
+        "z": "185bd0a8b5a4b916",
+        "server": "a7cb2a42ddfd0d99",
         "command": "JSON.SET",
         "name": "JSON.UPDATE",
         "topic": "",
@@ -1027,34 +1067,34 @@
         "payloadType": "json",
         "block": false,
         "x": 360,
-        "y": 436,
+        "y": 656,
         "wires": [
             [
-                "3bcaf63f481bd942"
+                "a02f6fb69be119eb"
             ]
         ]
     },
     {
-        "id": "b60d35d8ea0788df",
+        "id": "779dad188b169279",
         "type": "link in",
-        "z": "e22e266bc8e03a72",
+        "z": "185bd0a8b5a4b916",
         "name": "IN JSON.UPDATE",
         "links": [
-            "3bddbb305759a32a",
-            "fa2aeefec7812c7a"
+            "b066144a02a0bbf7",
+            "09579b2768fd57ec"
         ],
         "x": 55,
-        "y": 436,
+        "y": 656,
         "wires": [
             [
-                "25d6e52f94701b31"
+                "477bd67677dbe6bb"
             ]
         ]
     },
     {
-        "id": "25d6e52f94701b31",
+        "id": "477bd67677dbe6bb",
         "type": "function",
-        "z": "e22e266bc8e03a72",
+        "z": "185bd0a8b5a4b916",
         "name": "Prepare query",
         "func": "const counter = msg.counter;\nconst params  = msg.query.params[counter];\n\nconst attr     = Object.entries(params.value)[0][0];\nconst newValue = Object.entries(params.value)[0][1];\n\nmsg.payload = [params.key, attr, newValue];\n\nmsg.counter = counter+1;\nmsg.action  = 3;\n\nreturn msg;",
         "outputs": 1,
@@ -1063,41 +1103,41 @@
         "finalize": "",
         "libs": [],
         "x": 180,
-        "y": 436,
+        "y": 656,
         "wires": [
             [
-                "5b1cc75e5c845242"
+                "a302f13da39b1f7c"
             ]
         ]
     },
     {
-        "id": "3bcaf63f481bd942",
+        "id": "a02f6fb69be119eb",
         "type": "link out",
-        "z": "e22e266bc8e03a72",
+        "z": "185bd0a8b5a4b916",
         "name": "OUT JSON.UPDATE",
         "links": [
-            "d942c936a031ea50"
+            "0aad452318b271e8"
         ],
         "x": 475,
-        "y": 436,
+        "y": 656,
         "wires": []
     },
     {
-        "id": "3bddbb305759a32a",
+        "id": "b066144a02a0bbf7",
         "type": "link out",
-        "z": "e22e266bc8e03a72",
-        "name": "OUT (3) Functions",
+        "z": "185bd0a8b5a4b916",
+        "name": "TO JSON.UPDATE",
         "links": [
-            "b60d35d8ea0788df"
+            "779dad188b169279"
         ],
         "x": 515,
-        "y": 593,
+        "y": 893,
         "wires": []
     },
     {
-        "id": "4ff6e2dcf77fa978",
+        "id": "3c546124752a49f4",
         "type": "function",
-        "z": "e22e266bc8e03a72",
+        "z": "185bd0a8b5a4b916",
         "name": "Parse params",
         "func": "msg.query = msg.payload;\nreturn msg;",
         "outputs": 1,
@@ -1106,17 +1146,17 @@
         "finalize": "",
         "libs": [],
         "x": 180,
-        "y": 146,
+        "y": 166,
         "wires": [
             [
-                "293a536f9f3635f1"
+                "bb3f3b5c78d45598"
             ]
         ]
     },
     {
-        "id": "3e63c6dd38ab5fed",
+        "id": "c9405cb2eb6d1fc6",
         "type": "debug",
-        "z": "f6f2187d.f17ca8",
+        "z": "d54052ea6cb4b184",
         "name": "[EXIT 2] Insert new fake devices in environment",
         "active": false,
         "tosidebar": true,
@@ -1126,28 +1166,28 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1060,
-        "y": 256,
+        "x": 900,
+        "y": 239,
         "wires": []
     },
     {
-        "id": "68743d299c8b09f3",
-        "type": "subflow:bab6ffe5b7ae3a28",
-        "z": "f6f2187d.f17ca8",
+        "id": "56f8e443b2cab0f7",
+        "type": "subflow:86696f385ff65db5",
+        "z": "d54052ea6cb4b184",
         "name": "",
         "env": [],
         "x": 620,
-        "y": 155,
+        "y": 138,
         "wires": [
             [
-                "50fc26fdeba2992d"
+                "cc421e3896e3a98f"
             ]
         ]
     },
     {
-        "id": "456f7851bca73f3b",
+        "id": "21db4d079c64e83c",
         "type": "inject",
-        "z": "f6f2187d.f17ca8",
+        "z": "d54052ea6cb4b184",
         "name": "Environment start",
         "props": [
             {
@@ -1162,121 +1202,102 @@
         "payload": "false",
         "payloadType": "bool",
         "x": 155,
-        "y": 135,
+        "y": 118,
         "wires": [
             [
-                "8ae6c3e67f7096cb"
+                "cfeb3031b1c8b58b"
             ]
         ]
     },
     {
-        "id": "8ae6c3e67f7096cb",
+        "id": "cfeb3031b1c8b58b",
         "type": "function",
-        "z": "f6f2187d.f17ca8",
+        "z": "d54052ea6cb4b184",
         "name": "Get fake devices from inventory",
-        "func": "const useTimeRestriction = msg.payload;\n\nmsg.payload = 'SELECT ID, INTERVAL, STATUS FROM DEVICES WHERE IS_REAL = False';\n\nif (useTimeRestriction) {\n    msg.payload += ` AND (INSERTION_TIME AT TIME ZONE 'CST') > (CURRENT_TIMESTAMP AT TIME ZONE 'CST') - INTERVAL '10 min'`\n}\n\nreturn msg;",
+        "func": "const useTimeRestriction = msg.payload;\n\nmsg.payload = 'SELECT ID, INTERVAL, STATUS FROM DEVICES WHERE IS_REAL = False';\n\nif (useTimeRestriction) {\n    msg.payload += ` AND (INSERTION_TIME AT TIME ZONE 'CST') > (CURRENT_TIMESTAMP AT TIME ZONE 'CST') - INTERVAL '10 min'`;\n}\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
         "x": 410,
-        "y": 155,
+        "y": 138,
         "wires": [
             [
-                "68743d299c8b09f3"
+                "56f8e443b2cab0f7"
             ]
         ]
     },
     {
-        "id": "e34098c051ead808",
-        "type": "function",
-        "z": "f6f2187d.f17ca8",
-        "name": "Set devices",
-        "func": "function selectDevices (device) {\n    return device.status === true || Math.round() <= 0.1;\n}\n\nfunction defineReleState (device) {\n    device.interval   = device.interval;\n    device.rele_state = 0;\n    \n    delete device.status;\n    \n    return device;\n}\n\nlet devices = msg.payload;\n\ndevices = devices.filter(selectDevices).map(defineReleState);\n\nmsg.devices = devices;\n\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 170,
-        "y": 277,
-        "wires": [
-            [
-                "86f5f6f78fa45a71"
-            ]
-        ]
-    },
-    {
-        "id": "9ab8b18d8b56d509",
-        "type": "subflow:e22e266bc8e03a72",
-        "z": "f6f2187d.f17ca8",
+        "id": "85429b83c87a2d2d",
+        "type": "subflow:185bd0a8b5a4b916",
+        "z": "d54052ea6cb4b184",
         "name": "",
         "env": [],
-        "x": 520,
-        "y": 277,
+        "x": 360,
+        "y": 260,
         "wires": [
             [
-                "e70f3e208fda7507"
+                "af194eb2a53d5bf3"
             ],
             [
-                "190599abb15b4fa3"
+                "f48d6ff4d912f6b1"
             ]
         ]
     },
     {
-        "id": "86f5f6f78fa45a71",
+        "id": "0cb1064d1c365c70",
         "type": "function",
-        "z": "f6f2187d.f17ca8",
+        "z": "d54052ea6cb4b184",
         "name": "Prepare query",
-        "func": "let devices = msg.devices;\n\ndevices = devices.map(device => {\n    return {\n        key: device.id,\n        value: {\n            interval:   device.interval,\n            rele_state: device.rele_state,\n            fails:      []\n        }\n    }\n});\n\nmsg.payload = { action: 'JSON.INSERT', params: devices };\n\nreturn msg;",
+        "func": "const devices = msg.payload.map(device => {\n    return {\n        key: device.id,\n        value: {\n            interval:   device.interval,\n            send:       device.status,\n            rele_state: 0,\n            fails:      []\n        }\n    }\n});\n\nmsg.payload = { action: 'JSON.INSERT', params: devices };\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 340,
-        "y": 277,
+        "x": 180,
+        "y": 260,
         "wires": [
             [
-                "9ab8b18d8b56d509"
+                "85429b83c87a2d2d"
             ]
         ]
     },
     {
-        "id": "cc02a0e233e2578b",
+        "id": "ec397656e2d5e609",
         "type": "link out",
-        "z": "f6f2187d.f17ca8",
+        "z": "d54052ea6cb4b184",
         "name": "OUT (1) Insert new fake devices in environment",
         "links": [
-            "d36c5c830d8dd8be"
+            "23a9c846cd14e0f9"
         ],
         "x": 955,
-        "y": 133,
+        "y": 116,
         "wires": []
     },
     {
-        "id": "d36c5c830d8dd8be",
+        "id": "23a9c846cd14e0f9",
         "type": "link in",
-        "z": "f6f2187d.f17ca8",
+        "z": "d54052ea6cb4b184",
         "name": "IN (1) Insert new fake devices in environment",
         "links": [
-            "cc02a0e233e2578b"
+            "ec397656e2d5e609"
         ],
         "x": 55,
-        "y": 277,
+        "y": 260,
         "wires": [
             [
-                "e34098c051ead808"
+                "0cb1064d1c365c70"
             ]
         ]
     },
     {
-        "id": "190599abb15b4fa3",
+        "id": "f48d6ff4d912f6b1",
         "type": "debug",
-        "z": "f6f2187d.f17ca8",
+        "z": "d54052ea6cb4b184",
         "name": "[EXIT 3] Insert new fake devices in environment",
-        "active": false,
+        "active": true,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -1284,14 +1305,14 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 820,
-        "y": 298,
+        "x": 660,
+        "y": 281,
         "wires": []
     },
     {
-        "id": "0a8dc89bee891976",
+        "id": "d27e63bee03aa702",
         "type": "inject",
-        "z": "f6f2187d.f17ca8",
+        "z": "d54052ea6cb4b184",
         "name": "Every 10 minutes",
         "props": [
             {
@@ -1306,17 +1327,17 @@
         "payload": "true",
         "payloadType": "bool",
         "x": 155,
-        "y": 176,
+        "y": 159,
         "wires": [
             [
-                "8ae6c3e67f7096cb"
+                "cfeb3031b1c8b58b"
             ]
         ]
     },
     {
-        "id": "4a8fe628ff183a32",
+        "id": "4d0e95e96fd0ec55",
         "type": "comment",
-        "z": "f6f2187d.f17ca8",
+        "z": "d54052ea6cb4b184",
         "name": "########## Insert new fake devices in environment",
         "info": "",
         "x": 230,
@@ -1324,9 +1345,9 @@
         "wires": []
     },
     {
-        "id": "50fc26fdeba2992d",
+        "id": "cc421e3896e3a98f",
         "type": "switch",
-        "z": "f6f2187d.f17ca8",
+        "z": "d54052ea6cb4b184",
         "name": "Found new devices?",
         "property": "payload.length",
         "propertyType": "msg",
@@ -1344,20 +1365,20 @@
         "repair": false,
         "outputs": 2,
         "x": 800,
-        "y": 155,
+        "y": 138,
         "wires": [
             [
-                "cc02a0e233e2578b"
+                "ec397656e2d5e609"
             ],
             [
-                "1349383e8977cfac"
+                "83f0065ce578f4d3"
             ]
         ]
     },
     {
-        "id": "1349383e8977cfac",
+        "id": "83f0065ce578f4d3",
         "type": "debug",
-        "z": "f6f2187d.f17ca8",
+        "z": "d54052ea6cb4b184",
         "name": "[EXIT 1] Insert new fake devices in environment",
         "active": false,
         "tosidebar": true,
@@ -1368,71 +1389,71 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 1120,
-        "y": 176,
+        "y": 159,
         "wires": []
     },
     {
-        "id": "3556f5e45b690dec",
+        "id": "b6e313696650bff2",
         "type": "link out",
-        "z": "f6f2187d.f17ca8",
+        "z": "d54052ea6cb4b184",
         "name": "OUT (2) Insert new fake devices in environment",
         "links": [
-            "bea7220d0d31cc86"
+            "27654e848f61a56f"
         ],
-        "x": 835,
-        "y": 255,
+        "x": 675,
+        "y": 238,
         "wires": []
     },
     {
-        "id": "e70f3e208fda7507",
+        "id": "af194eb2a53d5bf3",
         "type": "function",
-        "z": "f6f2187d.f17ca8",
+        "z": "d54052ea6cb4b184",
         "name": "List devices ID",
-        "func": "const devices = msg.devices;\n\nmsg.payload = devices.map(device => device.id);\n\ndelete msg.devices;\n\nreturn msg;",
+        "func": "msg.payload = msg.payload.map(device => device.key);\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 720,
-        "y": 255,
+        "x": 560,
+        "y": 238,
         "wires": [
             [
-                "3556f5e45b690dec",
-                "3e63c6dd38ab5fed"
+                "c9405cb2eb6d1fc6",
+                "b6e313696650bff2"
             ]
         ]
     },
     {
-        "id": "8b34b2d1d92a6fff",
+        "id": "cf26f1f933a8bd94",
         "type": "comment",
-        "z": "f6f2187d.f17ca8",
+        "z": "d54052ea6cb4b184",
         "name": "########## Generate measures in fake devices",
         "info": "",
         "x": 220,
-        "y": 436,
+        "y": 376,
         "wires": []
     },
     {
-        "id": "bea7220d0d31cc86",
+        "id": "27654e848f61a56f",
         "type": "link in",
-        "z": "f6f2187d.f17ca8",
+        "z": "d54052ea6cb4b184",
         "name": "IN (1) Generate measures in fake devices",
         "links": [
-            "3556f5e45b690dec"
+            "b6e313696650bff2"
         ],
         "x": 55,
-        "y": 496,
+        "y": 436,
         "wires": [
             [
-                "a1e6c6ec5b4823b3"
+                "8b9db073bfb3aedf"
             ]
         ]
     },
     {
-        "id": "a1e6c6ec5b4823b3",
+        "id": "8b9db073bfb3aedf",
         "type": "split",
-        "z": "f6f2187d.f17ca8",
+        "z": "d54052ea6cb4b184",
         "name": "Split devices",
         "splt": "\\n",
         "spltType": "str",
@@ -1441,46 +1462,46 @@
         "stream": false,
         "addname": "",
         "x": 170,
-        "y": 496,
+        "y": 436,
         "wires": [
             [
-                "97e72ad914e18b7a"
+                "991311b09ededc72"
             ]
         ]
     },
     {
-        "id": "97e72ad914e18b7a",
+        "id": "991311b09ededc72",
         "type": "link out",
-        "z": "f6f2187d.f17ca8",
+        "z": "d54052ea6cb4b184",
         "name": "OUT (1) Generate measures in fake devices",
         "links": [
-            "6dde3c61f7b8211c"
+            "3b3354684638c87a"
         ],
         "x": 275,
-        "y": 496,
+        "y": 436,
         "wires": []
     },
     {
-        "id": "6dde3c61f7b8211c",
+        "id": "3b3354684638c87a",
         "type": "link in",
-        "z": "f6f2187d.f17ca8",
+        "z": "d54052ea6cb4b184",
         "name": "IN (2) Generate measures in fake devices",
         "links": [
-            "97e72ad914e18b7a",
-            "a446f2241fae652c"
+            "90e8bddf38b63a29",
+            "991311b09ededc72"
         ],
         "x": 55,
-        "y": 598,
+        "y": 538,
         "wires": [
             [
-                "3235542ef8fa47d9"
+                "587734d5a8447a6d"
             ]
         ]
     },
     {
-        "id": "3235542ef8fa47d9",
+        "id": "587734d5a8447a6d",
         "type": "function",
-        "z": "f6f2187d.f17ca8",
+        "z": "d54052ea6cb4b184",
         "name": "Get device data",
         "func": "const deviceId = msg.payload;\n\nmsg.payload = { action: 'JSON.GET', params: [{ key: deviceId }] };\n\nreturn msg;",
         "outputs": 1,
@@ -1489,34 +1510,34 @@
         "finalize": "",
         "libs": [],
         "x": 180,
-        "y": 598,
+        "y": 538,
         "wires": [
             [
-                "40de06145249939e"
+                "e4fa68e290e7d172"
             ]
         ]
     },
     {
-        "id": "40de06145249939e",
-        "type": "subflow:e22e266bc8e03a72",
-        "z": "f6f2187d.f17ca8",
+        "id": "e4fa68e290e7d172",
+        "type": "subflow:185bd0a8b5a4b916",
+        "z": "d54052ea6cb4b184",
         "name": "",
         "env": [],
         "x": 360,
-        "y": 598,
+        "y": 538,
         "wires": [
             [
-                "1b51810956c25055"
+                "a3c9d68cb7041f05"
             ],
             [
-                "b2010f7b9b6caa09"
+                "14232fc58f501e54"
             ]
         ]
     },
     {
-        "id": "b2010f7b9b6caa09",
+        "id": "14232fc58f501e54",
         "type": "debug",
-        "z": "f6f2187d.f17ca8",
+        "z": "d54052ea6cb4b184",
         "name": "[EXIT 1] Generate measures in fake devices",
         "active": true,
         "tosidebar": true,
@@ -1527,13 +1548,13 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 650,
-        "y": 619,
+        "y": 559,
         "wires": []
     },
     {
-        "id": "293a536f9f3635f1",
+        "id": "bb3f3b5c78d45598",
         "type": "switch",
-        "z": "e22e266bc8e03a72",
+        "z": "185bd0a8b5a4b916",
         "name": "Multiples querys?",
         "property": "query.params.length",
         "propertyType": "msg",
@@ -1551,20 +1572,20 @@
         "repair": false,
         "outputs": 2,
         "x": 370,
-        "y": 146,
+        "y": 166,
         "wires": [
             [
-                "2c98befae6f94264"
+                "16d60375c4a1414f"
             ],
             [
-                "7ad2d93358724587"
+                "7a1c9d83a3613f33"
             ]
         ]
     },
     {
-        "id": "2963e9c6388548d7",
+        "id": "48b1a57359cc9abd",
         "type": "switch",
-        "z": "e22e266bc8e03a72",
+        "z": "185bd0a8b5a4b916",
         "name": "Multiples querys?",
         "property": "query.params.length",
         "propertyType": "msg",
@@ -1582,39 +1603,39 @@
         "repair": false,
         "outputs": 2,
         "x": 190,
-        "y": 777,
+        "y": 1157,
         "wires": [
             [
-                "43489f1e4d02c246"
+                "94a4714c3a3969b8"
             ],
             [
-                "768a37a03f9e40ad"
+                "071eddf0112438e8"
             ]
         ]
     },
     {
-        "id": "1b51810956c25055",
+        "id": "a3c9d68cb7041f05",
         "type": "function",
-        "z": "f6f2187d.f17ca8",
+        "z": "d54052ea6cb4b184",
         "name": "Parse result",
-        "func": "const device_id   = msg.payload[0].key;\nconst device_data = msg.payload[0].result;\n\nmsg.device = { \n    id:         device_id,\n    rele_state: device_data.rele_state,\n    fails:      device_data.fails\n};\n\nmsg.delay = device_data.interval;\n\nreturn msg;",
+        "func": "const deviceId   = msg.payload[0].key;\nconst deviceData = msg.payload[0].result;\n\nmsg.device = { \n    id:         deviceId,\n    send:       deviceData.send,\n    rele_state: deviceData.rele_state,\n    fails:      deviceData.fails\n};\n\nmsg.delay = deviceData.interval;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
         "x": 550,
-        "y": 576,
+        "y": 516,
         "wires": [
             [
-                "01cfad97883fc878"
+                "be6ef9effcdd6438"
             ]
         ]
     },
     {
-        "id": "13b282405cb330d6",
+        "id": "a68e71c5e7e525b3",
         "type": "delay",
-        "z": "f6f2187d.f17ca8",
+        "z": "d54052ea6cb4b184",
         "name": "Wait for interval",
         "pauseType": "delayv",
         "timeout": "1",
@@ -1627,18 +1648,18 @@
         "randomUnits": "seconds",
         "drop": false,
         "allowrate": false,
-        "x": 420,
-        "y": 816,
+        "x": 200,
+        "y": 896,
         "wires": [
             [
-                "0230aeed8f9e7bc4"
+                "9756036cb1ecf46f"
             ]
         ]
     },
     {
-        "id": "f55643913dc8aa45",
+        "id": "d47ce4ef42f4e2f6",
         "type": "switch",
-        "z": "f6f2187d.f17ca8",
+        "z": "d54052ea6cb4b184",
         "name": "Device has failures?",
         "property": "device.fails.length",
         "propertyType": "msg",
@@ -1656,20 +1677,20 @@
         "repair": false,
         "outputs": 2,
         "x": 200,
-        "y": 717,
+        "y": 657,
         "wires": [
             [
-                "b27f2218a2e1401c"
+                "43c31dcda89bd922"
             ],
             [
-                "333ab7370b320457"
+                "f0d1d6b64a7659fd"
             ]
         ]
     },
     {
-        "id": "b27f2218a2e1401c",
+        "id": "43c31dcda89bd922",
         "type": "file in",
-        "z": "f6f2187d.f17ca8",
+        "z": "d54052ea6cb4b184",
         "name": "Get fails.jsonc file",
         "filename": "/scripts/fails.jsonc",
         "format": "utf8",
@@ -1678,33 +1699,33 @@
         "encoding": "none",
         "allProps": false,
         "x": 430,
-        "y": 696,
+        "y": 636,
         "wires": [
             [
-                "2b4cb1058e4e8c89"
+                "89a06ba1d5c21202"
             ]
         ]
     },
     {
-        "id": "e180ce6533c35518",
+        "id": "8b401a54048b163c",
         "type": "json",
-        "z": "f6f2187d.f17ca8",
+        "z": "d54052ea6cb4b184",
         "name": "Convert JSON to JS Object",
         "property": "payload",
         "action": "",
         "pretty": false,
         "x": 860,
-        "y": 696,
+        "y": 636,
         "wires": [
             [
-                "805df74f0f419117"
+                "b3c4bb4261150dd8"
             ]
         ]
     },
     {
-        "id": "805df74f0f419117",
+        "id": "b3c4bb4261150dd8",
         "type": "function",
-        "z": "f6f2187d.f17ca8",
+        "z": "d54052ea6cb4b184",
         "name": "Map fail ID to description",
         "func": "const failsList   = msg.payload;\nconst deviceFails = msg.device.fails;\n\nmsg.device.fails = deviceFails.map(failId => failsList.find(fail => fail.id === failId));\n\nreturn msg;",
         "outputs": 1,
@@ -1713,58 +1734,58 @@
         "finalize": "",
         "libs": [],
         "x": 1110,
-        "y": 696,
+        "y": 636,
         "wires": [
             [
-                "d63e3e30bb696d18"
+                "11179055d302aec1"
             ]
         ]
     },
     {
-        "id": "d63e3e30bb696d18",
+        "id": "11179055d302aec1",
         "type": "link out",
-        "z": "f6f2187d.f17ca8",
+        "z": "d54052ea6cb4b184",
         "name": "OUT (3) Generate measures in fake devices",
         "links": [
-            "d7d79404fea0ae45"
+            "68fb113372f89e05"
         ],
         "x": 1255,
-        "y": 696,
+        "y": 636,
         "wires": []
     },
     {
-        "id": "333ab7370b320457",
+        "id": "f0d1d6b64a7659fd",
         "type": "link out",
-        "z": "f6f2187d.f17ca8",
+        "z": "d54052ea6cb4b184",
         "name": "OUT (4) Generate measures in fake devices",
         "links": [
-            "d7d79404fea0ae45"
+            "68fb113372f89e05"
         ],
         "x": 355,
-        "y": 739,
+        "y": 679,
         "wires": []
     },
     {
-        "id": "d7d79404fea0ae45",
+        "id": "68fb113372f89e05",
         "type": "link in",
-        "z": "f6f2187d.f17ca8",
+        "z": "d54052ea6cb4b184",
         "name": "IN (4) Generate measures in fake devices",
         "links": [
-            "333ab7370b320457",
-            "d63e3e30bb696d18"
+            "11179055d302aec1",
+            "f0d1d6b64a7659fd"
         ],
         "x": 56,
-        "y": 868,
+        "y": 797,
         "wires": [
             [
-                "52cb4927a775e913"
+                "088c10a30b26ab40"
             ]
         ]
     },
     {
-        "id": "0230aeed8f9e7bc4",
+        "id": "9756036cb1ecf46f",
         "type": "function",
-        "z": "f6f2187d.f17ca8",
+        "z": "d54052ea6cb4b184",
         "name": "Reset data",
         "func": "msg.payload = msg.device.id;\n\ndelete msg.device;\ndelete msg.delay;\ndelete msg.filename;\n\nreturn msg;",
         "outputs": 1,
@@ -1772,30 +1793,30 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 590,
-        "y": 816,
+        "x": 370,
+        "y": 896,
         "wires": [
             [
-                "a446f2241fae652c"
+                "90e8bddf38b63a29"
             ]
         ]
     },
     {
-        "id": "a446f2241fae652c",
+        "id": "90e8bddf38b63a29",
         "type": "link out",
-        "z": "f6f2187d.f17ca8",
-        "name": "OUT (5) Generate measures in fake devices",
+        "z": "d54052ea6cb4b184",
+        "name": "OUT (7) Generate measures in fake devices",
         "links": [
-            "6dde3c61f7b8211c"
+            "3b3354684638c87a"
         ],
-        "x": 695,
-        "y": 816,
+        "x": 475,
+        "y": 896,
         "wires": []
     },
     {
-        "id": "2b4cb1058e4e8c89",
+        "id": "89a06ba1d5c21202",
         "type": "function",
-        "z": "f6f2187d.f17ca8",
+        "z": "d54052ea6cb4b184",
         "name": "Remove comments",
         "func": "msg.payload = msg.payload.replace(/\\/\\/.*\\r\\n/g, '');\nreturn msg;",
         "outputs": 1,
@@ -1804,34 +1825,34 @@
         "finalize": "",
         "libs": [],
         "x": 630,
-        "y": 696,
+        "y": 636,
         "wires": [
             [
-                "e180ce6533c35518"
+                "8b401a54048b163c"
             ]
         ]
     },
     {
-        "id": "dc7dbf3c57978f93",
-        "type": "subflow:e22e266bc8e03a72",
-        "z": "929f53a6eaff0271",
+        "id": "5fa5186b9968ce9f",
+        "type": "subflow:185bd0a8b5a4b916",
+        "z": "ab0855462a34e9f7",
         "name": "",
         "env": [],
         "x": 580,
         "y": 138,
         "wires": [
             [
-                "560a959be3be9a5f"
+                "0863ee950d6711ce"
             ],
             [
-                "8e50caa88f70cd21"
+                "db4c5987c4b7f82f"
             ]
         ]
     },
     {
-        "id": "8e50caa88f70cd21",
+        "id": "db4c5987c4b7f82f",
         "type": "debug",
-        "z": "929f53a6eaff0271",
+        "z": "ab0855462a34e9f7",
         "name": "[EXIT 2] Set state based in On/Off button click",
         "active": true,
         "tosidebar": true,
@@ -1846,14 +1867,14 @@
         "wires": []
     },
     {
-        "id": "19969050d389a05f",
+        "id": "5737ae4d4d4cc025",
         "type": "mqtt in",
-        "z": "929f53a6eaff0271",
+        "z": "ab0855462a34e9f7",
         "name": "Receive action messages",
         "topic": "pgc_ufabc/devices/actions/change_interval/+",
         "qos": "0",
         "datatype": "utf8",
-        "broker": "5881b3f4325c9978",
+        "broker": "0cae39fb33383cf0",
         "nl": false,
         "rap": true,
         "rh": 0,
@@ -1861,14 +1882,14 @@
         "y": 338,
         "wires": [
             [
-                "32d0cf971894225e"
+                "60ed8d5f5e822ea5"
             ]
         ]
     },
     {
-        "id": "32d0cf971894225e",
+        "id": "60ed8d5f5e822ea5",
         "type": "function",
-        "z": "929f53a6eaff0271",
+        "z": "ab0855462a34e9f7",
         "name": "Set messages interval of device",
         "func": "const deviceId = parseInt(msg.topic.match(/\\/(\\d+)$/)[1]);\n\nconst interval = msg.payload;\n\nconst params = [{\n    key: deviceId,\n    value: { interval }\n}];\n\nmsg.payload = { action: 'JSON.UPDATE', params };\n\ndelete msg.topic;\n\nreturn msg;",
         "outputs": 1,
@@ -1880,14 +1901,14 @@
         "y": 338,
         "wires": [
             [
-                "70359b8c9b45b6d5"
+                "2f4ccb94a7f16779"
             ]
         ]
     },
     {
-        "id": "75d17b63db626fd1",
+        "id": "6a8ceefa2c465e49",
         "type": "debug",
-        "z": "929f53a6eaff0271",
+        "z": "ab0855462a34e9f7",
         "name": "[EXIT 1] Update messages interval",
         "active": false,
         "tosidebar": true,
@@ -1902,26 +1923,26 @@
         "wires": []
     },
     {
-        "id": "70359b8c9b45b6d5",
-        "type": "subflow:e22e266bc8e03a72",
-        "z": "929f53a6eaff0271",
+        "id": "2f4ccb94a7f16779",
+        "type": "subflow:185bd0a8b5a4b916",
+        "z": "ab0855462a34e9f7",
         "name": "",
         "env": [],
         "x": 640,
         "y": 338,
         "wires": [
             [
-                "75d17b63db626fd1"
+                "6a8ceefa2c465e49"
             ],
             [
-                "32cbe06a03e94c2a"
+                "229b8889e1725155"
             ]
         ]
     },
     {
-        "id": "32cbe06a03e94c2a",
+        "id": "229b8889e1725155",
         "type": "debug",
-        "z": "929f53a6eaff0271",
+        "z": "ab0855462a34e9f7",
         "name": "[EXIT 2] Update messages interval",
         "active": true,
         "tosidebar": true,
@@ -1936,13 +1957,912 @@
         "wires": []
     },
     {
-        "id": "92448f8b294cb4d1",
+        "id": "4ff75f3c05bca7a9",
         "type": "comment",
-        "z": "929f53a6eaff0271",
+        "z": "ab0855462a34e9f7",
         "name": "########## Update messages interval",
         "info": "",
         "x": 190,
         "y": 256,
+        "wires": []
+    },
+    {
+        "id": "c511b518f93c3e1b",
+        "type": "inject",
+        "z": "a444632620451a72",
+        "name": "Every 10 minutes",
+        "props": [],
+        "repeat": "600",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "600",
+        "topic": "",
+        "x": 155,
+        "y": 135,
+        "wires": [
+            [
+                "3fd79f0e07079834"
+            ]
+        ]
+    },
+    {
+        "id": "3fd79f0e07079834",
+        "type": "function",
+        "z": "a444632620451a72",
+        "name": "Get devices IDs",
+        "func": "msg.payload = {\n    action: 'KEYS',\n    params: [{ value: '*' }]\n};\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 360,
+        "y": 135,
+        "wires": [
+            [
+                "095ff5c00f3239e1"
+            ]
+        ]
+    },
+    {
+        "id": "91256a108cc22c6f",
+        "type": "link out",
+        "z": "185bd0a8b5a4b916",
+        "name": "TO KEYS",
+        "links": [
+            "4766e4737d4ab82a"
+        ],
+        "x": 315,
+        "y": 375,
+        "wires": []
+    },
+    {
+        "id": "18fb4272c1434516",
+        "type": "redis-command",
+        "z": "185bd0a8b5a4b916",
+        "server": "a7cb2a42ddfd0d99",
+        "command": "KEYS",
+        "name": "KEYS",
+        "topic": "",
+        "params": "[]",
+        "paramsType": "json",
+        "payloadType": "json",
+        "block": false,
+        "x": 330,
+        "y": 696,
+        "wires": [
+            [
+                "fe2af213e574e51f"
+            ]
+        ]
+    },
+    {
+        "id": "4766e4737d4ab82a",
+        "type": "link in",
+        "z": "185bd0a8b5a4b916",
+        "name": "IN KEYS",
+        "links": [
+            "91256a108cc22c6f",
+            "560829592f1ac023"
+        ],
+        "x": 55,
+        "y": 696,
+        "wires": [
+            [
+                "a8cb1707b0683a56"
+            ]
+        ]
+    },
+    {
+        "id": "a8cb1707b0683a56",
+        "type": "function",
+        "z": "185bd0a8b5a4b916",
+        "name": "Prepare query",
+        "func": "const counter = msg.counter;\nconst params  = msg.query.params[counter];\n\nmsg.payload = [params.value];\n\nmsg.counter = counter+1;\nmsg.action  = 4;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 180,
+        "y": 696,
+        "wires": [
+            [
+                "18fb4272c1434516"
+            ]
+        ]
+    },
+    {
+        "id": "fe2af213e574e51f",
+        "type": "link out",
+        "z": "185bd0a8b5a4b916",
+        "name": "OUT KEYS",
+        "links": [
+            "0aad452318b271e8"
+        ],
+        "x": 415,
+        "y": 696,
+        "wires": []
+    },
+    {
+        "id": "560829592f1ac023",
+        "type": "link out",
+        "z": "185bd0a8b5a4b916",
+        "name": "TO KEYS",
+        "links": [
+            "4766e4737d4ab82a"
+        ],
+        "x": 515,
+        "y": 935,
+        "wires": []
+    },
+    {
+        "id": "095ff5c00f3239e1",
+        "type": "subflow:185bd0a8b5a4b916",
+        "z": "a444632620451a72",
+        "name": "",
+        "env": [],
+        "x": 540,
+        "y": 135,
+        "wires": [
+            [
+                "71ef80badc40aa85"
+            ],
+            [
+                "a3da3cba3e54ce24"
+            ]
+        ]
+    },
+    {
+        "id": "a3da3cba3e54ce24",
+        "type": "debug",
+        "z": "a444632620451a72",
+        "name": "[EXIT 1] Generate errors",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 770,
+        "y": 155,
+        "wires": []
+    },
+    {
+        "id": "981b5b1ac6b7ee16",
+        "type": "comment",
+        "z": "a444632620451a72",
+        "name": "########## Generate errors",
+        "info": "",
+        "x": 160,
+        "y": 55,
+        "wires": []
+    },
+    {
+        "id": "71ef80badc40aa85",
+        "type": "function",
+        "z": "a444632620451a72",
+        "name": "Get devices IDs",
+        "func": "msg.payload = msg.payload.map(device => device.result);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 740,
+        "y": 113,
+        "wires": [
+            [
+                "971fd26a8e32f154"
+            ]
+        ]
+    },
+    {
+        "id": "971fd26a8e32f154",
+        "type": "split",
+        "z": "a444632620451a72",
+        "name": "Split devices",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 910,
+        "y": 113,
+        "wires": [
+            [
+                "f9af6c3af3837488"
+            ]
+        ]
+    },
+    {
+        "id": "f9af6c3af3837488",
+        "type": "link out",
+        "z": "a444632620451a72",
+        "name": "OUT (1) Generate errors",
+        "links": [
+            "37a0e4f6c8715a32"
+        ],
+        "x": 1015,
+        "y": 113,
+        "wires": []
+    },
+    {
+        "id": "37a0e4f6c8715a32",
+        "type": "link in",
+        "z": "a444632620451a72",
+        "name": "IN (1) Generate errors",
+        "links": [
+            "f9af6c3af3837488"
+        ],
+        "x": 55,
+        "y": 257,
+        "wires": [
+            [
+                "7a7cecf6415649cc"
+            ]
+        ]
+    },
+    {
+        "id": "7a7cecf6415649cc",
+        "type": "function",
+        "z": "a444632620451a72",
+        "name": "Generate error?",
+        "func": "msg.device = { id: msg.payload };\n\nconst prob = 1;\n\nif (Math.random() <= prob) {\n    return [msg, null];\n}\n\nreturn [null, msg];",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 180,
+        "y": 257,
+        "wires": [
+            [
+                "15b457ec3a792b00"
+            ],
+            [
+                "12402bcf3498a48d"
+            ]
+        ]
+    },
+    {
+        "id": "12402bcf3498a48d",
+        "type": "debug",
+        "z": "a444632620451a72",
+        "name": "[EXIT 2] Generate errors",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 410,
+        "y": 279,
+        "wires": []
+    },
+    {
+        "id": "a62f5058a63cebde",
+        "type": "catch",
+        "z": "a444632620451a72",
+        "name": "",
+        "scope": null,
+        "uncaught": false,
+        "x": 100,
+        "y": 757,
+        "wires": [
+            [
+                "2c01993697609b0a"
+            ]
+        ]
+    },
+    {
+        "id": "4934247d1cccd5de",
+        "type": "comment",
+        "z": "a444632620451a72",
+        "name": "########## Exceptions Treatment",
+        "info": "",
+        "x": 179,
+        "y": 696,
+        "wires": []
+    },
+    {
+        "id": "2c01993697609b0a",
+        "type": "debug",
+        "z": "a444632620451a72",
+        "name": "Exception",
+        "active": true,
+        "tosidebar": true,
+        "console": true,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 250,
+        "y": 757,
+        "wires": []
+    },
+    {
+        "id": "ecf4fe2fa009ecce",
+        "type": "function",
+        "z": "d54052ea6cb4b184",
+        "name": "Set fails",
+        "func": "const fails = msg.device.fails;\n\nconst measures = {\n    voltage:   -1,\n    current:   -1,\n    lightness: -1,\n};\n\nfails.forEach(fail => {\n    measures.voltage   = fail.voltage   !== -1 ? fail.voltage   : measures.voltage;\n    measures.current   = fail.current   !== -1 ? fail.current   : measures.current;\n    measures.lightness = fail.lightness !== -1 ? fail.lightness : measures.lightness;\n});\n\nmsg.payload = measures;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 775,
+        "wires": [
+            [
+                "32feb38f11d62b82"
+            ]
+        ]
+    },
+    {
+        "id": "7a6044337ab2498c",
+        "type": "link out",
+        "z": "d54052ea6cb4b184",
+        "name": "OUT (6) Generate measures in fake devices",
+        "links": [
+            "0e78a4e7f8a4206c"
+        ],
+        "x": 335,
+        "y": 818,
+        "wires": []
+    },
+    {
+        "id": "0e78a4e7f8a4206c",
+        "type": "link in",
+        "z": "d54052ea6cb4b184",
+        "name": "IN (5) Generate measures in fake devices",
+        "links": [
+            "127715ede839bcb6",
+            "7a6044337ab2498c"
+        ],
+        "x": 55,
+        "y": 924,
+        "wires": [
+            [
+                "a68e71c5e7e525b3",
+                "d2e0b7fe107775ad"
+            ]
+        ]
+    },
+    {
+        "id": "127715ede839bcb6",
+        "type": "link out",
+        "z": "d54052ea6cb4b184",
+        "name": "OUT (5) Generate measures in fake devices",
+        "links": [
+            "0e78a4e7f8a4206c"
+        ],
+        "x": 715,
+        "y": 755,
+        "wires": []
+    },
+    {
+        "id": "088c10a30b26ab40",
+        "type": "switch",
+        "z": "d54052ea6cb4b184",
+        "name": "Send measures?",
+        "property": "device.send",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "true"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "false",
+        "repair": false,
+        "outputs": 2,
+        "x": 190,
+        "y": 797,
+        "wires": [
+            [
+                "ecf4fe2fa009ecce"
+            ],
+            [
+                "7a6044337ab2498c"
+            ]
+        ]
+    },
+    {
+        "id": "15b457ec3a792b00",
+        "type": "file in",
+        "z": "a444632620451a72",
+        "name": "Get fails.jsonc file",
+        "filename": "/scripts/fails.jsonc",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "none",
+        "allProps": false,
+        "x": 390,
+        "y": 236,
+        "wires": [
+            [
+                "4e54a1ad083756a8"
+            ]
+        ]
+    },
+    {
+        "id": "10fb61fcd7bc6960",
+        "type": "json",
+        "z": "a444632620451a72",
+        "name": "Convert JSON to JS Object",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 820,
+        "y": 236,
+        "wires": [
+            [
+                "d093a4bff79842d4"
+            ]
+        ]
+    },
+    {
+        "id": "4e54a1ad083756a8",
+        "type": "function",
+        "z": "a444632620451a72",
+        "name": "Remove comments",
+        "func": "msg.payload = msg.payload.replace(/\\/\\/.*\\r\\n/g, '');\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 590,
+        "y": 236,
+        "wires": [
+            [
+                "10fb61fcd7bc6960"
+            ]
+        ]
+    },
+    {
+        "id": "d093a4bff79842d4",
+        "type": "link out",
+        "z": "a444632620451a72",
+        "name": "OUT (2) Generate errors",
+        "links": [
+            "d4e1c79447dc0538"
+        ],
+        "x": 975,
+        "y": 236,
+        "wires": []
+    },
+    {
+        "id": "d4e1c79447dc0538",
+        "type": "link in",
+        "z": "a444632620451a72",
+        "name": "IN (2) Generate errors",
+        "links": [
+            "d093a4bff79842d4"
+        ],
+        "x": 55,
+        "y": 378,
+        "wires": [
+            [
+                "e7104dda5ddd437c"
+            ]
+        ]
+    },
+    {
+        "id": "e7104dda5ddd437c",
+        "type": "function",
+        "z": "a444632620451a72",
+        "name": "Choose fail",
+        "func": "const min = 1;\nconst max = msg.payload.length;\n\nmsg.device.fail = 1//Math.round(Math.random() * (max - min) + min);\n\nmsg.failsList = msg.payload;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 170,
+        "y": 378,
+        "wires": [
+            [
+                "2f9644df4b68cab1"
+            ]
+        ]
+    },
+    {
+        "id": "2f9644df4b68cab1",
+        "type": "function",
+        "z": "a444632620451a72",
+        "name": "Get device info",
+        "func": "msg.payload = { action: 'JSON.GET', params: [{ key: msg.device.id }]};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 340,
+        "y": 378,
+        "wires": [
+            [
+                "eac170b6a0c6b125"
+            ]
+        ]
+    },
+    {
+        "id": "eac170b6a0c6b125",
+        "type": "subflow:185bd0a8b5a4b916",
+        "z": "a444632620451a72",
+        "name": "",
+        "x": 520,
+        "y": 378,
+        "wires": [
+            [
+                "87a3e10226bfe54a"
+            ],
+            [
+                "45e44f20ab03c222"
+            ]
+        ]
+    },
+    {
+        "id": "45e44f20ab03c222",
+        "type": "debug",
+        "z": "a444632620451a72",
+        "name": "[EXIT 3] Generate errors",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 750,
+        "y": 399,
+        "wires": []
+    },
+    {
+        "id": "87a3e10226bfe54a",
+        "type": "function",
+        "z": "a444632620451a72",
+        "name": "Analyze failure validity",
+        "func": "const failsList  = msg.failsList;\nconst deviceData = msg.payload[0].result;\nconst newFail    = msg.device.fail;\n\nlet insert = true;\n\n// Check if the fault is already present on the device\nif (deviceData.fails.includes(newFail)) {\n    insert = false;\n}\n\n// Check if has failures that prevent the new fault from being included\nif (insert) {\n    const preventFails = failsList[newFail-1].look_for;\n    insert = !preventFails.some(failId => deviceData.fails.includes(failId));\n} \n\n// Check if the new failure prevents any failure already present in the device\nif (insert) {\n    const deviceFails = deviceData.fails.map(failId => failsList.find(fail => fail.id === failId));\n    insert = !deviceFails.some(fail => fail.look_for.includes(newFail));\n    \n    if(!insert) node.warn('3');\n}\n\n// Insert new values in device\nif (insert) {\n    msg.device.send = failsList[newFail-1].send;\n    msg.device.rele_state = failsList[newFail].rele_state.value !== undefined ? failsList[newFail].rele_state.value : deviceData.rele_state; \n}\n\nmsg.payload = insert;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 740,
+        "y": 357,
+        "wires": [
+            [
+                "54338d699151f3ab"
+            ]
+        ]
+    },
+    {
+        "id": "54338d699151f3ab",
+        "type": "switch",
+        "z": "a444632620451a72",
+        "name": "Insert fail in device?",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "true"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "false",
+        "repair": false,
+        "outputs": 2,
+        "x": 960,
+        "y": 357,
+        "wires": [
+            [
+                "8d862c9dbd3b163b"
+            ],
+            [
+                "7b5abb2dfa21d6da"
+            ]
+        ]
+    },
+    {
+        "id": "8d862c9dbd3b163b",
+        "type": "link out",
+        "z": "a444632620451a72",
+        "name": "OUT (3) Generate errors",
+        "links": [
+            "c884efe4ea3bd549"
+        ],
+        "x": 1115,
+        "y": 335,
+        "wires": []
+    },
+    {
+        "id": "7b5abb2dfa21d6da",
+        "type": "debug",
+        "z": "a444632620451a72",
+        "name": "[EXIT 4] Generate errors",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1210,
+        "y": 378,
+        "wires": []
+    },
+    {
+        "id": "c884efe4ea3bd549",
+        "type": "link in",
+        "z": "a444632620451a72",
+        "name": "IN (3) Generate errors",
+        "links": [
+            "8d862c9dbd3b163b"
+        ],
+        "x": 55,
+        "y": 517,
+        "wires": [
+            [
+                "520a784bb92b71f7"
+            ]
+        ]
+    },
+    {
+        "id": "520a784bb92b71f7",
+        "type": "function",
+        "z": "a444632620451a72",
+        "name": "Set new values in device",
+        "func": "msg.payload = {\n    action: 'JSON.UPDATE',\n    params: [\n        { \n            key: msg.device.id,\n            value: {\n                send:       msg.device.send,\n                rele_state: msg.device.rele_state\n            }\n        }\n    ]\n};\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 210,
+        "y": 517,
+        "wires": [
+            [
+                "26a2ccdfee1a2e78"
+            ]
+        ]
+    },
+    {
+        "id": "26a2ccdfee1a2e78",
+        "type": "subflow:185bd0a8b5a4b916",
+        "z": "a444632620451a72",
+        "name": "",
+        "env": [],
+        "x": 420,
+        "y": 517,
+        "wires": [
+            [
+                "aef75640dfc58609"
+            ],
+            [
+                "20b6659c04227272"
+            ]
+        ]
+    },
+    {
+        "id": "20b6659c04227272",
+        "type": "debug",
+        "z": "a444632620451a72",
+        "name": "[EXIT 5] Generate errors",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 650,
+        "y": 539,
+        "wires": []
+    },
+    {
+        "id": "aef75640dfc58609",
+        "type": "function",
+        "z": "a444632620451a72",
+        "name": "Insert fail in device",
+        "func": "msg.payload = {\n    action: 'JSON.ARRAPPEND',\n    params: [\n        { \n            key: msg.device.id,\n            value: {\n                fails: msg.device.fail,\n            }\n        }\n    ]\n};\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 630,
+        "y": 496,
+        "wires": [
+            [
+                "e559347aeea539ab"
+            ]
+        ]
+    },
+    {
+        "id": "e559347aeea539ab",
+        "type": "subflow:185bd0a8b5a4b916",
+        "z": "a444632620451a72",
+        "name": "",
+        "x": 820,
+        "y": 496,
+        "wires": [
+            [
+                "1fb2a3e793a8f8aa"
+            ],
+            [
+                "549575ce4a75236d"
+            ]
+        ]
+    },
+    {
+        "id": "549575ce4a75236d",
+        "type": "debug",
+        "z": "a444632620451a72",
+        "name": "[EXIT 7] Generate errors",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1050,
+        "y": 517,
+        "wires": []
+    },
+    {
+        "id": "1fb2a3e793a8f8aa",
+        "type": "debug",
+        "z": "a444632620451a72",
+        "name": "[EXIT 6] Generate errors",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1050,
+        "y": 475,
+        "wires": []
+    },
+    {
+        "id": "67b41fa2bf4d76bc",
+        "type": "link out",
+        "z": "185bd0a8b5a4b916",
+        "name": "OUT (1) Begin",
+        "links": [
+            "7dd90b75f23df424"
+        ],
+        "x": 1035,
+        "y": 173,
+        "wires": []
+    },
+    {
+        "id": "470e03096c22a255",
+        "type": "link out",
+        "z": "185bd0a8b5a4b916",
+        "name": "TO JSON.ARRAPPEND",
+        "links": [
+            "44311aec488997d1"
+        ],
+        "x": 315,
+        "y": 415,
+        "wires": []
+    },
+    {
+        "id": "7dd90b75f23df424",
+        "type": "link in",
+        "z": "185bd0a8b5a4b916",
+        "name": "IN (1) Begin",
+        "links": [
+            "67b41fa2bf4d76bc"
+        ],
+        "x": 55,
+        "y": 335,
+        "wires": [
+            [
+                "70d4f99473093739"
+            ]
+        ]
+    },
+    {
+        "id": "cfcd806421fa3d3e",
+        "type": "redis-command",
+        "z": "185bd0a8b5a4b916",
+        "server": "a7cb2a42ddfd0d99",
+        "command": "JSON.ARRAPPEND",
+        "name": "JSON.ARRAPPEND",
+        "topic": "",
+        "params": "[]",
+        "paramsType": "json",
+        "payloadType": "json",
+        "block": false,
+        "x": 380,
+        "y": 736,
+        "wires": [
+            [
+                "42c060b70aeae32d"
+            ]
+        ]
+    },
+    {
+        "id": "5ba5be911a160c86",
+        "type": "function",
+        "z": "185bd0a8b5a4b916",
+        "name": "Prepare query",
+        "func": "const counter = msg.counter;\nconst params  = msg.query.params[counter];\n\nconst arrayName = Object.entries(params.value)[0][0];\nconst newValue  = Object.entries(params.value)[0][1];\n\nmsg.payload = [params.key, arrayName, newValue];\n\nmsg.counter = counter+1;\nmsg.action  = 5;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 180,
+        "y": 736,
+        "wires": [
+            [
+                "cfcd806421fa3d3e"
+            ]
+        ]
+    },
+    {
+        "id": "44311aec488997d1",
+        "type": "link in",
+        "z": "185bd0a8b5a4b916",
+        "name": "IN JSON.ARRAPPEND",
+        "links": [
+            "16f13f2b46c404e0",
+            "470e03096c22a255"
+        ],
+        "x": 55,
+        "y": 736,
+        "wires": [
+            [
+                "5ba5be911a160c86"
+            ]
+        ]
+    },
+    {
+        "id": "42c060b70aeae32d",
+        "type": "link out",
+        "z": "185bd0a8b5a4b916",
+        "name": "OUT JSON.ARRAPPEND",
+        "links": [
+            "0aad452318b271e8"
+        ],
+        "x": 515,
+        "y": 736,
+        "wires": []
+    },
+    {
+        "id": "16f13f2b46c404e0",
+        "type": "link out",
+        "z": "185bd0a8b5a4b916",
+        "name": "TO JSON.ARRAPPEND",
+        "links": [
+            "44311aec488997d1"
+        ],
+        "x": 515,
+        "y": 975,
         "wires": []
     }
 ]

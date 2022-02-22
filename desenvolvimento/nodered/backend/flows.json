@@ -2585,7 +2585,7 @@
         "type": "function",
         "z": "4a674aaa9e667dd6",
         "name": "Update device",
-        "func": "const device_info = msg.device_info;\n\nconst name        = device_info.name;\nconst coordinates = device_info.coordinates;\nconst street      = device_info.street;\nconst district    = msg.payload[0].id;\nconst interval    = device_info.interval;\nconst status      = device_info.status === 'OPERACIONAL' ? true : false;\n\nmsg.payload = `UPDATE DEVICES\n               SET COORDINATES = '${coordinates}',\n                   STREET = '${street}',\n                   DISTRICT_ID = ${district},\n                   INTERVAL = ${interval},\n                   STATUS = ${status}\n               WHERE NAME = '${name}'`;\n\nreturn msg;",
+        "func": "const device_info = msg.device_info;\n\nconst name        = device_info.name;\nconst coordinates = device_info.coordinates;\nconst street      = device_info.street;\nconst district    = msg.payload[0].id;\nconst interval    = device_info.interval;\nconst status      = device_info.status === 'OPERACIONAL' ? true : false;\n\nmsg.payload = `UPDATE DEVICES\n               SET COORDINATES = '${coordinates}',\n                   STREET = '${street}',\n                   DISTRICT_ID = ${district},\n                   INTERVAL = ${interval},\n                   STATUS = ${status},\n                   LAST_UPDATE_TIME = CURRENT_TIMESTAMP\n               WHERE NAME = '${name}'`;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",

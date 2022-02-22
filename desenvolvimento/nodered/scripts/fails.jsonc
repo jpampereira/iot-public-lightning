@@ -1,0 +1,101 @@
+// Os parâmetros 'send' e 'look_foor' são utilizados na geração de alarmes nos dispositivos artificiais
+
+[
+	// Nome: Falha de Conexão
+	// Descrição: O dispositivo não envia dados para o Broker MQTT
+	{
+		"id": 1,
+		"voltage": -1,
+		"current": -1,
+		"lightness": -1,
+		"rele_state": {},
+		"status": true,
+
+		"send": false,
+		"look_for": []
+	},
+
+	// Nome: Falha no sensor de Luminosidade
+	// Descrição: As medições de luminosidade estão retornando o valor de saturação do sensor, indicando problema no mesmo
+	{
+		"id": 2,
+		"voltage": -1,
+		"current": -1,
+		"lightness": 0,
+		"rele_state": {},
+		"status": true,
+
+		"send": true,
+		"look_for": [1]
+	},
+
+	// Nome: Falha no sensor de Corrente
+	// Descrição: As medições de corrente estão retornando o valor de saturação do sensor, indicando problema no mesmo
+	{
+		"id": 3,
+		"voltage": -1,
+		"current": 0,
+		"lightness": -1,
+		"rele_state": {},
+		"status": true,
+
+		"send": true,
+		"look_for": [1]
+	},
+
+	// Nome: Falha no sensor de Tensão 
+	// Descrição: As medições de tensão estão retornando o valor de saturação do sensor, indicando problema no mesmo
+	{
+		"id": 4,
+		"voltage": 0,
+		"current": -1,
+		"lightness": -1,
+		"rele_state": {},
+		"status": true,
+
+		"send": true,
+		"look_for": [1]
+	},
+
+	// Nome: Dispositivo ligado fora de contexto
+	// Descrição: Dispositivo ligado desnecessariamente (fora de horário ou iluminção natural é o suficiente)
+	{
+		"id": 5,
+		"voltage": -1,
+		"current": -1,
+		"lightness": -1,
+		"rele_state": { "value": true, "threshold": { "begin": "06:00:00", "end": "18:00:00" } },
+		"status": true,
+
+		"send": true,
+		"look_for": [1, 6]
+	},
+
+	// Nome: Dispositivo desligado fora de contexto
+	// Descrição: Dispositivo desligado quando deveria estar ligada (fora de horário ou iluminação natual insuficiente)
+	{
+		"id": 6,
+		"voltage": 0,
+		"current": 0,
+		"lightness": -1,
+		"rele_state": { "value": false, "threshold": { "begin": "18:00:00", "end": "06:00:00" } },
+		"status": true,
+
+		"send": true,
+		"look_for": [1, 5]
+	},
+
+	// Nome: Erro de Inventário
+	// Descrição: Dispositivo enviando dados ao Broker MQTT quando seu inventário está apontando que o dispositivo está inoperante
+	{
+		"id": 7,
+		"voltage": -1,
+		"current": -1,
+		"lightness": -1,
+		"rele_state": {},
+		"status": false,
+
+		"send": true,
+		"look_for": [1]
+	}
+]

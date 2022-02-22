@@ -55,6 +55,7 @@ services:
     ports:
       - 1880:1880
     volumes:
+      - ../nodered/scripts:/scripts
       - backend-data:/data
     links:
       - db
@@ -83,6 +84,7 @@ services:
     ports:
       - 1881:1880
     volumes:
+      - ../nodered/scripts:/scripts
       - devices_nodered-data:/data
     links:
       - db
