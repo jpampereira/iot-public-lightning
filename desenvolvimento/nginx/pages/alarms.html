@@ -4,9 +4,37 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Alarmística</title>
-	<link rel="shortcut icon" href="../images/alarms-favicon.ico" type="image/x-icon">
+	<link rel="shortcut icon" href="../images/alarms/favicon.ico" type="image/x-icon">
+
+	<!-- CSS Script -->
+	<link rel="stylesheet" href="../styles/alarms.css">
+
+	<!-- Map Libraries -->
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDGf2F6gJHjEJETRBsRqR00hWQAfHaZcVU&v=weekly" async></script>
+	<script src="https://unpkg.com/@googlemaps/markerclustererplus/dist/index.min.js" defer></script>
+
+	<!-- Axios Libraries -->
+	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js" defer></script>
+
+	<!-- JS Scripts -->
+	<script src="../scripts/auxiliar.js" defer></script>
+	<script src="../scripts/maps.js" defer></script>
+	<script src="../scripts/alarms.js" defer></script>
 </head>
 <body>
-	<h1>Alarmes</h1>
+	<header>
+		<form>
+			<select name="type" id="type" init>
+				<option value="" hidden>Tipo de busca</option>
+				<option value="device">Por dispositivo</option>
+				<option value="location">Por localidade</option>
+			</select>
+		</form>
+	</header>
+	<main>
+		<div>
+			<div id="map"></div>
+		</div>
+	</main>
 </body>
 </html>
