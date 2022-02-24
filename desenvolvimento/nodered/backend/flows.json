@@ -174,7 +174,7 @@
         "rap": true,
         "rh": 0,
         "x": 120,
-        "y": 137,
+        "y": 116,
         "wires": [
             [
                 "187acea3920b5c2c"
@@ -189,7 +189,7 @@
         "scope": null,
         "uncaught": false,
         "x": 101,
-        "y": 536,
+        "y": 356,
         "wires": [
             [
                 "4fed0b38fbbe8ae3"
@@ -203,7 +203,7 @@
         "name": "########## Exceptions Treatment",
         "info": "",
         "x": 180,
-        "y": 475,
+        "y": 295,
         "wires": []
     },
     {
@@ -220,7 +220,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 251,
-        "y": 536,
+        "y": 356,
         "wires": []
     },
     {
@@ -235,45 +235,7 @@
         "finalize": "",
         "libs": [],
         "x": 290,
-        "y": 137,
-        "wires": [
-            [
-                "42c1b1a281ba72f5"
-            ]
-        ]
-    },
-    {
-        "id": "d5ce424ec67d4654",
-        "type": "comment",
-        "z": "8813ec2835daae18",
-        "name": "########## Store sensors data",
-        "info": "",
-        "x": 170,
-        "y": 255,
-        "wires": []
-    },
-    {
-        "id": "4f84135b11c27312",
-        "type": "link out",
-        "z": "8813ec2835daae18",
-        "name": "OUT (1) Receive sensors data",
-        "links": [
-            "88a5b57865658712"
-        ],
-        "x": 975,
-        "y": 115,
-        "wires": []
-    },
-    {
-        "id": "88a5b57865658712",
-        "type": "link in",
-        "z": "8813ec2835daae18",
-        "name": "IN (1) Store sensors data",
-        "links": [
-            "4f84135b11c27312"
-        ],
-        "x": 55,
-        "y": 315,
+        "y": 116,
         "wires": [
             [
                 "96803667e593d0dc"
@@ -285,14 +247,14 @@
         "type": "function",
         "z": "8813ec2835daae18",
         "name": "Set query",
-        "func": "const sensor_output = msg.sensor_output;\n\nmsg.payload = `INSERT \n               INTO SENSORS_DATA_REAL_TIME (DEVICE_ID, VOLTAGE, CURRENT, LIGHTNESS, RELE_STATE) \n               VALUES (${sensor_output.device_id}, ${sensor_output.voltage}, ${sensor_output.current}, ${sensor_output.lightness}, '${sensor_output.rele_state}')`;\n\nreturn msg;",
+        "func": "const measures = msg.payload;\n\nmsg.payload = `INSERT \n               INTO SENSORS_DATA_REAL_TIME (DEVICE_ID, VOLTAGE, CURRENT, LIGHTNESS, RELE_STATE) \n               VALUES (${measures.device_id}, ${measures.voltage}, ${measures.current}, ${measures.lightness}, '${measures.rele_state}')`;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 160,
-        "y": 315,
+        "x": 440,
+        "y": 116,
         "wires": [
             [
                 "fea15522f7bc9730"
@@ -305,8 +267,8 @@
         "z": "8813ec2835daae18",
         "name": "",
         "env": [],
-        "x": 300,
-        "y": 315,
+        "x": 580,
+        "y": 116,
         "wires": [
             [
                 "8885c9540ad9bf99"
@@ -317,7 +279,7 @@
         "id": "8885c9540ad9bf99",
         "type": "debug",
         "z": "8813ec2835daae18",
-        "name": "[EXIT] Store sensors data",
+        "name": "[EXIT] Receive and store sensors measures",
         "active": false,
         "tosidebar": true,
         "console": false,
@@ -326,17 +288,17 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 490,
-        "y": 315,
+        "x": 830,
+        "y": 116,
         "wires": []
     },
     {
         "id": "6c14b6de93cba404",
         "type": "comment",
         "z": "8813ec2835daae18",
-        "name": "########## Receive sensors data",
+        "name": "########## Receive and store sensors measures",
         "info": "",
-        "x": 180,
+        "x": 230,
         "y": 55,
         "wires": []
     },
@@ -1353,7 +1315,7 @@
                 "vt": "num"
             }
         ],
-        "checkall": "true",
+        "checkall": "false",
         "repair": false,
         "outputs": 1,
         "x": 660,
@@ -1363,78 +1325,6 @@
                 "595d6b6ee38f20b2"
             ]
         ]
-    },
-    {
-        "id": "136e50967fd0d184",
-        "type": "subflow:bab6ffe5b7ae3a28",
-        "z": "8813ec2835daae18",
-        "name": "",
-        "env": [],
-        "x": 640,
-        "y": 137,
-        "wires": [
-            [
-                "e3c40742d52ebe20"
-            ]
-        ]
-    },
-    {
-        "id": "42c1b1a281ba72f5",
-        "type": "function",
-        "z": "8813ec2835daae18",
-        "name": "Get device status",
-        "func": "const device_id = msg.sensor_output.device_id;\n\nmsg.payload = `SELECT STATUS FROM DEVICES WHERE ID = ${device_id}`;\n\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 470,
-        "y": 137,
-        "wires": [
-            [
-                "136e50967fd0d184"
-            ]
-        ]
-    },
-    {
-        "id": "e3c40742d52ebe20",
-        "type": "function",
-        "z": "8813ec2835daae18",
-        "name": "Device is operational?",
-        "func": "const response = msg.payload;\n\nif (response.length > 0) {\n    const status = response[0].status;\n    \n    if (status === true) {\n        return [msg, null];\n    }\n}\n\nreturn [null, msg];",
-        "outputs": 2,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 820,
-        "y": 137,
-        "wires": [
-            [
-                "4f84135b11c27312"
-            ],
-            [
-                "c57818bbb89356ec"
-            ]
-        ]
-    },
-    {
-        "id": "c57818bbb89356ec",
-        "type": "debug",
-        "z": "8813ec2835daae18",
-        "name": "[EXIT] Receive sensors data",
-        "active": false,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "true",
-        "targetType": "full",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 1080,
-        "y": 158,
-        "wires": []
     },
     {
         "id": "9e05e185a3257074",
@@ -1490,15 +1380,15 @@
         "type": "http in",
         "z": "4a674aaa9e667dd6",
         "name": "",
-        "url": "/devices/info",
+        "url": "/devices/info/byDevice",
         "method": "get",
         "upload": false,
         "swaggerDoc": "",
-        "x": 120,
-        "y": 136,
+        "x": 170,
+        "y": 116,
         "wires": [
             [
-                "57244f1442e4327e"
+                "2116903aa8e9d3cb"
             ]
         ]
     },
@@ -1518,11 +1408,11 @@
         "z": "4a674aaa9e667dd6",
         "name": "",
         "env": [],
-        "x": 880,
-        "y": 116,
+        "x": 920,
+        "y": 115,
         "wires": [
             [
-                "99f87ae84968c485"
+                "2a5cf022f2e39e0b"
             ]
         ]
     },
@@ -1531,14 +1421,14 @@
         "type": "function",
         "z": "4a674aaa9e667dd6",
         "name": "Set query",
-        "func": "const device_name = msg.device_name;\nconst device_id = msg.device_id;\n\nmsg.payload = `SELECT D.NAME, D.ID, D.COORDINATES, D.STREET, Z.ZONE, D.INTERVAL, D.STATUS, DI.DISTRICT\n               FROM DEVICES AS D\n               JOIN DISTRICTS AS DI ON D.DISTRICT_ID = DI.ID\n               JOIN ZONES AS Z ON DI.ZONE_ID = Z.ID`;\n\nif (device_name !== '') {\n    msg.payload += ` WHERE D.NAME = '${device_name}'`;\n} else {\n    msg.payload += ` WHERE D.ID = '${device_id}'`;\n}\n\nreturn msg;",
+        "func": "const endpoint = msg.endpoint;\nconst params = msg.params;\n\nmsg.payload = `SELECT D.ID, D.NAME, D.COORDINATES, D.STREET, Z.ZONE, DI.DISTRICT, D.INTERVAL, D.STATUS\n               FROM DEVICES AS D\n               JOIN DISTRICTS AS DI ON D.DISTRICT_ID = DI.ID\n               JOIN ZONES AS Z ON DI.ZONE_ID = Z.ID`;\n               \nif (endpoint === 'byDevice') {\n    if (params.device_name !== '') {\n        msg.payload += ` WHERE D.NAME = '${params.device_name}'`;\n    } else {\n        msg.payload += ` WHERE D.ID = '${params.device_id}'`;\n    }\n} else if (endpoint === 'byLocation') {\n    msg.payload += ` WHERE Z.ZONE = '${params.zone}' AND DI.DISTRICT = '${params.district}'`;\n}\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 740,
-        "y": 116,
+        "x": 780,
+        "y": 115,
         "wires": [
             [
                 "b6c255d661228eb9"
@@ -1552,45 +1442,9 @@
         "name": "Send response",
         "statusCode": "",
         "headers": {},
-        "x": 1200,
-        "y": 116,
+        "x": 1240,
+        "y": 115,
         "wires": []
-    },
-    {
-        "id": "41620196004f99a3",
-        "type": "debug",
-        "z": "4a674aaa9e667dd6",
-        "name": "[EXIT 1] Get informations of a device",
-        "active": false,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "true",
-        "targetType": "full",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 1450,
-        "y": 116,
-        "wires": []
-    },
-    {
-        "id": "57244f1442e4327e",
-        "type": "function",
-        "z": "4a674aaa9e667dd6",
-        "name": "Parse request body",
-        "func": "msg.device_name = msg.payload.device_name;\nmsg.device_id = msg.payload.device_id;\n\nmsg.payload = msg.device_name !== '' || msg.device_id !== '';\n\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 310,
-        "y": 136,
-        "wires": [
-            [
-                "6b22bcb564cfcbaa"
-            ]
-        ]
     },
     {
         "id": "b6232749331caf9b",
@@ -1602,7 +1456,7 @@
         "upload": false,
         "swaggerDoc": "",
         "x": 150,
-        "y": 956,
+        "y": 976,
         "wires": [
             [
                 "c25aa9a97958c4e6"
@@ -1616,7 +1470,7 @@
         "name": "",
         "env": [],
         "x": 740,
-        "y": 956,
+        "y": 976,
         "wires": [
             [
                 "86ba935683dc8e83"
@@ -1631,7 +1485,7 @@
         "statusCode": "",
         "headers": {},
         "x": 1060,
-        "y": 956,
+        "y": 976,
         "wires": []
     },
     {
@@ -1648,7 +1502,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 1280,
-        "y": 956,
+        "y": 976,
         "wires": []
     },
     {
@@ -1663,7 +1517,7 @@
         "finalize": "",
         "libs": [],
         "x": 550,
-        "y": 935,
+        "y": 955,
         "wires": [
             [
                 "b5500c0de884707c"
@@ -1682,31 +1536,11 @@
         "finalize": "",
         "libs": [],
         "x": 890,
-        "y": 956,
+        "y": 976,
         "wires": [
             [
                 "3f76da596363637a",
                 "06c4b1f1c64bcda3"
-            ]
-        ]
-    },
-    {
-        "id": "99f87ae84968c485",
-        "type": "function",
-        "z": "4a674aaa9e667dd6",
-        "name": "Parse result",
-        "func": "const device_info = msg.payload[0];\n\nif (device_info !== undefined) {\n    device_info.status = device_info.status === true ? 'OPERACIONAL' : 'NÃO OPERACIONAL';\n    msg.payload = device_info;\n} else {\n    msg.payload = {};\n}\n\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 1030,
-        "y": 116,
-        "wires": [
-            [
-                "41620196004f99a3",
-                "5e01cf1a6a9c08e8"
             ]
         ]
     },
@@ -1733,7 +1567,7 @@
         "repair": false,
         "outputs": 2,
         "x": 350,
-        "y": 956,
+        "y": 976,
         "wires": [
             [
                 "bb96314b45690cfe"
@@ -1755,7 +1589,7 @@
         "finalize": "",
         "libs": [],
         "x": 550,
-        "y": 978,
+        "y": 998,
         "wires": [
             [
                 "b5500c0de884707c"
@@ -1772,7 +1606,7 @@
         "upload": false,
         "swaggerDoc": "",
         "x": 130,
-        "y": 312,
+        "y": 332,
         "wires": [
             [
                 "0ff29a6d6ef0912d"
@@ -1791,7 +1625,7 @@
         "finalize": "",
         "libs": [],
         "x": 330,
-        "y": 312,
+        "y": 332,
         "wires": [
             [
                 "3e0f2d19e87fc036"
@@ -1805,7 +1639,7 @@
         "name": "",
         "env": [],
         "x": 500,
-        "y": 312,
+        "y": 332,
         "wires": [
             [
                 "cd9beedcf7c41e7a"
@@ -1826,7 +1660,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 1280,
-        "y": 333,
+        "y": 353,
         "wires": []
     },
     {
@@ -1850,10 +1684,10 @@
         "repair": false,
         "outputs": 2,
         "x": 660,
-        "y": 312,
+        "y": 332,
         "wires": [
             [
-                "0b3d057f822f818d"
+                "354d74e276ba97cd"
             ],
             [
                 "283bdf50951c97cd"
@@ -1865,14 +1699,14 @@
         "type": "function",
         "z": "4a674aaa9e667dd6",
         "name": "Prepare response",
-        "func": "msg.payload = 'Não é possível a existência de dois dispositivos cadastrados com o mesmo nome.';\nreturn msg;",
+        "func": "msg.payload = 'Já existe um dispositivo cadastrado com o mesmo nome.';\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
         "x": 870,
-        "y": 333,
+        "y": 353,
         "wires": [
             [
                 "45059aa775477247",
@@ -1888,7 +1722,7 @@
         "statusCode": "",
         "headers": {},
         "x": 1060,
-        "y": 333,
+        "y": 353,
         "wires": []
     },
     {
@@ -1896,14 +1730,14 @@
         "type": "function",
         "z": "4a674aaa9e667dd6",
         "name": "Insert device",
-        "func": "const device_info = msg.device_info;\n\nconst name        = device_info.name;\nconst coordinates = device_info.coordinates;\nconst street      = device_info.street;\nconst district    = msg.payload[0].id;\nconst interval    = device_info.interval;\nconst status      = device_info.status === 'OPERACIONAL' ? true : false;\n\nmsg.payload = `INSERT\n               INTO DEVICES (NAME, COORDINATES, STREET, DISTRICT_ID, INTERVAL, STATUS)\n               VALUES ('${name}', '${coordinates}', '${street}', ${district}, ${interval}, ${status})`;\n\nreturn msg;",
+        "func": "const device = msg.device_info;\n\nconst name        = device.name;\nconst coordinates = device.coordinates;\nconst street      = device.street;\nconst district    = device.district;\nconst interval    = device.interval;\nconst status      = device.status === 'OPERACIONAL' ? true : false;\n\nmsg.payload = `INSERT\n               INTO DEVICES (NAME, COORDINATES, STREET, DISTRICT_ID, INTERVAL, STATUS)\n               VALUES ('${name}', '${coordinates}', '${street}', (SELECT ID FROM DISTRICTS WHERE DISTRICT = '${district}'), ${interval}, ${status})\n               RETURNING ID`;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
         "x": 170,
-        "y": 416,
+        "y": 436,
         "wires": [
             [
                 "583ec79d0b612605"
@@ -1923,42 +1757,9 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1240,
-        "y": 416,
+        "x": 900,
+        "y": 436,
         "wires": []
-    },
-    {
-        "id": "0b3d057f822f818d",
-        "type": "function",
-        "z": "4a674aaa9e667dd6",
-        "name": "Get district id",
-        "func": "const district = msg.device_info.district;\n\nmsg.payload = `SELECT ID FROM DISTRICTS WHERE DISTRICT = '${district}'`;\n\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 850,
-        "y": 296,
-        "wires": [
-            [
-                "fe86e969ca73c212"
-            ]
-        ]
-    },
-    {
-        "id": "fe86e969ca73c212",
-        "type": "subflow:bab6ffe5b7ae3a28",
-        "z": "4a674aaa9e667dd6",
-        "name": "",
-        "env": [],
-        "x": 1000,
-        "y": 296,
-        "wires": [
-            [
-                "354d74e276ba97cd"
-            ]
-        ]
     },
     {
         "id": "583ec79d0b612605",
@@ -1967,10 +1768,10 @@
         "name": "",
         "env": [],
         "x": 320,
-        "y": 416,
+        "y": 436,
         "wires": [
             [
-                "2a504e09a42d10ce"
+                "7ace7937a50e561f"
             ]
         ]
     },
@@ -1979,14 +1780,14 @@
         "type": "function",
         "z": "4a674aaa9e667dd6",
         "name": "Prepare response",
-        "func": "const device_id = msg.payload[0].id;\n\nmsg.payload = `Dispositivo inserido com sucesso! ID: ${device_id}.`;\n\nreturn msg;",
+        "func": "const device_id = msg.payload[0].id;\n\nmsg.payload = `Dispositivo inserido com sucesso com o ID ${device_id}.`;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 830,
-        "y": 416,
+        "x": 490,
+        "y": 436,
         "wires": [
             [
                 "ea840e0e78c36329",
@@ -2001,8 +1802,8 @@
         "name": "Send response",
         "statusCode": "",
         "headers": {},
-        "x": 1020,
-        "y": 416,
+        "x": 680,
+        "y": 436,
         "wires": []
     },
     {
@@ -2013,8 +1814,8 @@
         "links": [
             "42357eb93017ae22"
         ],
-        "x": 1095,
-        "y": 296,
+        "x": 795,
+        "y": 316,
         "wires": []
     },
     {
@@ -2026,7 +1827,7 @@
             "354d74e276ba97cd"
         ],
         "x": 55,
-        "y": 416,
+        "y": 436,
         "wires": [
             [
                 "1dd4dac7de48fd07"
@@ -2187,7 +1988,7 @@
         "scope": null,
         "uncaught": false,
         "x": 100,
-        "y": 1196,
+        "y": 1216,
         "wires": [
             [
                 "d1e16d213602f942"
@@ -2201,7 +2002,7 @@
         "name": "########## Exceptions Treatment",
         "info": "",
         "x": 180,
-        "y": 1135,
+        "y": 1155,
         "wires": []
     },
     {
@@ -2218,7 +2019,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 630,
-        "y": 1196,
+        "y": 1216,
         "wires": []
     },
     {
@@ -2290,7 +2091,7 @@
         "name": "########## Insert a new device",
         "info": "",
         "x": 170,
-        "y": 235,
+        "y": 255,
         "wires": []
     },
     {
@@ -2300,7 +2101,7 @@
         "name": "########## Get geographic info",
         "info": "",
         "x": 170,
-        "y": 875,
+        "y": 895,
         "wires": []
     },
     {
@@ -2308,14 +2109,14 @@
         "type": "function",
         "z": "4a674aaa9e667dd6",
         "name": "Prepare response",
-        "func": "msg.payload = 'Houve uma falha durante o processamento da sua requisição. Por favor, tente mais tarde.';\nreturn msg;",
+        "func": "msg.payload = 'Houve uma falha durante o processamento da sua requisição.';\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
         "x": 270,
-        "y": 1196,
+        "y": 1216,
         "wires": [
             [
                 "ae3acdea4e84f4b4",
@@ -2331,7 +2132,7 @@
         "statusCode": "",
         "headers": {},
         "x": 460,
-        "y": 1196,
+        "y": 1216,
         "wires": []
     },
     {
@@ -2406,7 +2207,7 @@
         "upload": false,
         "swaggerDoc": "",
         "x": 120,
-        "y": 596,
+        "y": 616,
         "wires": [
             [
                 "4b16be6b6b2b1e3b"
@@ -2420,7 +2221,7 @@
         "name": "########## Update a device",
         "info": "",
         "x": 160,
-        "y": 516,
+        "y": 536,
         "wires": []
     },
     {
@@ -2435,7 +2236,7 @@
         "finalize": "",
         "libs": [],
         "x": 310,
-        "y": 596,
+        "y": 616,
         "wires": [
             [
                 "936642715f14669a"
@@ -2449,7 +2250,7 @@
         "name": "",
         "env": [],
         "x": 480,
-        "y": 596,
+        "y": 616,
         "wires": [
             [
                 "122724bf96a147d7"
@@ -2477,10 +2278,10 @@
         "repair": false,
         "outputs": 2,
         "x": 640,
-        "y": 596,
+        "y": 616,
         "wires": [
             [
-                "c994db6c36e2d821"
+                "3fd0be4cc0f3bdbc"
             ],
             [
                 "b4e2da8341c30780"
@@ -2501,7 +2302,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 1250,
-        "y": 617,
+        "y": 637,
         "wires": []
     },
     {
@@ -2516,7 +2317,7 @@
         "finalize": "",
         "libs": [],
         "x": 850,
-        "y": 617,
+        "y": 637,
         "wires": [
             [
                 "2101839e3edcbd88",
@@ -2532,41 +2333,8 @@
         "statusCode": "",
         "headers": {},
         "x": 1040,
-        "y": 617,
+        "y": 637,
         "wires": []
-    },
-    {
-        "id": "c994db6c36e2d821",
-        "type": "function",
-        "z": "4a674aaa9e667dd6",
-        "name": "Get district id",
-        "func": "const district = msg.device_info.district;\n\nmsg.payload = `SELECT ID FROM DISTRICTS WHERE DISTRICT = '${district}'`;\n\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 830,
-        "y": 574,
-        "wires": [
-            [
-                "9c818c3d258ca0d5"
-            ]
-        ]
-    },
-    {
-        "id": "9c818c3d258ca0d5",
-        "type": "subflow:bab6ffe5b7ae3a28",
-        "z": "4a674aaa9e667dd6",
-        "name": "",
-        "env": [],
-        "x": 980,
-        "y": 574,
-        "wires": [
-            [
-                "3fd0be4cc0f3bdbc"
-            ]
-        ]
     },
     {
         "id": "3fd0be4cc0f3bdbc",
@@ -2576,8 +2344,8 @@
         "links": [
             "bca9421ea3162cbe"
         ],
-        "x": 1075,
-        "y": 574,
+        "x": 775,
+        "y": 594,
         "wires": []
     },
     {
@@ -2585,14 +2353,14 @@
         "type": "function",
         "z": "4a674aaa9e667dd6",
         "name": "Update device",
-        "func": "const device_info = msg.device_info;\n\nconst name        = device_info.name;\nconst coordinates = device_info.coordinates;\nconst street      = device_info.street;\nconst district    = msg.payload[0].id;\nconst interval    = device_info.interval;\nconst status      = device_info.status === 'OPERACIONAL' ? true : false;\n\nmsg.payload = `UPDATE DEVICES\n               SET COORDINATES = '${coordinates}',\n                   STREET = '${street}',\n                   DISTRICT_ID = ${district},\n                   INTERVAL = ${interval},\n                   STATUS = ${status},\n                   LAST_UPDATE_TIME = CURRENT_TIMESTAMP\n               WHERE NAME = '${name}'`;\n\nreturn msg;",
+        "func": "const device = msg.device_info;\n\nconst name        = device.name;\nconst coordinates = device.coordinates;\nconst street      = device.street;\nconst district    = device.district;\nconst interval    = device.interval;\nconst status      = device.status === 'OPERACIONAL' ? true : false;\n\nmsg.payload = `UPDATE DEVICES\n               SET COORDINATES = '${coordinates}',\n                   STREET = '${street}',\n                   DISTRICT_ID = (SELECT ID FROM DISTRICTS WHERE DISTRICT = '${district}'),\n                   INTERVAL = ${interval},\n                   STATUS = ${status},\n                   LAST_UPDATE_TIME = CURRENT_TIMESTAMP\n               WHERE NAME = '${name}'`;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
         "x": 180,
-        "y": 736,
+        "y": 756,
         "wires": [
             [
                 "a7a9fdad92d0bee0"
@@ -2608,7 +2376,7 @@
             "3fd0be4cc0f3bdbc"
         ],
         "x": 55,
-        "y": 736,
+        "y": 756,
         "wires": [
             [
                 "7d354790d19477dd"
@@ -2622,7 +2390,7 @@
         "name": "",
         "env": [],
         "x": 340,
-        "y": 736,
+        "y": 756,
         "wires": [
             [
                 "5e444f6f03c677da"
@@ -2643,7 +2411,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 750,
-        "y": 776,
+        "y": 796,
         "wires": []
     },
     {
@@ -2651,14 +2419,14 @@
         "type": "function",
         "z": "4a674aaa9e667dd6",
         "name": "Prepare response",
-        "func": "msg.payload = 'Dispositivo atualizado com sucesso!';\nreturn msg;",
+        "func": "msg.payload = 'Dispositivo atualizado com sucesso.';\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
         "x": 510,
-        "y": 736,
+        "y": 756,
         "wires": [
             [
                 "f1ec79581a0d0359",
@@ -2675,7 +2443,7 @@
         "statusCode": "",
         "headers": {},
         "x": 720,
-        "y": 736,
+        "y": 756,
         "wires": []
     },
     {
@@ -2687,7 +2455,7 @@
             "e94d04fcb7ddddd9"
         ],
         "x": 655,
-        "y": 696,
+        "y": 716,
         "wires": []
     },
     {
@@ -2805,43 +2573,46 @@
         "wires": []
     },
     {
-        "id": "2a504e09a42d10ce",
+        "id": "ecc7ac797f1dc40c",
+        "type": "http in",
+        "z": "4a674aaa9e667dd6",
+        "name": "",
+        "url": "/devices/info/byLocation",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 160,
+        "y": 156,
+        "wires": [
+            [
+                "2116903aa8e9d3cb"
+            ]
+        ]
+    },
+    {
+        "id": "2116903aa8e9d3cb",
         "type": "function",
         "z": "4a674aaa9e667dd6",
-        "name": "Get generated ID",
-        "func": "const name = msg.device_info.name;\n\nmsg.payload = `SELECT ID FROM DEVICES WHERE NAME = '${name}'`;\n\nreturn msg;",
+        "name": "Parse request body",
+        "func": "msg.endpoint = msg.req.url.match(/\\/devices\\/info\\/(\\S+)\\?/)[1];\n\nmsg.params = {};\n\nif (msg.endpoint === 'byDevice') {\n    msg.params.device_id = msg.payload.device_id || '';\n    msg.params.device_name = msg.payload.device_name || '';\n    \n    msg.payload = msg.params.device_id !== '' || msg.params.device_name !== '';\n} else if (msg.endpoint === 'byLocation') {\n    msg.params.zone = msg.payload.zone || '';\n    msg.params.district = msg.payload.district || '';\n    \n    msg.payload = msg.params.zone !== '' && msg.params.district !== '';\n}\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 490,
-        "y": 416,
+        "x": 410,
+        "y": 136,
         "wires": [
             [
-                "90f2220d440b7e49"
+                "2138915b86627862"
             ]
         ]
     },
     {
-        "id": "90f2220d440b7e49",
-        "type": "subflow:bab6ffe5b7ae3a28",
-        "z": "4a674aaa9e667dd6",
-        "name": "",
-        "env": [],
-        "x": 660,
-        "y": 416,
-        "wires": [
-            [
-                "7ace7937a50e561f"
-            ]
-        ]
-    },
-    {
-        "id": "6b22bcb564cfcbaa",
+        "id": "2138915b86627862",
         "type": "switch",
         "z": "4a674aaa9e667dd6",
-        "name": "Has device identification?",
+        "name": "Has all params?",
         "property": "payload",
         "propertyType": "msg",
         "rules": [
@@ -2852,22 +2623,70 @@
                 "t": "else"
             }
         ],
-        "checkall": "true",
+        "checkall": "false",
         "repair": false,
         "outputs": 2,
-        "x": 530,
+        "x": 600,
         "y": 136,
         "wires": [
             [
                 "09d4870160f6b21e"
             ],
             [
-                "40dbb4b86f38474e"
+                "61e85828ad1e2fa0"
             ]
         ]
     },
     {
-        "id": "06b6a8e8c9bff75b",
+        "id": "61e85828ad1e2fa0",
+        "type": "function",
+        "z": "4a674aaa9e667dd6",
+        "name": "Prepare response",
+        "func": "msg.payload = 'Parâmetros incompletos.';\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 810,
+        "y": 158,
+        "wires": [
+            [
+                "179903881b85ff1d",
+                "2de0d96376549d84"
+            ]
+        ]
+    },
+    {
+        "id": "179903881b85ff1d",
+        "type": "http response",
+        "z": "4a674aaa9e667dd6",
+        "name": "Send response",
+        "statusCode": "",
+        "headers": {},
+        "x": 1000,
+        "y": 158,
+        "wires": []
+    },
+    {
+        "id": "cb6bcc25b4569647",
+        "type": "debug",
+        "z": "4a674aaa9e667dd6",
+        "name": "[EXIT 1] Get informations of a device",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1490,
+        "y": 115,
+        "wires": []
+    },
+    {
+        "id": "2de0d96376549d84",
         "type": "debug",
         "z": "4a674aaa9e667dd6",
         "name": "[EXIT 2] Get informations of a device",
@@ -2879,39 +2698,28 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1210,
+        "x": 1250,
         "y": 158,
         "wires": []
     },
     {
-        "id": "40dbb4b86f38474e",
+        "id": "2a5cf022f2e39e0b",
         "type": "function",
         "z": "4a674aaa9e667dd6",
-        "name": "Prepare response",
-        "func": "msg.payload = `Não é possível realizar a busca sem o nome do dispositivo ou ID.`;\nreturn msg;",
+        "name": "Parse result",
+        "func": "let devices = msg.payload;\n\ndevices = devices.map(device => {\n    device.status = device.status ? 'OPERACIONAL' : 'NÃO OPERACIONAL';\n    return device;\n});\n\nmsg.payload = devices;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 770,
-        "y": 158,
+        "x": 1070,
+        "y": 115,
         "wires": [
             [
-                "06b6a8e8c9bff75b",
-                "478cd9c83665ef3f"
+                "cb6bcc25b4569647",
+                "5e01cf1a6a9c08e8"
             ]
         ]
-    },
-    {
-        "id": "478cd9c83665ef3f",
-        "type": "http response",
-        "z": "4a674aaa9e667dd6",
-        "name": "Send response",
-        "statusCode": "",
-        "headers": {},
-        "x": 960,
-        "y": 158,
-        "wires": []
     }
 ]
