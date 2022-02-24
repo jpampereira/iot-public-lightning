@@ -1,6 +1,6 @@
 const btn = window.document.getElementsByClassName('btn-on-off')[0];
 
-let btn_state = 2;
+let btnState = 2;
 
 //****************** IN BACKGROUND *********************/
 
@@ -11,9 +11,9 @@ const btn_opts = {
 	'2': { color: '#808080', text: 'Ligar/Desligar', hover: { cursor: 'default', font: 'normal' }, active: { border: 'none',              padding: '15px 30px' } }
 };
 
-function change_btn_label(status) {
+function changeBtnLabel(status) {
 	// Change button label only if has rele state change since last verification
-	if (status !== btn_state) {
+	if (status !== btnState) {
 		// Get configs to apply in button
 		const configs = btn_opts[status];
 
@@ -29,16 +29,16 @@ function change_btn_label(status) {
 		btn_pseudo_elem.setProperty('--btn-border',  configs.active.border);
 		btn_pseudo_elem.setProperty('--btn-padding', configs.active.padding);
 
-		btn_state = status;
+		btnState = status;
 	}
 }
 
 /******************* ON PAGE REQUEST *******************/
 
 btn.onclick = function() {
-	if (btn_state !== 2) {
+	if (btnState !== 2) {
 		let action = 'D';
-		if (btn_state === 0) {
+		if (btnState === 0) {
 			action = 'L';
 		}
 

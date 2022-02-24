@@ -4,15 +4,16 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Monitoração</title>
-	<link rel="shortcut icon" href="../images/monitoring-favicon.ico" type="image/x-icon">
+	<link rel="shortcut icon" href="../images/monitoring/favicon.ico" type="image/x-icon">
 	
 	<!-- CSS Script -->
 	<link rel="stylesheet" href="../styles/monitoring.css">
 	
-	<!-- Map Library -->
-	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDGf2F6gJHjEJETRBsRqR00hWQAfHaZcVU&callback=create_map&v=weekly" async></script>
+	<!-- Map Libraries -->
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDGf2F6gJHjEJETRBsRqR00hWQAfHaZcVU&v=weekly" async></script>
+	<script src="https://unpkg.com/@googlemaps/markerclustererplus/dist/index.min.js" defer></script>
 	
-	<!-- Axios Library -->
+	<!-- Axios Libraries -->
 	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js" defer></script>
 	
 	<!-- Chart Libraries -->
@@ -21,12 +22,12 @@
 	<script src="https://unpkg.com/chartjs-gauge@0.3.0/dist/chartjs-gauge.js" defer></script>
 	
 	<!-- JS Scripts -->
-	<script src="../scripts/requests.js" defer></script>
+	<script src="../scripts/auxiliar.js" defer></script>
 	<script src="../scripts/monitoring-info-card.js" defer></script>
-	<script src="../scripts/monitoring-map.js" defer></script>
 	<script src="../scripts/monitoring-status-btn.js" defer></script>
 	<script src="../scripts/charts.js" defer></script>
-	<script src="../scripts/monitoring-main.js" defer></script>
+	<script src="../scripts/maps.js" defer></script>
+	<script src="../scripts/monitoring.js" defer></script>
 </head>
 <body>
 	<header>

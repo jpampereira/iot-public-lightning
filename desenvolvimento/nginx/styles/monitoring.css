@@ -5,7 +5,9 @@
 :root {
 	--background-color: #242424;
 	--cards-color:      #1d1d1d;
-	--headers-color:    rgb(9, 116, 121);
+	--headers-color:    #097479;
+	--btn-hover:        #d6d6d6;
+	--btn-active:       #9c9c9c;
 	--font:               Roboto, Arial, sans-serif;
 	
 	/* On/Off button variables */
@@ -16,57 +18,58 @@
 }
 
 * {
-	padding:     0px;
 	margin:      0px;
+	padding:     0px;
 	box-sizing:  border-box;
-	font-family: Roboto, Arial, sans-serif;
+	font-family: var(--font);
 	user-select: none;
 }
 
-body {
+html, body {
 	background-color: var(--background-color);
+	height:           100%;
 }
 
 body > header {
-	display:          flex;
-	flex-wrap:        wrap;
-	justify-content:  center;
 	background-color: var(--headers-color);
-	width:            100%;
-	padding:          30px 0px;
+	padding:          35px 0px;
+	box-shadow:       1px 0.5px 5px 1px rgb(51, 51, 51);
 }
 
 form {
 	display:         flex;
-	justify-content: space-between;
-	width:           370px;
+	align-items:     center;
+	justify-content: center;
 }
 
-form > * {
+form > :not(button) {
+	width:         180px;
+	margin:        0px 5px;
+	padding:       8px;
+	border-radius: 5px;
+	border:        none;
+	font-size:     1em;
+	cursor: 	   pointer;
+}
+
+button {
+	margin:        0px 5px;
+	padding:       8.5px 30px;
 	border-radius: 5px;
 	border:        none;
 	font-size:     1em;
 }
 
-form > input[type="text"] {
-	width:   250px;
-	padding: 10px 5px;
+button:hover {
+	background-color: var(--btn-hover);
+	color:            var(--headers-color);
+	font-weight:      bold;
+	cursor: 	      pointer;
 }
 
-form > button {
-	padding: 10px 30px;
-}
-
-form > button:hover {
-	background-color: #d6d6d6;
-	font-weight:        bold;
-	color:              var(--headers-color);
-	cursor: 			pointer;
-}
-
-form > button:active {
-	padding: 9px 29px;
-	border:  1px inset #9c9c9c;
+button:active {
+	padding: 7.5px 29px;
+	border:  1px inset var(--btn-active);
 }
 
 body > main {

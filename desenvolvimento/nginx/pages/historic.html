@@ -4,7 +4,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Histórico</title>
-	<link rel="shortcut icon" href="../images/historic-favicon.ico" type="image/x-icon">
+	<link rel="shortcut icon" href="../images/historic/favicon.ico" type="image/x-icon">
 	
 	<!-- CSS Script -->
 	<link rel="stylesheet" href="../styles/historic.css">
@@ -18,28 +18,22 @@
 	<script src="https://unpkg.com/chartjs-gauge@0.3.0/dist/chartjs-gauge.js" defer></script>
 	
 	<!-- JS Scripts -->
-	<script src="../scripts/requests.js" defer></script>
+	<script src="../scripts/auxiliar.js" defer></script>
 	<script src="../scripts/charts.js" defer></script>
-	<script src="../scripts/historic-main.js" defer></script>
+	<script src="../scripts/historic.js" defer></script>
 </head>
 <body>
 	<header>
 		<form>
-			<div>
-				<div>
-					<input type="text" name="device_name" placeholder="Nome do Dispositivo">
-					<input type="hidden" name="current_name">
-					<select name="interval">
-						<option value="" selected hidden>Selecionar período</option>
-						<option value="1440">Últimas 24 horas</option>
-						<option value="10080">Última semana</option>
-						<option value="44640">Mês atual</option>
-					</select>
-				</div>
-				<div>
-					<button>Buscar</button>
-				</div>
-			</div>
+			<input type="text" name="device_name" placeholder="Nome do Dispositivo">
+			<input type="hidden" name="current_name">
+			<select name="interval">
+				<option value="" selected hidden>Selecionar período</option>
+				<option value="1440">Últimas 24 horas</option>
+				<option value="10080">Última semana</option>
+				<option value="44640">Mês atual</option>
+			</select>
+			<button>Buscar</button>
 		</form>
 	</header>
 	<main>

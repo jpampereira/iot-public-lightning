@@ -10,7 +10,7 @@ const measures = {
 	power_expend: { minValue: 0, maxValue: 600, unit: 'kW/h', configs: {} }
 };
 
-const chart_config = function (type, measure) {
+const chartConfig = function (type, measure) {
 	const config  = { type: type, data: {}, options: {}};
 
 	const datasets = measure.unit === 'kW/h' ?
@@ -63,7 +63,7 @@ const chart_config = function (type, measure) {
 }
 
 window.onload = function () {
-	create_charts(chart_config);
+	createCharts(chartConfig);
 }
 
 /*************************** ON PAGE REQUEST ***************************/
@@ -76,7 +76,7 @@ form.onsubmit = function (e) {
 	const interval     = form.elements.interval.value;
 	
 	if (device_name !== current_name && device_name !== "") {
-		update_line_charts(device_name, interval);
+		updateLineCharts(device_name, interval);
 
 		current_name.value = device_name; // Store last device searched
 	}

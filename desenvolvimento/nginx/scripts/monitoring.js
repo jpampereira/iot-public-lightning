@@ -9,7 +9,7 @@ const measures = {
 	power:     { minValue: 0, maxValue: 200, unit: 'W',   configs: {} },
 };
 
-const chart_config = function (type, measure) {
+const chartConfig = function (type, measure) {
 	const config = { type: type, data: {}, options: {} };
 
 	if (type === 'gauge') {
@@ -83,23 +83,23 @@ const chart_config = function (type, measure) {
 }
 
 window.onload = function () {
-	// map creation function is called when library is loaded;
-	create_charts(chart_config);
+	createMap();
+	createCharts(chartConfig);
 }
 
 /**************************** IN BACKGROUND ****************************/
 
-let gauges_interval;
-let lines_interval;
+let gaugesInterval;
+let linesInterval;
 
-function gauges_interval_function () {
+function gaugesIntervalFunction () {
 	const device_name = form.elements.current_name.value;
-	update_gauge_charts(device_name);
+	updateGaugeCharts(device_name);
 }
 
-function lines_interval_function () {
+function linesIntervalFunction () {
 	const device_name = form.elements.current_name.value;
-	update_line_charts(device_name, 60);
+	updateLineCharts(device_name, 60);
 }
 
 /*************************** ON PAGE REQUEST ***************************/
@@ -107,20 +107,20 @@ function lines_interval_function () {
 form.onsubmit = function (e) {
 	e.preventDefault();
 	
-	const device_name  = form.elements.device_name.value;
+	const device_name = form.elements.device_name.value;
 	const current_name = form.elements.current_name;
 
 	if (device_name !== current_name && device_name !== "") {
-		clearInterval(gauges_interval);
-		clearInterval(lines_interval);
+		clearInterval(gaugesInterval);
+		clearInterval(linesInterval);
 
-		update_map(device_name);
-		update_gauge_charts(device_name);
-		update_line_charts(device_name, 60);
+		updateMap('byDevice', { device_name }).then(updateInfoCard).catch(resetInfoCard);
+		updateGaugeCharts(device_name);
+		updateLineCharts(device_name, 60);
 
 		current_name.value = device_name; // Store last device searched for data updating
 
-		gauges_interval = setInterval(gauges_interval_function, 1000 * 5); // 5 seconds
-		lines_interval  = setInterval(lines_interval_function, 1000 * 60 * 1) // 1 minute
+		gauges_interval = setInterval(gaugesIntervalFunction, 1000 * 5); // 5 seconds
+		lines_interval  = setInterval(linesIntervalFunction, 1000 * 60 * 1) // 1 minute
 	}
 }

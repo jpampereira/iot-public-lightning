@@ -5,14 +5,14 @@
 
 /******************* ON PAGE LOAD **********************/
 
-function create_charts(chart_config) {
+function createCharts (chartConfig) {
 	const charts = document.getElementsByClassName('charts');
 
 	for (let chart of charts) {
 		const measure = chart.dataset.measure;
 		const type    = chart.dataset.type;
 
-		let config = chart_config(type, measures[measure]);
+		let config = chartConfig(type, measures[measure]);
 		measures[measure].configs[`${type}_chart`] = config;
 
 		window[`${measure}-${type}`] = new Chart(chart, config);
@@ -21,65 +21,65 @@ function create_charts(chart_config) {
 
 /********** ON PAGE REQUEST / IN BACKGROUND ************/
 
-function update_gauge_charts(device_name) {
+function updateGaugeCharts (device_name) {
 	request('/devices/measures/last', { device_name }, 'get')
 	.then(res => {
 		const data = res[0];
 
 		if (data !== undefined) {
-			const charts_measures = Object.keys(measures);
+			const chartsMeasures = Object.keys(measures);
 
-			charts_measures.forEach(measure => {
+			chartsMeasures.forEach(measure => {
 				measures[measure].configs.gauge_chart.data.datasets[0].data[0] = data[measure];
 				measures[measure].configs.gauge_chart.data.datasets[0].value   = data[measure];
 
 				window[`${measure}-gauge`].update();
 			});
 
-			change_btn_label(data.rele_state);
+			changeBtnLabel(data.rele_state);
 		} else {
-			change_btn_label(2);
-			reset_charts('gauge');
+			changeBtnLabel(2);
+			resetCharts('gauge');
 		}
 	})
 	.catch(_ => {
-		reset_charts('gauge');
+		resetCharts('gauge');
 	});
 }
 
-function update_line_charts(device_name, interval) {
+function updateLineCharts(device_name, interval) {
 	request('/devices/measures/interval', { device_name, interval }, 'get')
 	.then(res => {
 		const labels = res.labels;
 		const values = res.values;
 
-		const charts_measures = Object.keys(values);
+		const chartsMeasures = Object.keys(values);
 
-		charts_measures.forEach(measure => {
-			const measure_values = values[measure];
+		chartsMeasures.forEach(measure => {
+			const measureValues = values[measure];
 
 			measures[measure].configs.line_chart.data.labels = labels;
 
-			if (Array.isArray(measure_values)) {
-				measures[measure].configs.line_chart.data.datasets[0].data = measure_values;
+			if (Array.isArray(measureValues)) {
+				measures[measure].configs.line_chart.data.datasets[0].data = measureValues;
 			} else {
-				measures[measure].configs.line_chart.data.datasets[0].data = measure_values.min;
-				measures[measure].configs.line_chart.data.datasets[1].data = measure_values.max;
-				measures[measure].configs.line_chart.data.datasets[2].data = measure_values.avg;
+				measures[measure].configs.line_chart.data.datasets[0].data = measureValues.min;
+				measures[measure].configs.line_chart.data.datasets[1].data = measureValues.max;
+				measures[measure].configs.line_chart.data.datasets[2].data = measureValues.avg;
 			}
 
 			window[`${measure}-line`].update();
 		});
 	})
 	.catch(_ => {
-		reset_charts('line');
+		resetCharts('line');
 	});
 }
 
-function reset_charts(chart_type) {
-	const charts_measures = Object.keys(measures);
+function resetCharts(chart_type) {
+	const chartsMeasures = Object.keys(measures);
 
-	charts_measures.forEach(measure => {
+	chartsMeasures.forEach(measure => {
 		if (chart_type === 'gauge') {
 			measures[measure].configs.gauge_chart.data.datasets[0].data[0] = 0;
 			measures[measure].configs.gauge_chart.data.datasets[0].value   = 0;

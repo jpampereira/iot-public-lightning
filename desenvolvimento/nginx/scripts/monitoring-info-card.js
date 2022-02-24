@@ -1,23 +1,23 @@
 const labels = { street: 'ENDEREÇO', district: 'BAIRRO', zone: 'ZONA', status: 'STATUS' }
 
-const info_card = window.document.getElementsByClassName('info')[0];
+const infoCard = window.document.getElementsByClassName('info')[0];
 
-function add_content(elems) {
+function addContent(elems) {
 	for (let elem of elems) {
-		info_card.appendChild(elem);
+		infoCard.appendChild(elem);
 	}
 }
 
-function rmv_content() {
+function rmvContent() {
 	const elems = window.document.querySelectorAll('.info > *');
 
 	for (let elem of elems) {
-		info_card.removeChild(elem);
+		infoCard.removeChild(elem);
 	}
 }
 
-function update_info_card(infos) {
-	const infos_array = Object.entries(infos);
+function updateInfoCard(infos) {
+	const infos_array = Object.entries(infos[0]);
 	
 	let elems = infos_array.map(info => {
 		const label = info[0];
@@ -25,9 +25,9 @@ function update_info_card(infos) {
 		if (labels[label] !== undefined) { // Ignore information that will not be displayed 
 			const value = info[1];
 
-			const div_elem   = window.document.createElement('div');
-			const label_elem = window.document.createElement('p');
-			const value_elem = window.document.createElement('p');
+			const div_elem = createElement('div');
+			const label_elem = createElement('p');
+			const value_elem = createElement('p');
 			
 			label_elem.innerHTML = `${labels[label]}:`;
 			value_elem.innerHTML = value;
@@ -47,20 +47,20 @@ function update_info_card(infos) {
 
 	elems = elems.filter(elem => elem !== undefined);
 
-	rmv_content();
+	rmvContent();
 
-	add_content(elems);
+	addContent(elems);
 }
 
-function reset_info_card() {
-	rmv_content();
+function resetInfoCard() {
+	rmvContent();
 
-	const div = window.document.createElement('div');
-	const p = window.document.createElement('p');
-
+	const div = createElement('div');
+	
+	const p = createElement('p');
 	p.innerHTML = 'Dispositivo não encontrado :(';
 
 	div.appendChild(p);
 
-	add_content([div]);
+	addContent([div]);
 }
