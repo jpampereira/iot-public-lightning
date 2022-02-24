@@ -95,7 +95,7 @@ services:
       
   devices_redis:
     container_name: devices_redis
-    image: redislabs/rejson:latest # https://hub.docker.com/r/redislabs/rejson/
+    image: redislabs/rejson:2.0.6 # https://hub.docker.com/r/redislabs/rejson/
     restart: always
     ports:
       - 6379:6379
