@@ -25,11 +25,8 @@ function resetForm () {
 
 function updateMode () {
 	// Change checked attribute
-	const insertRadio = window.document.querySelector('input[id="insert"]');
-	const updateRadio = window.document.querySelector('input[id="update"]');
-
-	insertRadio.removeAttribute('checked');
-	updateRadio.setAttribute('checked', '');
+	const radios = window.document.querySelectorAll('[type="radio"]');
+	radios.forEach(radio => radio.toggleAttribute('checked'));
 
 	// Create ID field
 	const area = window.document.querySelector('#data > :nth-child(1)');
@@ -54,7 +51,6 @@ function updateMode () {
 	getButton.addEventListener('click', get);
 	
 	div.insertBefore(getButton, setButton);
-	div.style.justifyContent = 'space-between';
 
 	// Reset form
 	resetForm();
@@ -62,11 +58,8 @@ function updateMode () {
 
 function insertMode () {
 	// Change checked attribute
-	const insertRadio = window.document.querySelector('input[id="insert"]');
-	const updateRadio = window.document.querySelector('input[id="update"]');
-
-	updateRadio.removeAttribute('checked');
-	insertRadio.setAttribute('checked', '');
+	const radios = window.document.querySelectorAll('[type="radio"]');
+	radios.forEach(radio => radio.toggleAttribute('checked'));
 
 	// Remove ID field
 	const field = window.document.querySelector('#data > :nth-child(1) > :nth-child(2)');
@@ -79,7 +72,6 @@ function insertMode () {
 	const div = getButton.parentElement;
 
 	div.removeChild(getButton);
-	div.style.justifyContent = 'center';
 
 	// Reset form
 	resetForm();

@@ -3,23 +3,19 @@
  * - https://www.npmjs.com/package/chartjs-gauge
  */
 
-/******************* ON PAGE LOAD **********************/
-
-function createCharts (chartConfig) {
+function createCharts () {
 	const charts = document.getElementsByClassName('charts');
 
 	for (let chart of charts) {
 		const measure = chart.dataset.measure;
-		const type    = chart.dataset.type;
+		const type = chart.dataset.type;
 
 		let config = chartConfig(type, measures[measure]);
-		measures[measure].configs[`${type}_chart`] = config;
+		measures[measure].configs[`${type}Chart`] = config;
 
 		window[`${measure}-${type}`] = new Chart(chart, config);
 	}
 }
-
-/********** ON PAGE REQUEST / IN BACKGROUND ************/
 
 function updateGaugeCharts (device_name) {
 	request('/devices/measures/last', { device_name }, 'get')
@@ -30,8 +26,8 @@ function updateGaugeCharts (device_name) {
 			const chartsMeasures = Object.keys(measures);
 
 			chartsMeasures.forEach(measure => {
-				measures[measure].configs.gauge_chart.data.datasets[0].data[0] = data[measure];
-				measures[measure].configs.gauge_chart.data.datasets[0].value   = data[measure];
+				measures[measure].configs.gaugeChart.data.datasets[0].data[0] = data[measure];
+				measures[measure].configs.gaugeChart.data.datasets[0].value   = data[measure];
 
 				window[`${measure}-gauge`].update();
 			});
@@ -47,7 +43,7 @@ function updateGaugeCharts (device_name) {
 	});
 }
 
-function updateLineCharts(device_name, interval) {
+function updateLineCharts (device_name, interval) {
 	request('/devices/measures/interval', { device_name, interval }, 'get')
 	.then(res => {
 		const labels = res.labels;
@@ -58,14 +54,14 @@ function updateLineCharts(device_name, interval) {
 		chartsMeasures.forEach(measure => {
 			const measureValues = values[measure];
 
-			measures[measure].configs.line_chart.data.labels = labels;
+			measures[measure].configs.lineChart.data.labels = labels;
 
 			if (Array.isArray(measureValues)) {
-				measures[measure].configs.line_chart.data.datasets[0].data = measureValues;
+				measures[measure].configs.lineChart.data.datasets[0].data = measureValues;
 			} else {
-				measures[measure].configs.line_chart.data.datasets[0].data = measureValues.min;
-				measures[measure].configs.line_chart.data.datasets[1].data = measureValues.max;
-				measures[measure].configs.line_chart.data.datasets[2].data = measureValues.avg;
+				measures[measure].configs.lineChart.data.datasets[0].data = measureValues.min;
+				measures[measure].configs.lineChart.data.datasets[1].data = measureValues.max;
+				measures[measure].configs.lineChart.data.datasets[2].data = measureValues.avg;
 			}
 
 			window[`${measure}-line`].update();
@@ -76,20 +72,20 @@ function updateLineCharts(device_name, interval) {
 	});
 }
 
-function resetCharts(chart_type) {
+function resetCharts (chartType) {
 	const chartsMeasures = Object.keys(measures);
 
 	chartsMeasures.forEach(measure => {
-		if (chart_type === 'gauge') {
-			measures[measure].configs.gauge_chart.data.datasets[0].data[0] = 0;
-			measures[measure].configs.gauge_chart.data.datasets[0].value   = 0;
-		} else if (chart_type === 'line') {
-			measures[measure].configs.line_chart.data.labels = [];
-			measures[measure].configs.line_chart.data.datasets.forEach(dataset => {
+		if (chartType === 'gauge') {
+			measures[measure].configs.gaugeChart.data.datasets[0].data[0] = 0;
+			measures[measure].configs.gaugeChart.data.datasets[0].value   = 0;
+		} else if (chartType === 'line') {
+			measures[measure].configs.lineChart.data.labels = [];
+			measures[measure].configs.lineChart.data.datasets.forEach(dataset => {
 				dataset.data = [];
 			});
 		}
 
-		window[`${measure}-${chart_type}`].update();
+		window[`${measure}-${chartType}`].update();
 	});	
 }

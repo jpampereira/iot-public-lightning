@@ -76,3 +76,19 @@ function setFieldValue (selector, value) {
 	const elem = window.document.querySelector(selector);
 	elem.value = value;
 }
+
+function appendChilds(parent, childs) {
+	for (let child of childs) {
+		parent.appendChild(child);
+	}
+
+	return parent;
+}
+
+function removeChilds(parent, childs) {
+	for (let child of childs) {
+		parent.removeChild(child);
+	}
+
+	return parent;
+}

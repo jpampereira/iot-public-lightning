@@ -1,66 +1,43 @@
-const labels = { street: 'ENDEREÇO', district: 'BAIRRO', zone: 'ZONA', status: 'STATUS' }
-
-const infoCard = window.document.getElementsByClassName('info')[0];
-
-function addContent(elems) {
-	for (let elem of elems) {
-		infoCard.appendChild(elem);
-	}
-}
-
-function rmvContent() {
-	const elems = window.document.querySelectorAll('.info > *');
-
-	for (let elem of elems) {
-		infoCard.removeChild(elem);
-	}
-}
+const infoCard = window.document.querySelector('.info');
 
 function updateInfoCard(infos) {
-	const infos_array = Object.entries(infos[0]);
+	const labels = { street: 'ENDEREÇO', district: 'BAIRRO', zone: 'ZONA', status: 'STATUS' }
+
+	infos = Object.entries(infos[0]).filter(info => labels[info[0]] !== undefined); // Get only information that will be displayed
 	
-	let elems = infos_array.map(info => {
-		const label = info[0];
+	const newValues = infos.map(info => {
+		let area = createElement('div');
+		const label = createElement('p');
+		const value = createElement('p');
 		
-		if (labels[label] !== undefined) { // Ignore information that will not be displayed 
-			const value = info[1];
-
-			const div_elem = createElement('div');
-			const label_elem = createElement('p');
-			const value_elem = createElement('p');
-			
-			label_elem.innerHTML = `${labels[label]}:`;
-			value_elem.innerHTML = value;
-			
-			if (label === 'status') {			
-				value_elem.classList.add(value.replace(/\s+/, '_'));
-			}
-			
-			div_elem.appendChild(label_elem);
-			div_elem.appendChild(value_elem);
-			
-			return div_elem;
+		label.innerHTML = `${labels[info[0]]}:`;
+		value.innerHTML = info[1];
+		
+		if (info[0] === 'status') {			
+			value.classList.add(info[1].replace(/\s+/, '_'));
 		}
-
-		return undefined;
+		
+		appendChilds(area, [label]);
+		appendChilds(area, [value]);
+		
+		return area;
 	});
 
-	elems = elems.filter(elem => elem !== undefined);
-
-	rmvContent();
-
-	addContent(elems);
+	removeChilds(infoCard, window.document.querySelectorAll('.info > *'));
+	appendChilds(infoCard, newValues);
 }
 
 function resetInfoCard() {
-	rmvContent();
+	removeChilds(infoCard, window.document.querySelectorAll('.info > *'));
 
 	const div = createElement('div');
 	
+	const img = createElement('img', { src: '../images/monitoring/not-found.png', style: 'margin-bottom: 20px;'});
+	appendChilds(div, [img]);
+
 	const p = createElement('p');
-	p.innerHTML = 'Dispositivo não encontrado :(';
-
-	div.appendChild(p);
-
-	addContent([div]);
+	p.innerHTML = 'Dispositivo não encontrado';
+	appendChilds(div, [p]);
+	
+	appendChilds(infoCard, [div]);
 }

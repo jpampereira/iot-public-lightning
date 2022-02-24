@@ -135,6 +135,7 @@ html, body {
 	width:            130px;
 	height:           40px;
 	background-color: var(--headers-color);
+	margin:           0px 5px;
 	padding:          10px 40px;
 	border-radius:    15px;
 }

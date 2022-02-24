@@ -1,6 +1,4 @@
-const form = window.document.forms[0];
-
-/******************* ON PAGE LOAD / CHART CONFIGS **********************/
+/************** CHART CONFIGS *****************/
 
 const measures = {
 	voltage:   { minValue: 0, maxValue: 200, unit: 'V',   configs: {} },
@@ -9,7 +7,7 @@ const measures = {
 	power:     { minValue: 0, maxValue: 200, unit: 'W',   configs: {} },
 };
 
-const chartConfig = function (type, measure) {
+function chartConfig (type, measure) {
 	const config = { type: type, data: {}, options: {} };
 
 	if (type === 'gauge') {
@@ -82,35 +80,30 @@ const chartConfig = function (type, measure) {
 	return config;
 }
 
-window.onload = function () {
-	createMap();
-	createCharts(chartConfig);
-}
-
-/**************************** IN BACKGROUND ****************************/
+/**************** IN BACKGROUND ***************/
 
 let gaugesInterval;
 let linesInterval;
 
 function gaugesIntervalFunction () {
-	const device_name = form.elements.current_name.value;
-	updateGaugeCharts(device_name);
+	const deviceName = form.elements.current_name.value;
+	updateGaugeCharts(deviceName);
 }
 
 function linesIntervalFunction () {
-	const device_name = form.elements.current_name.value;
-	updateLineCharts(device_name, 60);
+	const deviceName = form.elements.current_name.value;
+	updateLineCharts(deviceName, 60);
 }
 
-/*************************** ON PAGE REQUEST ***************************/
+/*************** FORM FUNCTIONS ***************/
 
-form.onsubmit = function (e) {
+function formSubmission(e) {
 	e.preventDefault();
 	
 	const device_name = form.elements.device_name.value;
-	const current_name = form.elements.current_name;
+	const currentName = form.elements.current_name;
 
-	if (device_name !== current_name && device_name !== "") {
+	if (device_name !== currentName.value && device_name !== "") {
 		clearInterval(gaugesInterval);
 		clearInterval(linesInterval);
 
@@ -118,9 +111,19 @@ form.onsubmit = function (e) {
 		updateGaugeCharts(device_name);
 		updateLineCharts(device_name, 60);
 
-		current_name.value = device_name; // Store last device searched for data updating
+		currentName.value = device_name; // Store last device searched for data updating
 
-		gauges_interval = setInterval(gaugesIntervalFunction, 1000 * 5); // 5 seconds
-		lines_interval  = setInterval(linesIntervalFunction, 1000 * 60 * 1) // 1 minute
+		gaugesInterval = setInterval(gaugesIntervalFunction, 1000 * 5); // 5 seconds
+		linesInterval = setInterval(linesIntervalFunction, 1000 * 60 * 1) // 1 minute
 	}
 }
+
+/******************** MAIN ********************/
+
+window.onload = function () {
+	createMap();
+	createCharts();
+}
+
+const form = window.document.forms[0];
+form.onsubmit = formSubmission;

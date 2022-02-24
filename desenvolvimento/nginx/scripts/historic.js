@@ -1,6 +1,4 @@
-const form = window.document.forms[0];
-
-/******************* ON PAGE LOAD / CHART CONFIGS **********************/
+/************** CHART CONFIGS *****************/
 
 const measures = {
 	voltage:      { minValue: 0, maxValue: 200, unit: 'V',    configs: {} },
@@ -10,18 +8,18 @@ const measures = {
 	power_expend: { minValue: 0, maxValue: 600, unit: 'kW/h', configs: {} }
 };
 
-const chartConfig = function (type, measure) {
+function chartConfig (type, measure) {
 	const config  = { type: type, data: {}, options: {}};
 
 	const datasets = measure.unit === 'kW/h' ?
 	[ 
-		{ label: 'Gasto de Energia (kW/h)', border_color: 'rgb(75, 192, 192)', background_color: 'rgba(9, 116, 121, 0.185)' } 
+		{ label: 'Gasto de Energia (kW/h)', borderColor: 'rgb(75, 192, 192)', backgroundColor: 'rgba(9, 116, 121, 0.185)' } 
 	]
 	:
 	[
-		{ label: 'Mínimo', border_color: 'red',   background_color: 'rgba(255, 0, 0, 0.185)' }, 
-		{ label: 'Máximo', border_color: 'green', background_color: 'rgba(0, 255, 0, 0.185)' }, 
-		{ label: 'Média',  border_color: 'blue',  background_color: 'rgba(0, 0, 255, 0.185)' }
+		{ label: 'Mínimo', borderColor: 'red',   backgroundColor: 'rgba(255, 0, 0, 0.185)' }, 
+		{ label: 'Máximo', borderColor: 'green', backgroundColor: 'rgba(0, 255, 0, 0.185)' }, 
+		{ label: 'Média',  borderColor: 'blue',  backgroundColor: 'rgba(0, 0, 255, 0.185)' }
 	];
 
 	config.data = {
@@ -31,8 +29,8 @@ const chartConfig = function (type, measure) {
 				label: dataset.label,
 				data: [],
 				fill: true,
-				borderColor: dataset.border_color,
-				backgroundColor: dataset.background_color,
+				borderColor: dataset.borderColor,
+				backgroundColor: dataset.backgroundColor,
 				tension: 0.1
 			}
 		})
@@ -62,22 +60,22 @@ const chartConfig = function (type, measure) {
 	return config;
 }
 
-window.onload = function () {
-	createCharts(chartConfig);
-}
+/*************** FORM FUNCTIONS ***************/
 
-/*************************** ON PAGE REQUEST ***************************/
-
-form.onsubmit = function (e) {
+function formSubmission (e) {
 	e.preventDefault();
 	
-	const device_name  = form.elements.device_name.value;
-	const current_name = form.elements.current_name;
-	const interval     = form.elements.interval.value;
+	const deviceName = form.elements.device_name.value;
+	const interval = form.elements.interval.value;
 	
-	if (device_name !== current_name && device_name !== "") {
-		updateLineCharts(device_name, interval);
-
-		current_name.value = device_name; // Store last device searched
+	if (deviceName !== "") {
+		updateLineCharts(deviceName, interval);
 	}
 }
+
+/******************** MAIN ********************/
+
+window.onload = createCharts;
+
+const form = window.document.forms[0];
+form.onsubmit = formSubmission;
