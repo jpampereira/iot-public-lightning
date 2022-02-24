@@ -4,7 +4,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Configurações</title>
-	<link rel="shortcut icon" href="../images/configs-favicon.ico" type="image/x-icon">
+	<link rel="shortcut icon" href="../images/configs/favicon.ico" type="image/x-icon">
 	
 	<!-- CSS Scripts -->
 	<link rel="stylesheet" href="../styles/configs.css">
@@ -13,7 +13,7 @@
 	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js" defer></script>
 
 	<!-- JS Scripts -->
-	<script src="../scripts/requests.js" defer></script>
+	<script src="../scripts/auxiliar.js" defer></script>
 	<script src="../scripts/configs.js" defer></script>
 </head>
 <body>
@@ -37,32 +37,32 @@
 					<div class="line">
 						<div>
 							<label for="name">Nome do Dispositivo</label>
-							<input type="text" name="name" id="name" class="disabled">
+							<input type="text" name="name" id="name" class="disable">
 						</div>
 					</div>
 					<div class="line">
 						<div>
 							<label for="status">Status Operacional</label>
-							<select name="status" id="status">
+							<select name="status" id="status" class="enable">
 								<option>OPERACIONAL</option>
 								<option>NÃO OPERACIONAL</option>
 							</select>
 						</div>
 						<div>
 							<label for="street">Endereço</label>
-							<input type="text" name="street" id="street">
+							<input type="text" name="street" id="street" class="enable">
 						</div>
 					</div>
 					<div class="line">
 						<div>
 							<label for="zone">Zona</label>
-							<select name="zone" id="zone">
+							<select name="zone" id="zone" class="enable">
 								<option value="" hidden>Selecionar zona</option>
 							</select>
 						</div>
 						<div>
 							<label for="district">Bairro</label>
-							<select name="district" id="district" disabled>
+							<select name="district" id="district" disabled class="enable">
 								<option value="" hidden>Selecionar bairro</option>
 							</select>
 						</div>
@@ -70,11 +70,11 @@
 					<div class="line">
 						<div>
 							<label for="coordinates">Coordenadas</label>
-							<input type="text" name="coordinates" id="coordinates" placeholder="Latitude;Longitude">
+							<input type="text" name="coordinates" id="coordinates" placeholder="Latitude,Longitude" class="enable">
 						</div>
 						<div>
 							<label for="interval">Intervalo de Envio (em milissegundos)</label>
-							<input type="number" name="interval" id="interval" min="1000" value="1000">
+							<input type="number" name="interval" id="interval" min="1000" value="1000" class="enable">
 						</div>
 					</div>
 				</div>

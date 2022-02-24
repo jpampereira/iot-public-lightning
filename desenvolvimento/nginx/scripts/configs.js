@@ -1,134 +1,88 @@
-function update_zones () {
-	request('/devices/info/locations', { type: 'zone' }, 'get')
-	.then(res => {
-		const zones = res;
+/*************** FORM FUNCTIONS ***************/
 
-		const field = window.document.querySelector('select[id="zone"]');
-		
-		zones.forEach(zone => {
-			const option = window.document.createElement('option');
-			option.innerHTML = zone;
-
-			field.appendChild(option);
-		});
-	})
-	.catch(console.log);
-}
-
-function update_districts () {
-	reset_districts();
-
-	const zone = window.document.querySelector('select[id="zone"]').value;
-
-	request('/devices/info/locations', { type: 'district', zone }, 'get')
-	.then(res => {
-		const districts = res;
-
-		const field = window.document.querySelector('select[id="district"]');
-
-		districts.forEach(district => {
-			const option = window.document.createElement('option');
-			option.innerHTML = district;
-
-			field.appendChild(option);
-		});
-
-		field.removeAttribute('disabled');
-	})
-	.catch(console.log)
-}
-
-function reset_districts () {
-	const field = window.document.querySelector('select[id="district"]');
-	const options = window.document.querySelectorAll('select[id="district"] > :not(option[hidden])');
-
-	options.forEach(option => {
-		field.removeChild(option);
-	});
-
-	field.setAttribute('disabled', '');
-}
-
-function reset_form () {
+function resetForm () {
 	// Reset form
 	const form = window.document.forms[0];
 	form.reset();
 
-	// Enable disabled fields
-	const fields = window.document.querySelectorAll('.disabled');
-	fields.forEach(field => field.removeAttribute('disabled'));
+	// Change fields status
+	const mode = window.document.querySelector('[checked]').id;
+
+	if (mode === 'insert') {
+		enableFields('[disabled]');
+	} else {
+		enableFields('.disable');
+		disableFields('.enable');
+
+		// Add get button action
+		const button = window.document.querySelector('#get');
+		button.addEventListener('click', get);
+	}
 
 	// Reset district options
-	reset_districts();
+	resetDistricts();
 }
 
-function update_mode () {
+function updateMode () {
 	// Change checked attribute
-	const insert_radio = window.document.querySelector('input[id="insert"]');
-	const update_radio = window.document.querySelector('input[id="update"]');
+	const insertRadio = window.document.querySelector('input[id="insert"]');
+	const updateRadio = window.document.querySelector('input[id="update"]');
 
-	insert_radio.removeAttribute('checked');
-	update_radio.setAttribute('checked', '');
+	insertRadio.removeAttribute('checked');
+	updateRadio.setAttribute('checked', '');
 
 	// Create ID field
-	const id_field = window.document.createElement('div');
-	const line = window.document.querySelector('#data > :nth-child(1)');
+	const area = window.document.querySelector('#data > :nth-child(1)');
+	
+	const field = createElement('div');
 
-	const label = window.document.createElement('label');
-	label.setAttribute('for', 'id');
+	const label = createElement('label', { for: 'id' });
 	label.innerHTML = 'ID do Dispositivo';
+	field.appendChild(label);
 
-	const input = window.document.createElement('input');
-	input.setAttribute('type', 'text');
-	input.setAttribute('name', 'id');
-	input.setAttribute('id', 'id');
-	input.setAttribute('class', 'disabled');
+	const input = createElement('input', { type: 'text', name: 'id', id: 'id', class: 'disable' });
+	field.appendChild(input);
 
-	id_field.appendChild(label);
-	id_field.appendChild(input);
-
-	line.appendChild(id_field);
+	area.appendChild(field);
 
 	// Create get button
-	const set_button = window.document.querySelector('#set');
-	const div = set_button.parentElement;
+	const setButton = window.document.querySelector('#set');
+	const div = setButton.parentElement;
 
-	const get_button = window.document.createElement('div');
-	get_button.setAttribute('id', 'get');
-	get_button.setAttribute('class', 'button');
-	get_button.innerHTML = 'Buscar';
-	get_button.addEventListener('click', get);
+	const getButton = createElement('div', { id: 'get', class: 'button' });
+	getButton.innerHTML = 'Buscar';
+	getButton.addEventListener('click', get);
 	
-	div.insertBefore(get_button, set_button);
+	div.insertBefore(getButton, setButton);
 	div.style.justifyContent = 'space-between';
 
 	// Reset form
-	reset_form();
+	resetForm();
 }
 
-function insert_mode () {
+function insertMode () {
 	// Change checked attribute
-	const insert_radio = window.document.querySelector('input[id="insert"]');
-	const update_radio = window.document.querySelector('input[id="update"]');
+	const insertRadio = window.document.querySelector('input[id="insert"]');
+	const updateRadio = window.document.querySelector('input[id="update"]');
 
-	update_radio.removeAttribute('checked');
-	insert_radio.setAttribute('checked', '');
+	updateRadio.removeAttribute('checked');
+	insertRadio.setAttribute('checked', '');
 
 	// Remove ID field
-	const id_field = window.document.querySelector('#data > :nth-child(1) > :nth-child(2)');
-	const line = id_field.parentElement;
+	const field = window.document.querySelector('#data > :nth-child(1) > :nth-child(2)');
+	const area = field.parentElement;
 
-	line.removeChild(id_field);
+	area.removeChild(field);
 
 	// Remove get button
-	const get_button = window.document.querySelector('#get');
-	const div = get_button.parentElement;
+	const getButton = window.document.querySelector('#get');
+	const div = getButton.parentElement;
 
-	div.removeChild(get_button);
+	div.removeChild(getButton);
 	div.style.justifyContent = 'center';
 
 	// Reset form
-	reset_form();
+	resetForm();
 }
 
 function validation (params) {
@@ -136,7 +90,7 @@ function validation (params) {
 		return false;
 	}
 
-	if (!params.coordinates.match(/^(-)?\d+\.\d+;(-)?\d+\.\d+$/)) {
+	if (!params.coordinates.match(/^(-)?\d+\.\d+,(-)?\d+\.\d+$/)) {
 		return false;
 	}
 
@@ -146,7 +100,7 @@ function validation (params) {
 function set () {
 	const form = new FormData(window.document.forms[0]);
 	
-	const name = window.document.querySelector('input[id="name"]').value; // disable field in update mode
+	const name = window.document.querySelector('input[id="name"]').value; // disabled field in update mode
 
 	const params = { name };
 
@@ -163,7 +117,7 @@ function set () {
 		request(`/devices/info`, params, method)
 		.then(res => {
 			window.alert(res);
-			reset_form();
+			resetForm();
 		})
 		.catch(console.log);
 	} else {
@@ -172,38 +126,37 @@ function set () {
 }
 
 function get () {
-	const form = new FormData( window.document.forms[0]);
+	const form = new FormData(window.document.forms[0]);
 
 	const device_name = form.get('name');
 	const device_id = form.get('id');
 
-	if (device_name !== "" || device_id !== "") {
-		request('/devices/info', { device_name, device_id }, 'get')
+	if (device_name !== '' || device_id !== '') {
+		request('/devices/info/byDevice', { device_name, device_id }, 'get')
 		.then(res => {
-
-			const infos = Object.entries(res);
-
-			if (infos.length > 0) {
-				// Disable fields
-				const fields = window.document.querySelectorAll('.disabled');
-				fields.forEach(field => field.setAttribute('disabled', ''));
-
+			if (res.length > 0) {
 				// Populate fields
-				infos.forEach(info => {
-					const key = info[0];
-					const value = info[1];
+				const data = res[0];
+	
+				setFieldValue('#id', data.id);
+				setFieldValue('#name', data.name);
+				setFieldValue('#status', data.status);
+				setFieldValue('#street', data.street);
+				setFieldValue('#zone', data.zone);
+				updateDistricts().then(_ => setFieldValue('#district', data.district)).catch(console.log);
+				setFieldValue('#coordinates', data.coordinates);
+				setFieldValue('#interval', data.interval);
 
-					const elem = window.document.querySelector(`.line > div > [name="${key}"]`);
+				// Change fields status
+				disableFields('.disable');
+				enableFields('.enable');
 
-					elem.value = value;
-
-					if (key === 'zone') {
-						update_districts();
-					}
-				});
+				// Remove get button action
+				const button = window.document.querySelector('#get');
+				button.removeEventListener('click', get); 
 			} else {
 				window.alert('Dispositivo não encontrado.');
-				reset_form();
+				resetForm();
 			}
 		})
 		.catch(console.log);
@@ -212,21 +165,31 @@ function get () {
 	}
 }
 
-/******************* ACTIONS *******************/
+function disableFields (selector) {
+	const fields = window.document.querySelectorAll(selector);
+	fields.forEach(field => field.setAttribute('disabled', ''));
+}
 
-window.onload = update_zones;
+function enableFields (selector) {
+	const fields = window.document.querySelectorAll(selector);
+	fields.forEach(field => field.removeAttribute('disabled'));
+}
 
-const update_radio = window.document.querySelector('input[id="update"]');
-update_radio.addEventListener('change', update_mode);
+/******************** MAIN ********************/
 
-const insert_radio = window.document.querySelector('input[id="insert"]');
-insert_radio.addEventListener('change', insert_mode);
+window.onload = updateZones;
 
-const zone_select = window.document.querySelector('select[id="zone"]');
-zone_select.addEventListener('change', update_districts);
+const updateRadio = window.document.querySelector('input[id="update"]');
+updateRadio.addEventListener('change', updateMode);
 
-const reset_button = window.document.querySelector('.button[id="reset"]');
-reset_button.addEventListener('click', reset_form);
+const insertRadio = window.document.querySelector('input[id="insert"]');
+insertRadio.addEventListener('change', insertMode);
 
-const set_button = window.document.querySelector('.button[id="set"]');
-set_button.addEventListener('click', set);
+const zoneSelect = window.document.querySelector('select[id="zone"]');
+zoneSelect.addEventListener('change', updateDistricts);
+
+const resetButton = window.document.querySelector('.button[id="reset"]');
+resetButton.addEventListener('click', resetForm);
+
+const setButton = window.document.querySelector('.button[id="set"]');
+setButton.addEventListener('click', set);
