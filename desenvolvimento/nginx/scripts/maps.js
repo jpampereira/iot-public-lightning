@@ -4,10 +4,9 @@
  * - http://www.americapadaria.com.br/novo/tmp/install_50c09df5e9425/Fabrik-fabrik-22da17a/components/com_fabrik/libs/googlemaps/markerclusterer/docs/reference.html
  */
 
-/********** VARIABLES **********/
+/*************** MAP VARIABLES ****************/
 
 let map;
-let markers;
 
 const mapOptions = { 
 	zoom: 11, 
@@ -16,20 +15,77 @@ const mapOptions = {
 	fullscreenControl: false
 };
 
+/************** MARKER VARIABLES **************/
+
+let markers;
+
 const markersOptions = {
 	maxZoom: 11,
 };
 
-/********** FUNCTIONS **********/
+let markersEvents = [ 
+	{ action: 'mouseover', function: openInfoWindow  }, 
+	{ action: 'mouseout',  function: closeInfoWindow }
+];
 
-function createMap () {
-	map = new google.maps.Map(window.document.getElementById("map"), mapOptions);
-	markers = new MarkerClusterer(map, [], markersOptions);
-}
+/************** AUX FUNCTIONS *****************/
 
 function getCoordinates(coordinates) {
-	const [lat, lng] = coordinates.split(/\s*,\s*/).map(coordinate => parseFloat(coordinate)); 
+	const [lat, lng] = coordinates.split(/\s*,\s*/).map(coordinate => parseFloat(coordinate));
+
 	return { lat, lng };
+}
+
+/************** MARKER FUNCTIONS **************/
+
+function createMarker (device, infoWindow) {
+	const position = getCoordinates(device.coordinates);
+	const marker = new google.maps.Marker({ position, icon: '../images/maps/marker.png', device, infoWindow });
+
+	return marker;
+}
+
+function addEventsInMarker (marker, events=[]) {
+	events.forEach(event => {
+		marker.addListener(event.action, event.function);
+	});
+
+	return marker;
+}
+
+/*********** INFO WINDOW FUNCTIONS ************/
+
+function createInfoWindow (device) {
+	const content = `<p><strong>Identificador do Dispositivo:</strong> ${device.id}</p>
+	<p><strong>Nome do Dispositivo:</strong> ${device.name}</p>
+	<p><strong>Rua:</strong> ${device.street}</p>
+	<p><strong>Bairro:</strong> ${device.district}</p>
+	<p><strong>Zona:</strong> ${device.zone}</p>
+	<p><strong>Status Operacional:</strong> ${device.status}</p>`;
+	
+	const infoWindow = new google.maps.InfoWindow({ content });
+	
+	return infoWindow;
+}
+
+function openInfoWindow () {
+	this.infoWindow.open({
+		anchor: this,
+		map,
+		shouldFocus: false
+	});
+}
+
+function closeInfoWindow () {
+	this.infoWindow.close();
+}
+
+/*************** MAP FUNCTIONS ****************/
+
+function createMap (events=[]) {
+	map = new google.maps.Map(window.document.getElementById("map"), mapOptions);
+	markers = new MarkerClusterer(map, [], markersOptions);
+	markersEvents = markersEvents.concat(events);
 }
 
 async function updateMap(endpoint, params) {
@@ -38,10 +94,12 @@ async function updateMap(endpoint, params) {
 
 		if (devices.length > 0 && typeof(devices) === 'object') {
 			markers.clearMarkers();
-			
+
 			devices.forEach(device => {
-				const position = getCoordinates(device.coordinates);
-				const marker = new google.maps.Marker({ position, icon: '../images/maps/marker.png' });
+				const infoWindow = createInfoWindow(device);
+				const marker = createMarker(device, infoWindow);
+				addEventsInMarker(marker, markersEvents);
+
 				markers.addMarker(marker);
 			});
 
