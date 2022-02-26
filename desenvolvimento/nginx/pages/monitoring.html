@@ -23,8 +23,6 @@
 	
 	<!-- JS Scripts -->
 	<script src="../scripts/auxiliar.js" defer></script>
-	<script src="../scripts/monitoring-info-card.js" defer></script>
-	<script src="../scripts/monitoring-status-btn.js" defer></script>
 	<script src="../scripts/charts.js" defer></script>
 	<script src="../scripts/maps.js" defer></script>
 	<script src="../scripts/monitoring.js" defer></script>
@@ -32,58 +30,58 @@
 <body>
 	<header>
 		<form>
-			<input type="text"   name="device_name" placeholder="Nome do Dispositivo">
+			<input type="text" name="device_name" placeholder="Nome do Dispositivo">
 			<input type="hidden" name="current_name">
 			<button>Buscar</button>
 		</form>
 	</header>
 	<main>
 		<section>
-			<article class="info-section">
+			<article id="info-section">
 				<header><h1>Informações do Dispositivo</h1></header>
 				<main>
-					<div class="info">
+					<div id="info">
 						<div><p>Informar no campo acima um dispositivo válido</p></div>
 					</div>
-					<div class="btn-section">
+					<div id="btn-section">
 						<hr>
-						<a class="btn-on-off">Ligar/Desligar</a>
+						<div id="btn-on-off" btn_state="2">Ligar/Desligar</div>
 					</div>
 				</main>
 			</article>
-			<article class="map-section">
+			<div id="map-section">
 				<div id="map"></div>
-			</article>
+			</div>
 		</section>
 		<section>
-			<article class="charts-card">
+			<div class="charts-card">
 				<header><h1>Tensão (Volts)</h1></header>
 				<main>
 					<div><canvas data-measure="voltage" data-type="line"  class="charts"></canvas></div>
 					<div><canvas data-measure="voltage" data-type="gauge" class="charts"></canvas></div>
 				</main>
-			</article>
-			<article class="charts-card">
+			</div>
+			<div class="charts-card">
 				<header><h1>Corrente (Amperes)</h1></header>
 				<main>
 					<div><canvas data-measure="current" data-type="line"  class="charts"></canvas></div>
 					<div><canvas data-measure="current" data-type="gauge" class="charts"></canvas></div>
 				</main>
-			</article>
-			<article class="charts-card">
+			</div>
+			<div class="charts-card">
 				<header><h1>Luminosidade (Lux)</h1></header>
 				<main>
 					<div><canvas data-measure="lightness" data-type="line"  class="charts"></canvas></div>
 					<div><canvas data-measure="lightness" data-type="gauge" class="charts"></canvas></div>
 				</main>
-			</article>
-			<article class="charts-card">
+			</div>
+			<div class="charts-card">
 				<header><h1>Potência (Watts)</h1></header>
 				<main>
 					<div><canvas data-measure="power" data-type="line"  class="charts"></canvas></div>
 					<div><canvas data-measure="power" data-type="gauge" class="charts"></canvas></div>
 				</main>
-			</article>
+			</div>
 		</section>
 	</main>
 	<footer>

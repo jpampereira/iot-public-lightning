@@ -9,12 +9,6 @@
 	--btn-hover:        #d6d6d6;
 	--btn-active:       #9c9c9c;
 	--font:               Roboto, Arial, sans-serif;
-	
-	/* On/Off button variables */
-	--btn-weight:  normal;
-	--btn-cursor:  default;
-	--btn-border:  none;
-	--btn-padding: 15px 30px;
 }
 
 * {
@@ -89,7 +83,7 @@ section {
 	padding:         20px 0px;
 }
 
-.info-section {
+#info-section {
 	background-color: var(--cards-color);
 	width:            590px;
 	height:           400px;
@@ -98,39 +92,39 @@ section {
 	margin-bottom:    30px;
 }
 
-.info-section > main {
+#info-section > main {
 	display:               grid;
 	grid-template-columns: 1fr;
-	grid-template-rows:    3fr 1fr;
+	grid-template-rows:    5fr 2fr;
 	width:                 100%;
 	height:                calc(100% - 32px);
 }
 
-.info, .btn-section {
+#info, #btn-section {
 	display:         flex;
-	flex-wrap:       wrap;
-	justify-content: center;
+	flex-direction:  column;
+	justify-content: space-around;
 	align-items:     center;
 	width:           100%;
 	padding:         10px;
 }
 
-.info {
+#info {
 	font-size:   1.4em;
 	text-align:  center;
 	color:     #808080;
 }
 
-.info > div {
+#info > div {
 	width: 100%;
 }
 
-.info > div > p {
+#info > div > p {
 	width:   100%;
-	padding: 0px 10px;
+	padding: 0px 20px;
 }
 
-.info > div > p:nth-child(1) {
+#info > div > p:nth-child(1) {
 	font-weight: bold;
 }
 
@@ -150,27 +144,47 @@ hr {
 	border: 0.1px solid var(--headers-color);
 }
 
-.btn-on-off {
+#btn-on-off {
 	background-color: #808080;
-	width:              160px;
-	text-align:         center;
+	width:            160px;
+	text-align:       center;
 	color:            white;
-	font-size:          1em;
-	padding:            15px 30px;
-	border-radius:      5px;
+	font-size:        1em;
+	padding:          15px 30px;
+	border-radius:    5px;
 }
 
-.btn-on-off:hover {
-	font-weight: var(--btn-weight);
-	cursor:      var(--btn-cursor);
+#btn-on-off[btn_state="0"] {
+	background-color: #008000;
 }
 
-.btn-on-off:active {
-	border:  var(--btn-border);
-	padding: var(--btn-padding);
+#btn-on-off[btn_state="0"]:hover {
+	background-color: #004d00;
+	font-weight:      bold;
+	cursor:           pointer;
 }
 
-.map-section {
+#btn-on-off[btn_state="0"]:active {
+	border:  2px inset #004d00;
+	padding: 13px 28px;
+}
+
+#btn-on-off[btn_state="1"] {
+	background-color: #ff0000;
+}
+
+#btn-on-off[btn_state="1"]:hover {
+	background-color: #aa0000;
+	font-weight:        bold;
+	cursor:             pointer;
+}
+
+#btn-on-off[btn_state="1"]:active {
+	border:  2px inset #aa0000;
+	padding: 13px 28px;
+}
+
+#map-section {
 	display:          flex;
 	flex-wrap:        wrap;
 	background-color: var(--cards-color);
@@ -196,7 +210,7 @@ hr {
 	margin-bottom:   20px;
 }
 
-.charts-card > header, .info-section > header {
+.charts-card > header, #info-section > header {
 	background-color: var(--headers-color);
 	width:            100%;
 	padding:          6px 0px;

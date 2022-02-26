@@ -2616,7 +2616,7 @@
             "8d862c9dbd3b163b"
         ],
         "x": 55,
-        "y": 517,
+        "y": 538,
         "wires": [
             [
                 "520a784bb92b71f7"
@@ -2627,15 +2627,15 @@
         "id": "520a784bb92b71f7",
         "type": "function",
         "z": "a444632620451a72",
-        "name": "Set new values in device",
-        "func": "msg.payload = {\n    action: 'JSON.UPDATE',\n    params: [\n        { key: msg.device.id, value: { send: msg.device.send } }, \n        { key: msg.device.id, value: { rele_state: msg.device.rele_state } }\n    ]\n};\n\nreturn msg;",
+        "name": "Set send parameter",
+        "func": "msg.payload = {\n    action: 'JSON.UPDATE',\n    params: [{ key: msg.device.id, value: { send: msg.device.send } }]\n};\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 210,
-        "y": 517,
+        "x": 190,
+        "y": 538,
         "wires": [
             [
                 "26a2ccdfee1a2e78"
@@ -2648,11 +2648,11 @@
         "z": "a444632620451a72",
         "name": "",
         "env": [],
-        "x": 420,
-        "y": 517,
+        "x": 380,
+        "y": 538,
         "wires": [
             [
-                "aef75640dfc58609"
+                "34eea68515279a3f"
             ],
             [
                 "20b6659c04227272"
@@ -2672,8 +2672,8 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 650,
-        "y": 539,
+        "x": 610,
+        "y": 560,
         "wires": []
     },
     {
@@ -2687,7 +2687,7 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 640,
+        "x": 1040,
         "y": 496,
         "wires": [
             [
@@ -2700,7 +2700,7 @@
         "type": "subflow:185bd0a8b5a4b916",
         "z": "a444632620451a72",
         "name": "",
-        "x": 840,
+        "x": 1240,
         "y": 496,
         "wires": [
             [
@@ -2715,7 +2715,7 @@
         "id": "549575ce4a75236d",
         "type": "debug",
         "z": "a444632620451a72",
-        "name": "[EXIT 7] Generate errors",
+        "name": "[EXIT 8] Generate errors",
         "active": true,
         "tosidebar": true,
         "console": false,
@@ -2724,7 +2724,7 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1070,
+        "x": 1470,
         "y": 517,
         "wires": []
     },
@@ -2732,7 +2732,7 @@
         "id": "1fb2a3e793a8f8aa",
         "type": "debug",
         "z": "a444632620451a72",
-        "name": "[EXIT 6] Generate errors",
+        "name": "[EXIT 7] Generate errors",
         "active": false,
         "tosidebar": true,
         "console": false,
@@ -2741,7 +2741,7 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1070,
+        "x": 1470,
         "y": 475,
         "wires": []
     },
@@ -2864,5 +2864,58 @@
         "x": 515,
         "y": 975,
         "wires": []
+    },
+    {
+        "id": "c2e3c6f6fa765b86",
+        "type": "subflow:185bd0a8b5a4b916",
+        "z": "a444632620451a72",
+        "name": "",
+        "env": [],
+        "x": 820,
+        "y": 517,
+        "wires": [
+            [
+                "aef75640dfc58609"
+            ],
+            [
+                "6beb569b41b92041"
+            ]
+        ]
+    },
+    {
+        "id": "6beb569b41b92041",
+        "type": "debug",
+        "z": "a444632620451a72",
+        "name": "[EXIT 6] Generate errors",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1050,
+        "y": 539,
+        "wires": []
+    },
+    {
+        "id": "34eea68515279a3f",
+        "type": "function",
+        "z": "a444632620451a72",
+        "name": "Set rele_state parameter",
+        "func": "msg.payload = {\n    action: 'JSON.UPDATE',\n    params: [{ key: msg.device.id, value: { rele_state: msg.device.rele_state } }]\n};\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 610,
+        "y": 517,
+        "wires": [
+            [
+                "c2e3c6f6fa765b86"
+            ]
+        ]
     }
 ]
