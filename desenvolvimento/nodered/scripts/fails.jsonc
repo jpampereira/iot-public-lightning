@@ -8,11 +8,11 @@
 		"voltage": -1,
 		"current": -1,
 		"lightness": -1,
-		"rele_state": {},
+		"rele_state": null,
 		"status": true,
 
 		"send": false,
-		"look_for": []
+		"look_for": [7]
 	},
 
 	// Nome: Falha no sensor de Luminosidade
@@ -22,11 +22,11 @@
 		"voltage": -1,
 		"current": -1,
 		"lightness": 0,
-		"rele_state": {},
-		"status": true,
+		"rele_state": null,
+		"status": null,
 
-		"send": true,
-		"look_for": [1]
+		"send": null,
+		"look_for": []
 	},
 
 	// Nome: Falha no sensor de Corrente
@@ -36,11 +36,11 @@
 		"voltage": -1,
 		"current": 0,
 		"lightness": -1,
-		"rele_state": {},
-		"status": true,
+		"rele_state": null,
+		"status": null,
 
-		"send": true,
-		"look_for": [1]
+		"send": null,
+		"look_for": []
 	},
 
 	// Nome: Falha no sensor de Tensão 
@@ -50,11 +50,11 @@
 		"voltage": 0,
 		"current": -1,
 		"lightness": -1,
-		"rele_state": {},
-		"status": true,
+		"rele_state": null,
+		"status": null,
 
-		"send": true,
-		"look_for": [1]
+		"send": null,
+		"look_for": []
 	},
 
 	// Nome: Dispositivo ligado fora de contexto
@@ -64,25 +64,25 @@
 		"voltage": -1,
 		"current": -1,
 		"lightness": -1,
-		"rele_state": { "value": true, "threshold": { "begin": "06:00:00", "end": "18:00:00" } },
-		"status": true,
+		"rele_state": { "value": 1, "threshold": { "begin": 21600, "end": 64800 } },
+		"status": null,
 
-		"send": true,
-		"look_for": [1, 6]
+		"send": null,
+		"look_for": [6]
 	},
 
 	// Nome: Dispositivo desligado fora de contexto
 	// Descrição: Dispositivo desligado quando deveria estar ligada (fora de horário ou iluminação natual insuficiente)
 	{
 		"id": 6,
-		"voltage": 0,
-		"current": 0,
+		"voltage": -1,
+		"current": -1,
 		"lightness": -1,
-		"rele_state": { "value": false, "threshold": { "begin": "18:00:00", "end": "06:00:00" } },
+		"rele_state": { "value": 0, "threshold": { "begin": 64800, "end": 21600 } },
 		"status": true,
 
-		"send": true,
-		"look_for": [1, 5]
+		"send": null,
+		"look_for": [5]
 	},
 
 	// Nome: Erro de Inventário
@@ -92,7 +92,7 @@
 		"voltage": -1,
 		"current": -1,
 		"lightness": -1,
-		"rele_state": {},
+		"rele_state": null,
 		"status": false,
 
 		"send": true,

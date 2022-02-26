@@ -306,7 +306,7 @@
         "type": "function",
         "z": "ab0855462a34e9f7",
         "name": "Set rele state of device",
-        "func": "const deviceId = parseInt(msg.topic.match(/\\/(\\d+)$/)[1]);\n\nconst action   = msg.payload;\nconst newState = action === 'L' ? 1 : 0;\n\nconst params = [{\n    key: deviceId,\n    value: {\n        rele_state: newState\n    }\n}];\n\nmsg.payload = { action: 'JSON.UPDATE', params };\n\ndelete msg.topic;\n\nreturn msg;",
+        "func": "const deviceId = parseInt(msg.topic.match(/\\/(\\d+)$/)[1]);\n\nconst action = msg.payload;\nconst newState = action === 'L' ? 1 : 0;\n\nmsg.payload = { \n    action: 'JSON.UPDATE', \n    params: [{ key: deviceId, value: { rele_state: newState } }] \n};\n\ndelete msg.topic;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1250,7 +1250,7 @@
         "type": "function",
         "z": "d54052ea6cb4b184",
         "name": "Prepare query",
-        "func": "const devices = msg.payload.map(device => {\n    return {\n        key: device.id,\n        value: {\n            interval:   device.interval,\n            send:       device.status,\n            rele_state: 0,\n            fails:      []\n        }\n    }\n});\n\nmsg.payload = { action: 'JSON.INSERT', params: devices };\n\nreturn msg;",
+        "func": "const currentTime = new Date();\nconst currentHour = currentTime.getHours();\n\nconst devices = msg.payload.map(device => {\n    return {\n        key: device.id,\n        value: {\n            interval:   device.interval,\n            send:       device.status,\n            rele_state: device.status == true && (currentHour < 6 || currentHour >= 18) ? 1 : 0,\n            fails:      []\n        }\n    }\n});\n\nmsg.payload = { action: 'JSON.INSERT', params: devices };\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1891,7 +1891,7 @@
         "type": "function",
         "z": "ab0855462a34e9f7",
         "name": "Set messages interval of device",
-        "func": "const deviceId = parseInt(msg.topic.match(/\\/(\\d+)$/)[1]);\n\nconst interval = msg.payload;\n\nconst params = [{\n    key: deviceId,\n    value: { interval }\n}];\n\nmsg.payload = { action: 'JSON.UPDATE', params };\n\ndelete msg.topic;\n\nreturn msg;",
+        "func": "const deviceId = parseInt(msg.topic.match(/\\/(\\d+)$/)[1]);\nconst interval = msg.payload;\n\nmsg.payload = { \n    action: 'JSON.UPDATE', \n    params: [{ key: deviceId, value: { interval } }]\n};\n\ndelete msg.topic;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -2210,14 +2210,14 @@
         "id": "7a7cecf6415649cc",
         "type": "function",
         "z": "a444632620451a72",
-        "name": "Generate error?",
-        "func": "msg.device = { id: msg.payload };\n\nconst prob = 0.5;\n\nif (Math.random() <= prob) {\n    return [msg, null];\n}\n\nreturn [null, msg];",
+        "name": "Generate failure?",
+        "func": "msg.device = { id: msg.payload };\n\nconst prob = 0.2;\n\nif (Math.random() <= prob) {\n    return [msg, null];\n}\n\nreturn [null, msg];",
         "outputs": 2,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 180,
+        "x": 190,
         "y": 257,
         "wires": [
             [
@@ -2241,7 +2241,7 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 410,
+        "x": 430,
         "y": 279,
         "wires": []
     },
@@ -2253,7 +2253,7 @@
         "scope": null,
         "uncaught": false,
         "x": 100,
-        "y": 757,
+        "y": 756,
         "wires": [
             [
                 "2c01993697609b0a"
@@ -2284,7 +2284,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 250,
-        "y": 757,
+        "y": 756,
         "wires": []
     },
     {
@@ -2388,7 +2388,7 @@
         "sendError": false,
         "encoding": "none",
         "allProps": false,
-        "x": 390,
+        "x": 410,
         "y": 236,
         "wires": [
             [
@@ -2404,7 +2404,7 @@
         "property": "payload",
         "action": "",
         "pretty": false,
-        "x": 820,
+        "x": 840,
         "y": 236,
         "wires": [
             [
@@ -2423,7 +2423,7 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 590,
+        "x": 610,
         "y": 236,
         "wires": [
             [
@@ -2439,7 +2439,7 @@
         "links": [
             "d4e1c79447dc0538"
         ],
-        "x": 975,
+        "x": 995,
         "y": 236,
         "wires": []
     },
@@ -2463,14 +2463,14 @@
         "id": "e7104dda5ddd437c",
         "type": "function",
         "z": "a444632620451a72",
-        "name": "Choose fail",
-        "func": "const min = 1;\nconst max = msg.payload.length;\n\nmsg.device.fail = Math.round(Math.random() * (max - min) + min);\n\nmsg.failsList = msg.payload;\n\nreturn msg;",
+        "name": "Choose failure",
+        "func": "const min = 1;\nconst max = msg.payload.length;\n\nmsg.device.fail = Math.round(Math.random() * (max - min) + min);\nmsg.fails = msg.payload;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 170,
+        "x": 180,
         "y": 378,
         "wires": [
             [
@@ -2482,14 +2482,14 @@
         "id": "2f9644df4b68cab1",
         "type": "function",
         "z": "a444632620451a72",
-        "name": "Get device info",
+        "name": "Get current device state",
         "func": "msg.payload = { action: 'JSON.GET', params: [{ key: msg.device.id }]};\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 340,
+        "x": 390,
         "y": 378,
         "wires": [
             [
@@ -2502,7 +2502,7 @@
         "type": "subflow:185bd0a8b5a4b916",
         "z": "a444632620451a72",
         "name": "",
-        "x": 520,
+        "x": 600,
         "y": 378,
         "wires": [
             [
@@ -2526,7 +2526,7 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 750,
+        "x": 830,
         "y": 399,
         "wires": []
     },
@@ -2534,14 +2534,14 @@
         "id": "87a3e10226bfe54a",
         "type": "function",
         "z": "a444632620451a72",
-        "name": "Analyze failure validity",
-        "func": "const failsList  = msg.failsList;\nconst deviceData = msg.payload[0].result;\nconst newFail    = msg.device.fail;\n\nlet insert = true;\n\n// Check if the fault is already present on the device\nif (deviceData.fails.includes(newFail)) {\n    insert = false;\n}\n\n// Check if has failures that prevent the new fault from being included\nif (insert) {\n    const preventFails = failsList[newFail-1].look_for;\n    insert = !preventFails.some(failId => deviceData.fails.includes(failId));\n} \n\n// Check if the new failure prevents any failure already present in the device\nif (insert) {\n    const deviceFails = deviceData.fails.map(failId => failsList.find(fail => fail.id === failId));\n    insert = !deviceFails.some(fail => fail.look_for.includes(newFail));\n    \n    if(!insert) node.warn('3');\n}\n\n// Insert new values in device\nif (insert) {\n    msg.device.send = failsList[newFail-1].send;\n    msg.device.rele_state = failsList[newFail].rele_state.value !== undefined ? failsList[newFail].rele_state.value : deviceData.rele_state; \n}\n\nmsg.payload = insert;\n\nreturn msg;",
+        "name": " Failure validation",
+        "func": "/* Check 1: Fail is already in device?\n * Check 2: Has fails that prevent the new fail to being included?\n * Check 3: The new fail prevents any fail already present in the device?\n * Check 4: Change send state only in case of difference between current value and new value \n * Check 5: Time restriction to change rele state\n */\n\nconst fails = msg.fails;\nconst fail = fails[msg.device.fail-1];\nconst device = msg.payload[0].result;\nconst deviceFails = device.fails.map(id => fails.find(fail => fail.id === id));\n\nconst check1 = _ => !device.fails.includes(fail.id);\nconst check2 = _ => !fail.look_for.some(id => device.fails.includes(id));\nconst check3 = _ => !deviceFails.some(deviceFail => deviceFail.look_for.includes(fail.id));\nconst check4 = _ => fail.send === null || fail.send !== device.send;\nconst check5 = _ => {\n    if (fail.rele_state !== null) {\n        if (device.rele_state !== fail.rele_state.value) {\n            const currentDate = new Date();\n            const currentTime = currentDate.getHours() * 3600 + currentDate.getMinutes() * 60 + currentDate.getSeconds(); // In seconds\n            \n            const begin = fail.rele_state.threshold.begin;\n            const end = fail.rele_state.threshold.end;\n            \n            if (begin < end) {\n                return currentTime >= begin && currentTime < end;\n            } else {\n                return currentTime >= begin || currentTime < end;\n            }\n        }\n        \n        return false;\n    }\n    \n    return true;\n}\n\nmsg.payload = check1() && check2() && check3() && check4() && check5();\n\nmsg.device.send = fail.send !== null ? fail.send : device.send;\nmsg.device.rele_state = fail.rele_state !== null ? fail.rele_state.value : device.rele_state;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 740,
+        "x": 810,
         "y": 357,
         "wires": [
             [
@@ -2553,7 +2553,7 @@
         "id": "54338d699151f3ab",
         "type": "switch",
         "z": "a444632620451a72",
-        "name": "Insert fail in device?",
+        "name": "Insert failure in device?",
         "property": "payload",
         "propertyType": "msg",
         "rules": [
@@ -2567,7 +2567,7 @@
         "checkall": "false",
         "repair": false,
         "outputs": 2,
-        "x": 960,
+        "x": 1030,
         "y": 357,
         "wires": [
             [
@@ -2586,7 +2586,7 @@
         "links": [
             "c884efe4ea3bd549"
         ],
-        "x": 1115,
+        "x": 1195,
         "y": 335,
         "wires": []
     },
@@ -2603,7 +2603,7 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1210,
+        "x": 1290,
         "y": 378,
         "wires": []
     },
@@ -2628,7 +2628,7 @@
         "type": "function",
         "z": "a444632620451a72",
         "name": "Set new values in device",
-        "func": "msg.payload = {\n    action: 'JSON.UPDATE',\n    params: [\n        { \n            key: msg.device.id,\n            value: {\n                send:       msg.device.send,\n                rele_state: msg.device.rele_state\n            }\n        }\n    ]\n};\n\nreturn msg;",
+        "func": "msg.payload = {\n    action: 'JSON.UPDATE',\n    params: [\n        { key: msg.device.id, value: { send: msg.device.send } }, \n        { key: msg.device.id, value: { rele_state: msg.device.rele_state } }\n    ]\n};\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -2680,14 +2680,14 @@
         "id": "aef75640dfc58609",
         "type": "function",
         "z": "a444632620451a72",
-        "name": "Insert fail in device",
-        "func": "msg.payload = {\n    action: 'JSON.ARRAPPEND',\n    params: [\n        { \n            key: msg.device.id,\n            value: {\n                fails: msg.device.fail,\n            }\n        }\n    ]\n};\n\nreturn msg;",
+        "name": "Insert failure in device",
+        "func": "msg.payload = {\n    action: 'JSON.ARRAPPEND',\n    params: [\n        { key: msg.device.id, value: { fails: msg.device.fail } }\n    ]\n};\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 630,
+        "x": 640,
         "y": 496,
         "wires": [
             [
@@ -2700,7 +2700,7 @@
         "type": "subflow:185bd0a8b5a4b916",
         "z": "a444632620451a72",
         "name": "",
-        "x": 820,
+        "x": 840,
         "y": 496,
         "wires": [
             [
@@ -2724,7 +2724,7 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1050,
+        "x": 1070,
         "y": 517,
         "wires": []
     },
@@ -2741,7 +2741,7 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1050,
+        "x": 1070,
         "y": 475,
         "wires": []
     },
