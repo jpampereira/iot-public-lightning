@@ -16,7 +16,7 @@
     {
         "id": "a444632620451a72",
         "type": "tab",
-        "label": "Device errors",
+        "label": "Device failure",
         "disabled": false,
         "info": ""
     },
@@ -73,7 +73,7 @@
         "out": [
             {
                 "x": 1040,
-                "y": 1163,
+                "y": 1283,
                 "wires": [
                     {
                         "id": "adc4c59772c6298c",
@@ -83,7 +83,7 @@
             },
             {
                 "x": 120,
-                "y": 1240,
+                "y": 1360,
                 "wires": [
                     {
                         "id": "ab7425eb7c0d4676",
@@ -141,7 +141,7 @@
         "id": "a7cb2a42ddfd0d99",
         "type": "redis-config",
         "name": "Redis",
-        "options": "{\"host\":\"devices_redis\"}",
+        "options": "{\"host\":\"devices_redis\",\"port\":6380}",
         "cluster": false,
         "optionsType": "json"
     },
@@ -306,7 +306,7 @@
         "type": "function",
         "z": "ab0855462a34e9f7",
         "name": "Set rele state of device",
-        "func": "const deviceId = parseInt(msg.topic.match(/\\/(\\d+)$/)[1]);\n\nconst action = msg.payload;\nconst newState = action === 'L' ? 1 : 0;\n\nmsg.payload = { \n    action: 'JSON.UPDATE', \n    params: [{ key: deviceId, value: { rele_state: newState } }] \n};\n\ndelete msg.topic;\n\nreturn msg;",
+        "func": "const deviceId = parseInt(msg.topic.match(/\\/(\\d+)$/)[1]);\n\nconst action = msg.payload;\nconst newState = action === 'L' ? 1 : 0;\n\nmsg.payload = { \n    action: 'JSON.UPDATE', \n    params: [{ \n        key: deviceId, \n        values: { attr: 'rele_state', value: newState } \n    }] \n};\n\ndelete msg.topic;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -444,7 +444,7 @@
         "payloadType": "json",
         "block": false,
         "x": 360,
-        "y": 615,
+        "y": 655,
         "wires": [
             [
                 "bfbff7d80bac8776"
@@ -464,7 +464,7 @@
         "payloadType": "json",
         "block": false,
         "x": 350,
-        "y": 575,
+        "y": 615,
         "wires": [
             [
                 "14a4f1ea68611679"
@@ -503,13 +503,18 @@
                 "t": "eq",
                 "v": "JSON.ARRAPPEND",
                 "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "JSON.ARRPOP",
+                "vt": "str"
             }
         ],
         "checkall": "false",
         "repair": false,
-        "outputs": 5,
+        "outputs": 6,
         "x": 170,
-        "y": 335,
+        "y": 355,
         "wires": [
             [
                 "a5646b720d61e23d"
@@ -525,6 +530,9 @@
             ],
             [
                 "470e03096c22a255"
+            ],
+            [
+                "016be0caa78e3d3d"
             ]
         ]
     },
@@ -538,7 +546,7 @@
             "a712429cd9c00fb9"
         ],
         "x": 55,
-        "y": 615,
+        "y": 655,
         "wires": [
             [
                 "df7ff42e19db4df7"
@@ -555,7 +563,7 @@
             "38cd626f498d07a0"
         ],
         "x": 55,
-        "y": 575,
+        "y": 615,
         "wires": [
             [
                 "95fbf9069438666b"
@@ -570,7 +578,7 @@
         "links": [
             "1169e102e4d222c2"
         ],
-        "x": 315,
+        "x": 335,
         "y": 295,
         "wires": []
     },
@@ -582,7 +590,7 @@
         "links": [
             "f4032c3893645be0"
         ],
-        "x": 315,
+        "x": 335,
         "y": 255,
         "wires": []
     },
@@ -591,14 +599,14 @@
         "type": "function",
         "z": "185bd0a8b5a4b916",
         "name": "Prepare query",
-        "func": "const counter = msg.counter;\nconst params  = msg.query.params[counter];\n\nmsg.payload = [params.key, \".\", JSON.stringify(params.value)];\n\nmsg.counter = counter+1;\nmsg.action  = 2;\n\nreturn msg;",
+        "func": "const counter = msg.counter;\nconst params = msg.query.params[counter];\n\nmsg.payload = [params.key, \".\", JSON.stringify(params.values)];\n\nmsg.counter = counter+1;\nmsg.action = 2;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
         "x": 180,
-        "y": 615,
+        "y": 655,
         "wires": [
             [
                 "62efccd00ae19dbf"
@@ -610,14 +618,14 @@
         "type": "function",
         "z": "185bd0a8b5a4b916",
         "name": "Prepare query",
-        "func": "const counter = msg.counter;\nconst params  = msg.query.params[counter];\n\nmsg.payload = [params.key];\n\nif (params.value !== undefined) {\n    msg.payload.push(params.value);    \n}\n\nmsg.counter = counter+1;\nmsg.action  = 1;\n\nreturn msg;",
+        "func": "const counter = msg.counter;\nconst params = msg.query.params[counter];\n\nmsg.payload = [params.key];\n\nif (params.values !== undefined) {\n    msg.payload.push(params.values);    \n}\n\nmsg.counter = counter+1;\nmsg.action = 1;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
         "x": 180,
-        "y": 575,
+        "y": 615,
         "wires": [
             [
                 "8309511dc52a3b6b"
@@ -633,7 +641,7 @@
             "0aad452318b271e8"
         ],
         "x": 475,
-        "y": 615,
+        "y": 655,
         "wires": []
     },
     {
@@ -645,7 +653,7 @@
             "0aad452318b271e8"
         ],
         "x": 455,
-        "y": 575,
+        "y": 615,
         "wires": []
     },
     {
@@ -656,7 +664,7 @@
         "scope": null,
         "uncaught": false,
         "x": 100,
-        "y": 1456,
+        "y": 1576,
         "wires": [
             [
                 "5db875bc9d533019"
@@ -670,7 +678,7 @@
         "name": "###### Exceptions Treatment",
         "info": "",
         "x": 159,
-        "y": 1396,
+        "y": 1516,
         "wires": []
     },
     {
@@ -682,7 +690,7 @@
             "e13e3ccd568107d2"
         ],
         "x": 55,
-        "y": 1157,
+        "y": 1277,
         "wires": [
             [
                 "48b1a57359cc9abd"
@@ -698,7 +706,7 @@
             "5db875bc9d533019"
         ],
         "x": 55,
-        "y": 1240,
+        "y": 1360,
         "wires": [
             []
         ]
@@ -710,7 +718,7 @@
         "name": "Success",
         "info": "",
         "x": 1140,
-        "y": 1163,
+        "y": 1283,
         "wires": []
     },
     {
@@ -720,7 +728,7 @@
         "name": "Insuccess",
         "info": "",
         "x": 220,
-        "y": 1240,
+        "y": 1360,
         "wires": []
     },
     {
@@ -732,7 +740,7 @@
             "ab7425eb7c0d4676"
         ],
         "x": 195,
-        "y": 1456,
+        "y": 1576,
         "wires": []
     },
     {
@@ -768,7 +776,7 @@
         "payloadType": "json",
         "block": false,
         "x": 550,
-        "y": 1135,
+        "y": 1255,
         "wires": [
             [
                 "071eddf0112438e8"
@@ -787,7 +795,7 @@
         "finalize": "",
         "libs": [],
         "x": 920,
-        "y": 1163,
+        "y": 1283,
         "wires": [
             []
         ]
@@ -809,7 +817,7 @@
         "name": "##### Functions",
         "info": "",
         "x": 120,
-        "y": 516,
+        "y": 556,
         "wires": []
     },
     {
@@ -819,7 +827,7 @@
         "name": "##### End",
         "info": "",
         "x": 100,
-        "y": 1076,
+        "y": 1196,
         "wires": []
     },
     {
@@ -862,7 +870,7 @@
         "repair": false,
         "outputs": 2,
         "x": 180,
-        "y": 924,
+        "y": 1040,
         "wires": [
             [
                 "79fd20871dc7a136"
@@ -882,10 +890,11 @@
             "bfbff7d80bac8776",
             "a02f6fb69be119eb",
             "fe2af213e574e51f",
-            "42c060b70aeae32d"
+            "42c060b70aeae32d",
+            "ea7cfcf3d063512b"
         ],
         "x": 55,
-        "y": 924,
+        "y": 1040,
         "wires": [
             [
                 "2b42e25c9acdcf26"
@@ -924,13 +933,18 @@
                 "t": "eq",
                 "v": "5",
                 "vt": "num"
+            },
+            {
+                "t": "eq",
+                "v": "6",
+                "vt": "num"
             }
         ],
         "checkall": "false",
         "repair": false,
-        "outputs": 5,
+        "outputs": 6,
         "x": 370,
-        "y": 893,
+        "y": 994,
         "wires": [
             [
                 "38cd626f498d07a0"
@@ -946,6 +960,9 @@
             ],
             [
                 "16f13f2b46c404e0"
+            ],
+            [
+                "d147bd3a65c12089"
             ]
         ]
     },
@@ -958,7 +975,7 @@
             "3466a7f65bed9eac"
         ],
         "x": 315,
-        "y": 955,
+        "y": 1086,
         "wires": []
     },
     {
@@ -969,8 +986,8 @@
         "links": [
             "f4032c3893645be0"
         ],
-        "x": 515,
-        "y": 815,
+        "x": 535,
+        "y": 896,
         "wires": []
     },
     {
@@ -981,8 +998,8 @@
         "links": [
             "1169e102e4d222c2"
         ],
-        "x": 515,
-        "y": 855,
+        "x": 535,
+        "y": 936,
         "wires": []
     },
     {
@@ -997,7 +1014,7 @@
         "finalize": "",
         "libs": [],
         "x": 400,
-        "y": 1135,
+        "y": 1255,
         "wires": [
             [
                 "4c30f53bc0b8f715"
@@ -1031,7 +1048,7 @@
         "links": [
             "779dad188b169279"
         ],
-        "x": 315,
+        "x": 335,
         "y": 335,
         "wires": []
     },
@@ -1047,7 +1064,7 @@
         "finalize": "",
         "libs": [],
         "x": 730,
-        "y": 1163,
+        "y": 1283,
         "wires": [
             [
                 "adc4c59772c6298c"
@@ -1067,7 +1084,7 @@
         "payloadType": "json",
         "block": false,
         "x": 360,
-        "y": 656,
+        "y": 696,
         "wires": [
             [
                 "a02f6fb69be119eb"
@@ -1084,7 +1101,7 @@
             "09579b2768fd57ec"
         ],
         "x": 55,
-        "y": 656,
+        "y": 696,
         "wires": [
             [
                 "477bd67677dbe6bb"
@@ -1096,14 +1113,14 @@
         "type": "function",
         "z": "185bd0a8b5a4b916",
         "name": "Prepare query",
-        "func": "const counter = msg.counter;\nconst params  = msg.query.params[counter];\n\nconst attr     = Object.entries(params.value)[0][0];\nconst newValue = Object.entries(params.value)[0][1];\n\nmsg.payload = [params.key, attr, newValue];\n\nmsg.counter = counter+1;\nmsg.action  = 3;\n\nreturn msg;",
+        "func": "const counter = msg.counter;\nconst params = msg.query.params[counter];\n\nconst attr = params.values.attr;\nconst newValue = params.values.value;\n\nmsg.payload = [params.key, attr, newValue];\n\nmsg.counter = counter+1;\nmsg.action = 3;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
         "x": 180,
-        "y": 656,
+        "y": 696,
         "wires": [
             [
                 "a302f13da39b1f7c"
@@ -1119,7 +1136,7 @@
             "0aad452318b271e8"
         ],
         "x": 475,
-        "y": 656,
+        "y": 696,
         "wires": []
     },
     {
@@ -1130,8 +1147,8 @@
         "links": [
             "779dad188b169279"
         ],
-        "x": 515,
-        "y": 893,
+        "x": 535,
+        "y": 974,
         "wires": []
     },
     {
@@ -1250,7 +1267,7 @@
         "type": "function",
         "z": "d54052ea6cb4b184",
         "name": "Prepare query",
-        "func": "const currentTime = new Date();\nconst currentHour = currentTime.getHours();\n\nconst devices = msg.payload.map(device => {\n    return {\n        key: device.id,\n        value: {\n            interval:   device.interval,\n            send:       device.status,\n            rele_state: device.status == true && (currentHour < 6 || currentHour >= 18) ? 1 : 0,\n            fails:      []\n        }\n    }\n});\n\nmsg.payload = { action: 'JSON.INSERT', params: devices };\n\nreturn msg;",
+        "func": "const currentTime = new Date();\nconst currentHour = currentTime.getHours();\n\nconst devices = msg.payload.map(device => {\n    return {\n        key: device.id,\n        values: {\n            interval:   device.interval,\n            send:       device.status,\n            rele_state: device.status == true && (currentHour < 6 || currentHour >= 18) ? true : false,\n            fails:      []\n        }\n    }\n});\n\nmsg.payload = { action: 'JSON.INSERT', params: devices };\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1603,7 +1620,7 @@
         "repair": false,
         "outputs": 2,
         "x": 190,
-        "y": 1157,
+        "y": 1277,
         "wires": [
             [
                 "94a4714c3a3969b8"
@@ -1818,7 +1835,7 @@
         "type": "function",
         "z": "d54052ea6cb4b184",
         "name": "Remove comments",
-        "func": "msg.payload = msg.payload.replace(/\\/\\/.*\\r\\n/g, '');\nreturn msg;",
+        "func": "msg.payload = msg.payload.replace(/\\/\\/.*\\r\\n/g, '');\n\ndelete msg.filename;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1891,7 +1908,7 @@
         "type": "function",
         "z": "ab0855462a34e9f7",
         "name": "Set messages interval of device",
-        "func": "const deviceId = parseInt(msg.topic.match(/\\/(\\d+)$/)[1]);\nconst interval = msg.payload;\n\nmsg.payload = { \n    action: 'JSON.UPDATE', \n    params: [{ key: deviceId, value: { interval } }]\n};\n\ndelete msg.topic;\n\nreturn msg;",
+        "func": "const deviceId = parseInt(msg.topic.match(/\\/(\\d+)$/)[1]);\nconst interval = msg.payload;\n\nmsg.payload = { \n    action: 'JSON.UPDATE', \n    params: [{ \n        key: deviceId, \n        values: { attr: 'interval', value: interval } }]\n};\n\ndelete msg.topic;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1975,10 +1992,10 @@
         "repeat": "600",
         "crontab": "",
         "once": true,
-        "onceDelay": "600",
+        "onceDelay": "300",
         "topic": "",
         "x": 155,
-        "y": 135,
+        "y": 138,
         "wires": [
             [
                 "3fd79f0e07079834"
@@ -1990,14 +2007,14 @@
         "type": "function",
         "z": "a444632620451a72",
         "name": "Get devices IDs",
-        "func": "msg.payload = {\n    action: 'KEYS',\n    params: [{ value: '*' }]\n};\n\nreturn msg;",
+        "func": "msg.payload = {\n    action: 'KEYS',\n    params: [{ values: '*' }]\n};\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
         "x": 360,
-        "y": 135,
+        "y": 138,
         "wires": [
             [
                 "095ff5c00f3239e1"
@@ -2012,7 +2029,7 @@
         "links": [
             "4766e4737d4ab82a"
         ],
-        "x": 315,
+        "x": 335,
         "y": 375,
         "wires": []
     },
@@ -2029,7 +2046,7 @@
         "payloadType": "json",
         "block": false,
         "x": 330,
-        "y": 696,
+        "y": 736,
         "wires": [
             [
                 "fe2af213e574e51f"
@@ -2046,7 +2063,7 @@
             "560829592f1ac023"
         ],
         "x": 55,
-        "y": 696,
+        "y": 736,
         "wires": [
             [
                 "a8cb1707b0683a56"
@@ -2058,14 +2075,14 @@
         "type": "function",
         "z": "185bd0a8b5a4b916",
         "name": "Prepare query",
-        "func": "const counter = msg.counter;\nconst params  = msg.query.params[counter];\n\nmsg.payload = [params.value];\n\nmsg.counter = counter+1;\nmsg.action  = 4;\n\nreturn msg;",
+        "func": "const counter = msg.counter;\nconst params = msg.query.params[counter];\n\nmsg.payload = [params.values];\n\nmsg.counter = counter+1;\nmsg.action = 4;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
         "x": 180,
-        "y": 696,
+        "y": 736,
         "wires": [
             [
                 "18fb4272c1434516"
@@ -2081,7 +2098,7 @@
             "0aad452318b271e8"
         ],
         "x": 415,
-        "y": 696,
+        "y": 736,
         "wires": []
     },
     {
@@ -2092,8 +2109,8 @@
         "links": [
             "4766e4737d4ab82a"
         ],
-        "x": 515,
-        "y": 935,
+        "x": 535,
+        "y": 1016,
         "wires": []
     },
     {
@@ -2103,7 +2120,7 @@
         "name": "",
         "env": [],
         "x": 540,
-        "y": 135,
+        "y": 138,
         "wires": [
             [
                 "71ef80badc40aa85"
@@ -2117,7 +2134,7 @@
         "id": "a3da3cba3e54ce24",
         "type": "debug",
         "z": "a444632620451a72",
-        "name": "[EXIT 1] Generate errors",
+        "name": "[EXIT 1] Generate failure in device",
         "active": true,
         "tosidebar": true,
         "console": false,
@@ -2126,17 +2143,17 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 770,
-        "y": 155,
+        "x": 800,
+        "y": 158,
         "wires": []
     },
     {
         "id": "981b5b1ac6b7ee16",
         "type": "comment",
         "z": "a444632620451a72",
-        "name": "########## Generate errors",
+        "name": "########## Generate failure in device",
         "info": "",
-        "x": 160,
+        "x": 190,
         "y": 55,
         "wires": []
     },
@@ -2145,17 +2162,17 @@
         "type": "function",
         "z": "a444632620451a72",
         "name": "Get devices IDs",
-        "func": "msg.payload = msg.payload.map(device => device.result);\nreturn msg;",
+        "func": "msg.devices = msg.payload.map(device => device.result);\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
         "x": 740,
-        "y": 113,
+        "y": 116,
         "wires": [
             [
-                "971fd26a8e32f154"
+                "f9af6c3af3837488"
             ]
         ]
     },
@@ -2170,11 +2187,11 @@
         "arraySpltType": "len",
         "stream": false,
         "addname": "",
-        "x": 910,
-        "y": 113,
+        "x": 330,
+        "y": 316,
         "wires": [
             [
-                "f9af6c3af3837488"
+                "8d862c9dbd3b163b"
             ]
         ]
     },
@@ -2182,27 +2199,27 @@
         "id": "f9af6c3af3837488",
         "type": "link out",
         "z": "a444632620451a72",
-        "name": "OUT (1) Generate errors",
+        "name": "OUT (1) Generate failure in device",
         "links": [
             "37a0e4f6c8715a32"
         ],
-        "x": 1015,
-        "y": 113,
+        "x": 855,
+        "y": 116,
         "wires": []
     },
     {
         "id": "37a0e4f6c8715a32",
         "type": "link in",
         "z": "a444632620451a72",
-        "name": "IN (1) Generate errors",
+        "name": "IN (1) Generate failure in device",
         "links": [
             "f9af6c3af3837488"
         ],
         "x": 55,
-        "y": 257,
+        "y": 236,
         "wires": [
             [
-                "7a7cecf6415649cc"
+                "15b457ec3a792b00"
             ]
         ]
     },
@@ -2218,10 +2235,10 @@
         "finalize": "",
         "libs": [],
         "x": 190,
-        "y": 257,
+        "y": 439,
         "wires": [
             [
-                "15b457ec3a792b00"
+                "e7104dda5ddd437c"
             ],
             [
                 "12402bcf3498a48d"
@@ -2232,7 +2249,7 @@
         "id": "12402bcf3498a48d",
         "type": "debug",
         "z": "a444632620451a72",
-        "name": "[EXIT 2] Generate errors",
+        "name": "[EXIT 2] Generate failure in device",
         "active": false,
         "tosidebar": true,
         "console": false,
@@ -2241,8 +2258,8 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 430,
-        "y": 279,
+        "x": 460,
+        "y": 461,
         "wires": []
     },
     {
@@ -2253,7 +2270,7 @@
         "scope": null,
         "uncaught": false,
         "x": 100,
-        "y": 756,
+        "y": 1836,
         "wires": [
             [
                 "2c01993697609b0a"
@@ -2267,7 +2284,7 @@
         "name": "########## Exceptions Treatment",
         "info": "",
         "x": 179,
-        "y": 696,
+        "y": 1776,
         "wires": []
     },
     {
@@ -2284,7 +2301,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 250,
-        "y": 756,
+        "y": 1836,
         "wires": []
     },
     {
@@ -2381,14 +2398,14 @@
         "id": "15b457ec3a792b00",
         "type": "file in",
         "z": "a444632620451a72",
-        "name": "Get fails.jsonc file",
+        "name": "Get fails rules file",
         "filename": "/scripts/fails.jsonc",
         "format": "utf8",
         "chunk": false,
         "sendError": false,
         "encoding": "none",
         "allProps": false,
-        "x": 410,
+        "x": 190,
         "y": 236,
         "wires": [
             [
@@ -2404,7 +2421,7 @@
         "property": "payload",
         "action": "",
         "pretty": false,
-        "x": 840,
+        "x": 620,
         "y": 236,
         "wires": [
             [
@@ -2417,13 +2434,13 @@
         "type": "function",
         "z": "a444632620451a72",
         "name": "Remove comments",
-        "func": "msg.payload = msg.payload.replace(/\\/\\/.*\\r\\n/g, '');\nreturn msg;",
+        "func": "msg.payload = msg.payload.replace(/\\/\\/.*\\r\\n/g, '');\n\ndelete msg.filename;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 610,
+        "x": 390,
         "y": 236,
         "wires": [
             [
@@ -2435,11 +2452,11 @@
         "id": "d093a4bff79842d4",
         "type": "link out",
         "z": "a444632620451a72",
-        "name": "OUT (2) Generate errors",
+        "name": "OUT (2) Generate failure in device",
         "links": [
             "d4e1c79447dc0538"
         ],
-        "x": 995,
+        "x": 775,
         "y": 236,
         "wires": []
     },
@@ -2447,15 +2464,15 @@
         "id": "d4e1c79447dc0538",
         "type": "link in",
         "z": "a444632620451a72",
-        "name": "IN (2) Generate errors",
+        "name": "IN (2) Generate failure in device",
         "links": [
             "d093a4bff79842d4"
         ],
         "x": 55,
-        "y": 378,
+        "y": 316,
         "wires": [
             [
-                "e7104dda5ddd437c"
+                "89fbf6eea17e5f39"
             ]
         ]
     },
@@ -2464,14 +2481,14 @@
         "type": "function",
         "z": "a444632620451a72",
         "name": "Choose failure",
-        "func": "const min = 1;\nconst max = msg.payload.length;\n\nmsg.device.fail = Math.round(Math.random() * (max - min) + min);\nmsg.fails = msg.payload;\n\nreturn msg;",
+        "func": "const min = 1;\nconst max = msg.fails.length;\n\nconst fail = Math.round(Math.random() * (max - min) + min);\n\nmsg.device.newFail = msg.fails[fail-1];\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 180,
-        "y": 378,
+        "x": 400,
+        "y": 417,
         "wires": [
             [
                 "2f9644df4b68cab1"
@@ -2489,8 +2506,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 390,
-        "y": 378,
+        "x": 610,
+        "y": 417,
         "wires": [
             [
                 "eac170b6a0c6b125"
@@ -2502,11 +2519,11 @@
         "type": "subflow:185bd0a8b5a4b916",
         "z": "a444632620451a72",
         "name": "",
-        "x": 600,
-        "y": 378,
+        "x": 820,
+        "y": 417,
         "wires": [
             [
-                "87a3e10226bfe54a"
+                "f6902715b06a9c78"
             ],
             [
                 "45e44f20ab03c222"
@@ -2517,7 +2534,7 @@
         "id": "45e44f20ab03c222",
         "type": "debug",
         "z": "a444632620451a72",
-        "name": "[EXIT 3] Generate errors",
+        "name": "[EXIT 3] Generate failure in device",
         "active": true,
         "tosidebar": true,
         "console": false,
@@ -2526,8 +2543,8 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 830,
-        "y": 399,
+        "x": 1080,
+        "y": 438,
         "wires": []
     },
     {
@@ -2535,14 +2552,14 @@
         "type": "function",
         "z": "a444632620451a72",
         "name": " Failure validation",
-        "func": "/* Check 1: Fail is already in device?\n * Check 2: Has fails that prevent the new fail to being included?\n * Check 3: The new fail prevents any fail already present in the device?\n * Check 4: Change send state only in case of difference between current value and new value \n * Check 5: Time restriction to change rele state\n */\n\nconst fails = msg.fails;\nconst fail = fails[msg.device.fail-1];\nconst device = msg.payload[0].result;\nconst deviceFails = device.fails.map(id => fails.find(fail => fail.id === id));\n\nconst check1 = _ => !device.fails.includes(fail.id);\nconst check2 = _ => !fail.look_for.some(id => device.fails.includes(id));\nconst check3 = _ => !deviceFails.some(deviceFail => deviceFail.look_for.includes(fail.id));\nconst check4 = _ => fail.send === null || fail.send !== device.send;\nconst check5 = _ => {\n    if (fail.rele_state !== null) {\n        if (device.rele_state !== fail.rele_state.value) {\n            const currentDate = new Date();\n            const currentTime = currentDate.getHours() * 3600 + currentDate.getMinutes() * 60 + currentDate.getSeconds(); // In seconds\n            \n            const begin = fail.rele_state.threshold.begin;\n            const end = fail.rele_state.threshold.end;\n            \n            if (begin < end) {\n                return currentTime >= begin && currentTime < end;\n            } else {\n                return currentTime >= begin || currentTime < end;\n            }\n        }\n        \n        return false;\n    }\n    \n    return true;\n}\n\nmsg.payload = check1() && check2() && check3() && check4() && check5();\n\nmsg.device.send = fail.send !== null ? fail.send : device.send;\nmsg.device.rele_state = fail.rele_state !== null ? fail.rele_state.value : device.rele_state;\n\nreturn msg;",
+        "func": "const fails = msg.fails;\nconst device = msg.device;\n\nmsg.payload = msg.check1(device.fails, device.newFail.id)\n        && msg.check2(device.fails, device.newFail)\n        && msg.check3(device.fails, device.newFail.id)\n        && msg.check4(device.send, device.newFail.send)\n        && msg.check5(device.rele_state, device.newFail.rele_state);\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 810,
-        "y": 357,
+        "x": 410,
+        "y": 557,
         "wires": [
             [
                 "54338d699151f3ab"
@@ -2567,11 +2584,11 @@
         "checkall": "false",
         "repair": false,
         "outputs": 2,
-        "x": 1030,
-        "y": 357,
+        "x": 630,
+        "y": 557,
         "wires": [
             [
-                "8d862c9dbd3b163b"
+                "f9dbcc9866faec1e"
             ],
             [
                 "7b5abb2dfa21d6da"
@@ -2582,19 +2599,19 @@
         "id": "8d862c9dbd3b163b",
         "type": "link out",
         "z": "a444632620451a72",
-        "name": "OUT (3) Generate errors",
+        "name": "OUT (3) Generate failure in device",
         "links": [
             "c884efe4ea3bd549"
         ],
-        "x": 1195,
-        "y": 335,
+        "x": 435,
+        "y": 316,
         "wires": []
     },
     {
         "id": "7b5abb2dfa21d6da",
         "type": "debug",
         "z": "a444632620451a72",
-        "name": "[EXIT 4] Generate errors",
+        "name": "[EXIT 4] Generate failure in device",
         "active": false,
         "tosidebar": true,
         "console": false,
@@ -2603,23 +2620,23 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1290,
-        "y": 378,
+        "x": 920,
+        "y": 578,
         "wires": []
     },
     {
         "id": "c884efe4ea3bd549",
         "type": "link in",
         "z": "a444632620451a72",
-        "name": "IN (3) Generate errors",
+        "name": "IN (3) Generate failure in device",
         "links": [
             "8d862c9dbd3b163b"
         ],
         "x": 55,
-        "y": 538,
+        "y": 439,
         "wires": [
             [
-                "520a784bb92b71f7"
+                "7a7cecf6415649cc"
             ]
         ]
     },
@@ -2627,15 +2644,15 @@
         "id": "520a784bb92b71f7",
         "type": "function",
         "z": "a444632620451a72",
-        "name": "Set send parameter",
-        "func": "msg.payload = {\n    action: 'JSON.UPDATE',\n    params: [{ key: msg.device.id, value: { send: msg.device.send } }]\n};\n\nreturn msg;",
+        "name": "Set 'send' parameter",
+        "func": "const send = msg.device.newFail.send !== -1 ? msg.device.newFail.send : msg.device.send;\n\nmsg.payload = {\n    action: 'JSON.UPDATE',\n    params: [{ \n        key: msg.device.id, \n        values: { attr: 'send', value: send } \n    }]\n};\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 190,
-        "y": 538,
+        "x": 200,
+        "y": 718,
         "wires": [
             [
                 "26a2ccdfee1a2e78"
@@ -2648,8 +2665,8 @@
         "z": "a444632620451a72",
         "name": "",
         "env": [],
-        "x": 380,
-        "y": 538,
+        "x": 400,
+        "y": 718,
         "wires": [
             [
                 "34eea68515279a3f"
@@ -2663,7 +2680,7 @@
         "id": "20b6659c04227272",
         "type": "debug",
         "z": "a444632620451a72",
-        "name": "[EXIT 5] Generate errors",
+        "name": "[EXIT 5] Generate failure in device",
         "active": true,
         "tosidebar": true,
         "console": false,
@@ -2672,8 +2689,8 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 610,
-        "y": 560,
+        "x": 660,
+        "y": 740,
         "wires": []
     },
     {
@@ -2681,14 +2698,14 @@
         "type": "function",
         "z": "a444632620451a72",
         "name": "Insert failure in device",
-        "func": "msg.payload = {\n    action: 'JSON.ARRAPPEND',\n    params: [\n        { key: msg.device.id, value: { fails: msg.device.fail } }\n    ]\n};\n\nreturn msg;",
+        "func": "msg.payload = {\n    action: 'JSON.ARRAPPEND',\n    params: [\n        { \n            key: msg.device.id, \n            values: { array: 'fails', value: msg.device.newFail.id } \n        }\n    ]\n};\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1040,
-        "y": 496,
+        "x": 1060,
+        "y": 676,
         "wires": [
             [
                 "e559347aeea539ab"
@@ -2700,8 +2717,8 @@
         "type": "subflow:185bd0a8b5a4b916",
         "z": "a444632620451a72",
         "name": "",
-        "x": 1240,
-        "y": 496,
+        "x": 1260,
+        "y": 676,
         "wires": [
             [
                 "1fb2a3e793a8f8aa"
@@ -2715,7 +2732,7 @@
         "id": "549575ce4a75236d",
         "type": "debug",
         "z": "a444632620451a72",
-        "name": "[EXIT 8] Generate errors",
+        "name": "[EXIT 8] Generate failure in device",
         "active": true,
         "tosidebar": true,
         "console": false,
@@ -2724,15 +2741,15 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1470,
-        "y": 517,
+        "x": 1520,
+        "y": 697,
         "wires": []
     },
     {
         "id": "1fb2a3e793a8f8aa",
         "type": "debug",
         "z": "a444632620451a72",
-        "name": "[EXIT 7] Generate errors",
+        "name": "[EXIT 7] Generate failure in device",
         "active": false,
         "tosidebar": true,
         "console": false,
@@ -2741,8 +2758,8 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1470,
-        "y": 475,
+        "x": 1520,
+        "y": 655,
         "wires": []
     },
     {
@@ -2765,7 +2782,7 @@
         "links": [
             "44311aec488997d1"
         ],
-        "x": 315,
+        "x": 335,
         "y": 415,
         "wires": []
     },
@@ -2778,7 +2795,7 @@
             "67b41fa2bf4d76bc"
         ],
         "x": 55,
-        "y": 335,
+        "y": 355,
         "wires": [
             [
                 "70d4f99473093739"
@@ -2798,7 +2815,7 @@
         "payloadType": "json",
         "block": false,
         "x": 380,
-        "y": 736,
+        "y": 776,
         "wires": [
             [
                 "42c060b70aeae32d"
@@ -2810,14 +2827,14 @@
         "type": "function",
         "z": "185bd0a8b5a4b916",
         "name": "Prepare query",
-        "func": "const counter = msg.counter;\nconst params  = msg.query.params[counter];\n\nconst arrayName = Object.entries(params.value)[0][0];\nconst newValue  = Object.entries(params.value)[0][1];\n\nmsg.payload = [params.key, arrayName, newValue];\n\nmsg.counter = counter+1;\nmsg.action  = 5;\n\nreturn msg;",
+        "func": "const counter = msg.counter;\nconst params = msg.query.params[counter];\n\nconst key = params.key;\nconst array = params.values.array;\nconst value = params.values.value;\n\nmsg.payload = [key, array, value];\n\nmsg.counter = counter+1;\nmsg.action = 5;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
         "x": 180,
-        "y": 736,
+        "y": 776,
         "wires": [
             [
                 "cfcd806421fa3d3e"
@@ -2834,7 +2851,7 @@
             "470e03096c22a255"
         ],
         "x": 55,
-        "y": 736,
+        "y": 776,
         "wires": [
             [
                 "5ba5be911a160c86"
@@ -2850,7 +2867,7 @@
             "0aad452318b271e8"
         ],
         "x": 515,
-        "y": 736,
+        "y": 776,
         "wires": []
     },
     {
@@ -2861,8 +2878,8 @@
         "links": [
             "44311aec488997d1"
         ],
-        "x": 515,
-        "y": 975,
+        "x": 535,
+        "y": 1056,
         "wires": []
     },
     {
@@ -2871,8 +2888,8 @@
         "z": "a444632620451a72",
         "name": "",
         "env": [],
-        "x": 820,
-        "y": 517,
+        "x": 840,
+        "y": 697,
         "wires": [
             [
                 "aef75640dfc58609"
@@ -2886,7 +2903,7 @@
         "id": "6beb569b41b92041",
         "type": "debug",
         "z": "a444632620451a72",
-        "name": "[EXIT 6] Generate errors",
+        "name": "[EXIT 6] Generate failure in device",
         "active": true,
         "tosidebar": true,
         "console": false,
@@ -2895,26 +2912,945 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1050,
-        "y": 539,
+        "x": 1100,
+        "y": 719,
         "wires": []
     },
     {
         "id": "34eea68515279a3f",
         "type": "function",
         "z": "a444632620451a72",
-        "name": "Set rele_state parameter",
-        "func": "msg.payload = {\n    action: 'JSON.UPDATE',\n    params: [{ key: msg.device.id, value: { rele_state: msg.device.rele_state } }]\n};\n\nreturn msg;",
+        "name": "Set 'rele_state' parameter",
+        "func": "const rele_state = msg.device.newFail.rele_state !== -1 ? msg.device.newFail.rele_state.value : msg.device.rele_state;\n\nmsg.payload = {\n    action: 'JSON.UPDATE',\n    params: [{ \n        key: msg.device.id, \n        values: { attr: 'rele_state', value: rele_state } \n    }]\n};\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 610,
-        "y": 517,
+        "x": 630,
+        "y": 697,
         "wires": [
             [
                 "c2e3c6f6fa765b86"
+            ]
+        ]
+    },
+    {
+        "id": "5b22e72d87cd07f0",
+        "type": "function",
+        "z": "a444632620451a72",
+        "name": "Define check functions",
+        "func": "// Fail is already in device?\nfunction check1 (deviceFails, id) { \n    return !deviceFails.find(fail => fail.id === id);\n}\n\n// Has fails that prevent the new fail to being included?\nfunction check2 (deviceFails, fail) {\n    return !fail.look_for.some(id => !!deviceFails.find(fail => fail.id === id));\n}\n\n// The new fail prevents any fail already present in the device?\nfunction check3 (deviceFails, id) {\n    return !deviceFails.some(fail => fail.look_for.includes(id));\n}\n\n// Change send state only in case of difference between current value and new value\nfunction check4 (device, fail) {\n    return fail === -1 || fail !== device;\n}\n\n// Time restriction to change rele state\nfunction check5 (device, fail) {\n    if (fail !== -1 && fail.threshold !== undefined) {\n        const currentDate = new Date();\n        const currentTime = currentDate.getHours() * 3600 + currentDate.getMinutes() * 60 + currentDate.getSeconds(); // In seconds\n        \n        const begin = fail.threshold.begin;\n        const end = fail.threshold.end;\n        \n        if (begin < end) {\n            return currentTime >= begin && currentTime < end;\n        } else {\n            return currentTime >= begin || currentTime < end;\n        }\n    }\n    \n    return true;\n}\n\nmsg.check1 = check1;\nmsg.check2 = check2;\nmsg.check3 = check3;\nmsg.check4 = check4;\nmsg.check5 = check5;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 200,
+        "y": 557,
+        "wires": [
+            [
+                "87a3e10226bfe54a"
+            ]
+        ]
+    },
+    {
+        "id": "89fbf6eea17e5f39",
+        "type": "function",
+        "z": "a444632620451a72",
+        "name": "Prepare split",
+        "func": "msg.fails = msg.payload;\nmsg.payload = msg.devices;\n\ndelete msg.devices;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 170,
+        "y": 316,
+        "wires": [
+            [
+                "971fd26a8e32f154"
+            ]
+        ]
+    },
+    {
+        "id": "f1221f114e8cd98d",
+        "type": "link out",
+        "z": "a444632620451a72",
+        "name": "OUT (4) Generate failure in device",
+        "links": [
+            "e9ac6150d880f952"
+        ],
+        "x": 1115,
+        "y": 395,
+        "wires": []
+    },
+    {
+        "id": "e9ac6150d880f952",
+        "type": "link in",
+        "z": "a444632620451a72",
+        "name": "IN (4) Generate failure in device",
+        "links": [
+            "f1221f114e8cd98d"
+        ],
+        "x": 55,
+        "y": 557,
+        "wires": [
+            [
+                "5b22e72d87cd07f0"
+            ]
+        ]
+    },
+    {
+        "id": "f6902715b06a9c78",
+        "type": "function",
+        "z": "a444632620451a72",
+        "name": "Parse result",
+        "func": "msg.device.send = msg.payload[0].result.send;\nmsg.device.rele_state = msg.payload[0].result.rele_state;\nmsg.device.fails = msg.payload[0].result.fails.map(id => msg.fails.find(fail => fail.id === id));\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1010,
+        "y": 395,
+        "wires": [
+            [
+                "f1221f114e8cd98d"
+            ]
+        ]
+    },
+    {
+        "id": "f9dbcc9866faec1e",
+        "type": "link out",
+        "z": "a444632620451a72",
+        "name": "OUT (5) Generate failure in device",
+        "links": [
+            "83340fac10fec50c"
+        ],
+        "x": 795,
+        "y": 535,
+        "wires": []
+    },
+    {
+        "id": "83340fac10fec50c",
+        "type": "link in",
+        "z": "a444632620451a72",
+        "name": "IN (5) Generate failure in device",
+        "links": [
+            "f9dbcc9866faec1e"
+        ],
+        "x": 55,
+        "y": 718,
+        "wires": [
+            [
+                "520a784bb92b71f7"
+            ]
+        ]
+    },
+    {
+        "id": "ad0e592377bf1625",
+        "type": "comment",
+        "z": "a444632620451a72",
+        "name": "########## Resolve failure in device",
+        "info": "",
+        "x": 190,
+        "y": 836,
+        "wires": []
+    },
+    {
+        "id": "68d11ddc3ff9a774",
+        "type": "inject",
+        "z": "a444632620451a72",
+        "name": "Every 10 minutes",
+        "props": [],
+        "repeat": "600",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "600",
+        "topic": "",
+        "x": 155,
+        "y": 918,
+        "wires": [
+            [
+                "3ea9de273fb291ee"
+            ]
+        ]
+    },
+    {
+        "id": "3ea9de273fb291ee",
+        "type": "function",
+        "z": "a444632620451a72",
+        "name": "Get devices IDs",
+        "func": "msg.payload = {\n    action: 'KEYS',\n    params: [{ values: '*' }]\n};\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 360,
+        "y": 918,
+        "wires": [
+            [
+                "761b3eb33227cfbc"
+            ]
+        ]
+    },
+    {
+        "id": "761b3eb33227cfbc",
+        "type": "subflow:185bd0a8b5a4b916",
+        "z": "a444632620451a72",
+        "name": "",
+        "env": [],
+        "x": 540,
+        "y": 918,
+        "wires": [
+            [
+                "0ff8b92dd5a0feb8"
+            ],
+            [
+                "4360d8bf844ff3e2"
+            ]
+        ]
+    },
+    {
+        "id": "4360d8bf844ff3e2",
+        "type": "debug",
+        "z": "a444632620451a72",
+        "name": "[EXIT 1] Resolve failure in device",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 800,
+        "y": 938,
+        "wires": []
+    },
+    {
+        "id": "0ff8b92dd5a0feb8",
+        "type": "function",
+        "z": "a444632620451a72",
+        "name": "Get devices IDs",
+        "func": "msg.devices = msg.payload.map(device => device.result);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 740,
+        "y": 896,
+        "wires": [
+            [
+                "e3ea55445ac2fc83"
+            ]
+        ]
+    },
+    {
+        "id": "27df65f2033ce3fc",
+        "type": "split",
+        "z": "a444632620451a72",
+        "name": "Split devices",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 330,
+        "y": 1096,
+        "wires": [
+            [
+                "a7e5404f55a3152a"
+            ]
+        ]
+    },
+    {
+        "id": "e3ea55445ac2fc83",
+        "type": "link out",
+        "z": "a444632620451a72",
+        "name": "OUT (1) Resolve failure in device",
+        "links": [
+            "2919c4416e7720f2"
+        ],
+        "x": 855,
+        "y": 896,
+        "wires": []
+    },
+    {
+        "id": "2919c4416e7720f2",
+        "type": "link in",
+        "z": "a444632620451a72",
+        "name": "IN (1) Resolve failure in device",
+        "links": [
+            "e3ea55445ac2fc83"
+        ],
+        "x": 55,
+        "y": 1016,
+        "wires": [
+            [
+                "bfdb44a467dbeb5e"
+            ]
+        ]
+    },
+    {
+        "id": "1bd9a71efaab9152",
+        "type": "function",
+        "z": "a444632620451a72",
+        "name": "Resolve failure?",
+        "func": "msg.device = { id: msg.payload };\n\nconst prob = 0.1;\n\nif (Math.random() <= prob) {\n    return [msg, null];\n}\n\nreturn [null, msg];",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 180,
+        "y": 1219,
+        "wires": [
+            [
+                "3d368fbadd676489"
+            ],
+            [
+                "81e8ff7c948cf85c"
+            ]
+        ]
+    },
+    {
+        "id": "81e8ff7c948cf85c",
+        "type": "debug",
+        "z": "a444632620451a72",
+        "name": "[EXIT 2] Resolve failure in device",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 440,
+        "y": 1241,
+        "wires": []
+    },
+    {
+        "id": "bfdb44a467dbeb5e",
+        "type": "file in",
+        "z": "a444632620451a72",
+        "name": "Get fails rules file",
+        "filename": "/scripts/fails.jsonc",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "none",
+        "allProps": false,
+        "x": 190,
+        "y": 1016,
+        "wires": [
+            [
+                "2c0940f97d7470b1"
+            ]
+        ]
+    },
+    {
+        "id": "c91e3fc1febf918d",
+        "type": "json",
+        "z": "a444632620451a72",
+        "name": "Convert JSON to JS Object",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 620,
+        "y": 1016,
+        "wires": [
+            [
+                "3cbbde7d4ed6a5c4"
+            ]
+        ]
+    },
+    {
+        "id": "2c0940f97d7470b1",
+        "type": "function",
+        "z": "a444632620451a72",
+        "name": "Remove comments",
+        "func": "msg.payload = msg.payload.replace(/\\/\\/.*\\r\\n/g, '');\n\ndelete msg.filename;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 390,
+        "y": 1016,
+        "wires": [
+            [
+                "c91e3fc1febf918d"
+            ]
+        ]
+    },
+    {
+        "id": "3cbbde7d4ed6a5c4",
+        "type": "link out",
+        "z": "a444632620451a72",
+        "name": "OUT (2) Resolve failure in device",
+        "links": [
+            "4c73ae75d9d49cfa"
+        ],
+        "x": 775,
+        "y": 1016,
+        "wires": []
+    },
+    {
+        "id": "4c73ae75d9d49cfa",
+        "type": "link in",
+        "z": "a444632620451a72",
+        "name": "IN (2) Resolve failure in device",
+        "links": [
+            "3cbbde7d4ed6a5c4"
+        ],
+        "x": 55,
+        "y": 1096,
+        "wires": [
+            [
+                "843378203746e4e7"
+            ]
+        ]
+    },
+    {
+        "id": "3d368fbadd676489",
+        "type": "function",
+        "z": "a444632620451a72",
+        "name": "Get current device state",
+        "func": "msg.payload = { action: 'JSON.GET', params: [{ key: msg.device.id }]};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 410,
+        "y": 1197,
+        "wires": [
+            [
+                "a19a044969f26b6a"
+            ]
+        ]
+    },
+    {
+        "id": "a19a044969f26b6a",
+        "type": "subflow:185bd0a8b5a4b916",
+        "z": "a444632620451a72",
+        "name": "",
+        "x": 620,
+        "y": 1197,
+        "wires": [
+            [
+                "6220dd177ef680f2"
+            ],
+            [
+                "59c9810f9dcb541c"
+            ]
+        ]
+    },
+    {
+        "id": "59c9810f9dcb541c",
+        "type": "debug",
+        "z": "a444632620451a72",
+        "name": "[EXIT 3] Resolve failure in device",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 880,
+        "y": 1218,
+        "wires": []
+    },
+    {
+        "id": "a7e5404f55a3152a",
+        "type": "link out",
+        "z": "a444632620451a72",
+        "name": "OUT (3) Resolve failure in device",
+        "links": [
+            "71bce05e73b1afab"
+        ],
+        "x": 435,
+        "y": 1096,
+        "wires": []
+    },
+    {
+        "id": "71bce05e73b1afab",
+        "type": "link in",
+        "z": "a444632620451a72",
+        "name": "IN (3) Resolve failure in device",
+        "links": [
+            "a7e5404f55a3152a"
+        ],
+        "x": 55,
+        "y": 1219,
+        "wires": [
+            [
+                "1bd9a71efaab9152"
+            ]
+        ]
+    },
+    {
+        "id": "843378203746e4e7",
+        "type": "function",
+        "z": "a444632620451a72",
+        "name": "Prepare split",
+        "func": "msg.fails = msg.payload;\nmsg.payload = msg.devices;\n\ndelete msg.devices;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 170,
+        "y": 1096,
+        "wires": [
+            [
+                "27df65f2033ce3fc"
+            ]
+        ]
+    },
+    {
+        "id": "6b7f9cbe7015a05b",
+        "type": "link out",
+        "z": "a444632620451a72",
+        "name": "OUT (4) Resolve failure in device",
+        "links": [
+            "5e53aa8e493ca9a0"
+        ],
+        "x": 915,
+        "y": 1175,
+        "wires": []
+    },
+    {
+        "id": "6220dd177ef680f2",
+        "type": "function",
+        "z": "a444632620451a72",
+        "name": "Parse result",
+        "func": "msg.device.send = msg.payload[0].result.send;\nmsg.device.rele_state = msg.payload[0].result.rele_state;\nmsg.device.fails = msg.payload[0].result.fails.map(id => msg.fails.find(fail => fail.id === id));\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 810,
+        "y": 1175,
+        "wires": [
+            [
+                "6b7f9cbe7015a05b"
+            ]
+        ]
+    },
+    {
+        "id": "5e53aa8e493ca9a0",
+        "type": "link in",
+        "z": "a444632620451a72",
+        "name": "IN (4) Resolve failure in device",
+        "links": [
+            "6b7f9cbe7015a05b"
+        ],
+        "x": 55,
+        "y": 1336,
+        "wires": [
+            [
+                "3e04c383d2e32ef1"
+            ]
+        ]
+    },
+    {
+        "id": "c6df661f4363dfa0",
+        "type": "function",
+        "z": "a444632620451a72",
+        "name": "Choose failure",
+        "func": "const min = 0;\nconst max = msg.device.fails.length-1;\n\nconst index = Math.round(Math.random() * (max - min) + min);\n\nmsg.failIndex = index;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 180,
+        "y": 1478,
+        "wires": [
+            [
+                "43da2d43d3c5fd30"
+            ]
+        ]
+    },
+    {
+        "id": "43da2d43d3c5fd30",
+        "type": "function",
+        "z": "a444632620451a72",
+        "name": "Set 'send' parameter",
+        "func": "const index = msg.failIndex;\nconst fail = msg.device.fails[index];\nconst send = fail.send !== -1 ? !fail.send : msg.device.send;\n\nmsg.payload = {\n    action: 'JSON.UPDATE',\n    params: [{ \n        key: msg.device.id, \n        values: { attr: 'send', value: send } \n    }]\n};\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 1478,
+        "wires": [
+            [
+                "a32a13bec6095b76"
+            ]
+        ]
+    },
+    {
+        "id": "a32a13bec6095b76",
+        "type": "subflow:185bd0a8b5a4b916",
+        "z": "a444632620451a72",
+        "name": "",
+        "env": [],
+        "x": 580,
+        "y": 1478,
+        "wires": [
+            [
+                "8924058f7506c303"
+            ],
+            [
+                "86046b86ece277a6"
+            ]
+        ]
+    },
+    {
+        "id": "86046b86ece277a6",
+        "type": "debug",
+        "z": "a444632620451a72",
+        "name": "[EXIT 5] Resolve failure in device",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 840,
+        "y": 1500,
+        "wires": []
+    },
+    {
+        "id": "b179fce68ca4da9a",
+        "type": "function",
+        "z": "a444632620451a72",
+        "name": "Remove failure from device",
+        "func": "msg.payload = {\n    action: 'JSON.ARRPOP',\n    params: [\n        { \n            key: msg.device.id, \n            values: {\n                array: 'fails',\n                index: msg.failIndex \n            } \n        }\n    ]\n};\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 220,
+        "y": 1597,
+        "wires": [
+            [
+                "14c1c78a85117c59"
+            ]
+        ]
+    },
+    {
+        "id": "14c1c78a85117c59",
+        "type": "subflow:185bd0a8b5a4b916",
+        "z": "a444632620451a72",
+        "name": "",
+        "env": [],
+        "x": 440,
+        "y": 1597,
+        "wires": [
+            [
+                "366e43a4df13f0c2"
+            ],
+            [
+                "0c3cfbc82c847eeb"
+            ]
+        ]
+    },
+    {
+        "id": "cc5240104f6855c4",
+        "type": "subflow:185bd0a8b5a4b916",
+        "z": "a444632620451a72",
+        "name": "",
+        "env": [],
+        "x": 1020,
+        "y": 1457,
+        "wires": [
+            [
+                "e602a4d5f4e565c3"
+            ],
+            [
+                "2fc3a67c57924f63"
+            ]
+        ]
+    },
+    {
+        "id": "2fc3a67c57924f63",
+        "type": "debug",
+        "z": "a444632620451a72",
+        "name": "[EXIT 6] Resolve failure in device",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1280,
+        "y": 1479,
+        "wires": []
+    },
+    {
+        "id": "8924058f7506c303",
+        "type": "function",
+        "z": "a444632620451a72",
+        "name": "Set 'rele_state' parameter",
+        "func": "const index = msg.failIndex;\nconst fail = msg.device.fails[index];\nconst rele_state = fail.rele_state !== -1 ? !fail.rele_state.value : msg.device.rele_state;\n\nmsg.payload = {\n    action: 'JSON.UPDATE',\n    params: [{ \n        key: msg.device.id, \n        values: { attr: 'rele_state', value: rele_state }\n    }]\n};\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 810,
+        "y": 1457,
+        "wires": [
+            [
+                "cc5240104f6855c4"
+            ]
+        ]
+    },
+    {
+        "id": "366e43a4df13f0c2",
+        "type": "debug",
+        "z": "a444632620451a72",
+        "name": "[EXIT 7] Resolve failure in device",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 700,
+        "y": 1576,
+        "wires": []
+    },
+    {
+        "id": "0c3cfbc82c847eeb",
+        "type": "debug",
+        "z": "a444632620451a72",
+        "name": "[EXIT 8] Resolve failure in device",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 700,
+        "y": 1618,
+        "wires": []
+    },
+    {
+        "id": "46fc5037ae699927",
+        "type": "link out",
+        "z": "a444632620451a72",
+        "name": "OUT (5) Resolve failure in device",
+        "links": [
+            "cbac3b1165620c30"
+        ],
+        "x": 335,
+        "y": 1315,
+        "wires": []
+    },
+    {
+        "id": "cbac3b1165620c30",
+        "type": "link in",
+        "z": "a444632620451a72",
+        "name": "IN (5) Resolve failure in device",
+        "links": [
+            "46fc5037ae699927"
+        ],
+        "x": 55,
+        "y": 1478,
+        "wires": [
+            [
+                "c6df661f4363dfa0"
+            ]
+        ]
+    },
+    {
+        "id": "e702a62e3341bf9a",
+        "type": "redis-command",
+        "z": "185bd0a8b5a4b916",
+        "server": "a7cb2a42ddfd0d99",
+        "command": "JSON.ARRPOP",
+        "name": "JSON.ARRPOP",
+        "topic": "",
+        "params": "[]",
+        "paramsType": "json",
+        "payloadType": "json",
+        "block": false,
+        "x": 360,
+        "y": 816,
+        "wires": [
+            [
+                "ea7cfcf3d063512b"
+            ]
+        ]
+    },
+    {
+        "id": "5b8fb422e2151359",
+        "type": "function",
+        "z": "185bd0a8b5a4b916",
+        "name": "Prepare query",
+        "func": "const counter = msg.counter;\nconst params = msg.query.params[counter];\n\nconst key = params.key;\nconst array = params.values.array;\nconst index = params.values.index;\n\nif (index !== undefined) {\n    msg.payload = [key, array, index];\n} else {\n    msg.payload = [key, array];\n}\n\nmsg.counter = counter+1;\nmsg.action = 6;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 180,
+        "y": 816,
+        "wires": [
+            [
+                "e702a62e3341bf9a"
+            ]
+        ]
+    },
+    {
+        "id": "6843c5c9bf74c0c2",
+        "type": "link in",
+        "z": "185bd0a8b5a4b916",
+        "name": "IN JSON.ARRPOP",
+        "links": [
+            "016be0caa78e3d3d",
+            "d147bd3a65c12089"
+        ],
+        "x": 55,
+        "y": 816,
+        "wires": [
+            [
+                "5b8fb422e2151359"
+            ]
+        ]
+    },
+    {
+        "id": "ea7cfcf3d063512b",
+        "type": "link out",
+        "z": "185bd0a8b5a4b916",
+        "name": "OUT JSON.ARRPOP",
+        "links": [
+            "0aad452318b271e8"
+        ],
+        "x": 475,
+        "y": 816,
+        "wires": []
+    },
+    {
+        "id": "016be0caa78e3d3d",
+        "type": "link out",
+        "z": "185bd0a8b5a4b916",
+        "name": "TO JSON.ARRPOP",
+        "links": [
+            "6843c5c9bf74c0c2"
+        ],
+        "x": 335,
+        "y": 455,
+        "wires": []
+    },
+    {
+        "id": "d147bd3a65c12089",
+        "type": "link out",
+        "z": "185bd0a8b5a4b916",
+        "name": "TO JSON.ARRPOP",
+        "links": [
+            "6843c5c9bf74c0c2"
+        ],
+        "x": 535,
+        "y": 1096,
+        "wires": []
+    },
+    {
+        "id": "3e04c383d2e32ef1",
+        "type": "switch",
+        "z": "a444632620451a72",
+        "name": "Has fails in device?",
+        "property": "device.fails.length",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "gt",
+                "v": "0",
+                "vt": "num"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "false",
+        "repair": false,
+        "outputs": 2,
+        "x": 190,
+        "y": 1336,
+        "wires": [
+            [
+                "46fc5037ae699927"
+            ],
+            [
+                "f90bb6e801227cce"
+            ]
+        ]
+    },
+    {
+        "id": "f90bb6e801227cce",
+        "type": "debug",
+        "z": "a444632620451a72",
+        "name": "[EXIT 4] Resolve failure in device",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 460,
+        "y": 1358,
+        "wires": []
+    },
+    {
+        "id": "e602a4d5f4e565c3",
+        "type": "link out",
+        "z": "a444632620451a72",
+        "name": "OUT (6) Resolve failure in device",
+        "links": [
+            "f477464ff4e972e7"
+        ],
+        "x": 1155,
+        "y": 1435,
+        "wires": []
+    },
+    {
+        "id": "f477464ff4e972e7",
+        "type": "link in",
+        "z": "a444632620451a72",
+        "name": "IN (6) Resolve failure in device",
+        "links": [
+            "e602a4d5f4e565c3"
+        ],
+        "x": 55,
+        "y": 1597,
+        "wires": [
+            [
+                "b179fce68ca4da9a"
             ]
         ]
     }
