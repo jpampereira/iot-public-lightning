@@ -4,6 +4,7 @@ version: '3.9'
 volumes:
   db-data:
   db-client-data:
+  db_redis-data:
   backend-data:
   devices_nodered-data:
   devices_redis-data:
@@ -45,6 +46,15 @@ services:
     depends_on:
       - db
 
+  db_redis:
+    container_name: db_redis
+    image: redislabs/rejson:2.0.6 # https://hub.docker.com/r/redislabs/rejson/
+    restart: always
+    ports:
+      - 6379:6379
+    volumes:
+      - db_redis-data:/data
+
   ## BACK-END SERVER ##############################
   backend:
     container_name: backend
@@ -55,12 +65,13 @@ services:
     ports:
       - 1880:1880
     volumes:
-      - ../nodered/scripts:/scripts
       - backend-data:/data
     links:
       - db
+      - db_redis
     depends_on:
       - db
+      - db_redis
 
   ## FRONT-END SERVER ##############################
   frontend:
@@ -84,7 +95,6 @@ services:
     ports:
       - 1881:1880
     volumes:
-      - ../nodered/scripts:/scripts
       - devices_nodered-data:/data
     links:
       - db
@@ -98,7 +108,7 @@ services:
     image: redislabs/rejson:2.0.6 # https://hub.docker.com/r/redislabs/rejson/
     restart: always
     ports:
-      - 6379:6379
+      - 6380:6380
     volumes:
       - ../redis/devices/redis.conf:/usr/local/etc/redis.conf
       - devices_redis-data:/data

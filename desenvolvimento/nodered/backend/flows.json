@@ -2,7 +2,7 @@
     {
         "id": "8813ec2835daae18",
         "type": "tab",
-        "label": "Get Sensors Data",
+        "label": "Get sensors data",
         "disabled": false,
         "info": ""
     },
@@ -35,6 +35,20 @@
         "info": ""
     },
     {
+        "id": "a716829fd201f4fd",
+        "type": "tab",
+        "label": "Problem alarms",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "1ce1485ad608bc7a",
+        "type": "tab",
+        "label": "Clear alarms",
+        "disabled": false,
+        "info": ""
+    },
+    {
         "id": "bab6ffe5b7ae3a28",
         "type": "subflow",
         "name": "Database",
@@ -58,6 +72,49 @@
                 "wires": [
                     {
                         "id": "dcf9a148a61be9fc",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [],
+        "meta": {},
+        "color": "#DDAA99"
+    },
+    {
+        "id": "185bd0a8b5a4b916",
+        "type": "subflow",
+        "name": "Database Redis",
+        "info": "",
+        "category": "",
+        "in": [
+            {
+                "x": 60,
+                "y": 166,
+                "wires": [
+                    {
+                        "id": "3c546124752a49f4"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 1040,
+                "y": 1623,
+                "wires": [
+                    {
+                        "id": "adc4c59772c6298c",
+                        "port": 0
+                    }
+                ]
+            },
+            {
+                "x": 120,
+                "y": 1700,
+                "wires": [
+                    {
+                        "id": "ab7425eb7c0d4676",
                         "port": 0
                     }
                 ]
@@ -107,6 +164,14 @@
         "max": "10",
         "min": "1",
         "idle": "1000"
+    },
+    {
+        "id": "a7cb2a42ddfd0d99",
+        "type": "redis-config",
+        "name": "Redis",
+        "options": "{\"host\":\"db_redis\"}",
+        "cluster": false,
+        "optionsType": "json"
     },
     {
         "id": "2dc46f9c24f9eb35",
@@ -2719,6 +2784,3433 @@
             [
                 "cb6bcc25b4569647",
                 "5e01cf1a6a9c08e8"
+            ]
+        ]
+    },
+    {
+        "id": "18495940653614df",
+        "type": "comment",
+        "z": "a716829fd201f4fd",
+        "name": "########## Search for alarms in devices",
+        "info": "",
+        "x": 200,
+        "y": 56,
+        "wires": []
+    },
+    {
+        "id": "37b2f5a492430da8",
+        "type": "inject",
+        "z": "a716829fd201f4fd",
+        "name": "Every 10 minutes",
+        "props": [
+            {
+                "p": "interval",
+                "v": "10",
+                "vt": "num"
+            }
+        ],
+        "repeat": "600",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "300",
+        "topic": "",
+        "payloadType": "str",
+        "x": 155,
+        "y": 116,
+        "wires": [
+            [
+                "4b2a8433fa7736ec"
+            ]
+        ]
+    },
+    {
+        "id": "d1975b068b43eea0",
+        "type": "function",
+        "z": "a716829fd201f4fd",
+        "name": "Get devices",
+        "func": "msg.payload = 'SELECT ID, STATUS FROM DEVICES ORDER BY ID ASC';\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 170,
+        "y": 196,
+        "wires": [
+            [
+                "f36fc7a2fd7bde3d"
+            ]
+        ]
+    },
+    {
+        "id": "f36fc7a2fd7bde3d",
+        "type": "subflow:bab6ffe5b7ae3a28",
+        "z": "a716829fd201f4fd",
+        "name": "",
+        "x": 320,
+        "y": 196,
+        "wires": [
+            [
+                "9f98e10fd5d8cbf4"
+            ]
+        ]
+    },
+    {
+        "id": "2521dfd35a42d570",
+        "type": "split",
+        "z": "a716829fd201f4fd",
+        "name": "Split devices",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 330,
+        "y": 355,
+        "wires": [
+            [
+                "5a96f9382e52a5bb"
+            ]
+        ]
+    },
+    {
+        "id": "4b2a8433fa7736ec",
+        "type": "link out",
+        "z": "a716829fd201f4fd",
+        "name": "OUT (1) Search for alarms in devices",
+        "links": [
+            "514bfb4539d7fcbc"
+        ],
+        "x": 295,
+        "y": 116,
+        "wires": []
+    },
+    {
+        "id": "514bfb4539d7fcbc",
+        "type": "link in",
+        "z": "a716829fd201f4fd",
+        "name": "IN (1) Search for alarms in devices",
+        "links": [
+            "4b2a8433fa7736ec"
+        ],
+        "x": 55,
+        "y": 196,
+        "wires": [
+            [
+                "d1975b068b43eea0"
+            ]
+        ]
+    },
+    {
+        "id": "9f98e10fd5d8cbf4",
+        "type": "function",
+        "z": "a716829fd201f4fd",
+        "name": "Get measures from devices",
+        "func": "msg.devices = msg.payload;\n\nmsg.payload = `SELECT DEVICE_ID, VOLTAGE, CURRENT, LIGHTNESS, RELE_STATE, INSERTION_TIME\n               FROM SENSORS_DATA_REAL_TIME\n               WHERE (INSERTION_TIME AT TIME ZONE 'CST') > (CURRENT_TIMESTAMP AT TIME ZONE 'CST') - INTERVAL '${msg.interval} min'\n               ORDER BY DEVICE_ID ASC, INSERTION_TIME ASC`;\n               \ndelete msg.interval;\n               \nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 520,
+        "y": 196,
+        "wires": [
+            [
+                "90c21e9840686283"
+            ]
+        ]
+    },
+    {
+        "id": "90c21e9840686283",
+        "type": "subflow:bab6ffe5b7ae3a28",
+        "z": "a716829fd201f4fd",
+        "name": "",
+        "x": 720,
+        "y": 196,
+        "wires": [
+            [
+                "bfa141f4777b4d9b"
+            ]
+        ]
+    },
+    {
+        "id": "bfa141f4777b4d9b",
+        "type": "function",
+        "z": "a716829fd201f4fd",
+        "name": "Parse results",
+        "func": "const devices = msg.devices;\nconst measures = msg.payload;\n\nlet result = [];\n\n// Map device id by array position\ndevices.forEach(device => result[device.id-1] = { id: device.id, status: device.status, measures: [] });\n\n// Group device info and measures\nmeasures.forEach(measure => result[measure.device_id-1].measures.push(measure));\n\n// Filter undefined array positions\nresult = result.filter(device => device !== undefined);\n\nmsg.devices = result;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 870,
+        "y": 196,
+        "wires": [
+            [
+                "5a4b5eba1eec0cdb"
+            ]
+        ]
+    },
+    {
+        "id": "5a4b5eba1eec0cdb",
+        "type": "link out",
+        "z": "a716829fd201f4fd",
+        "name": "OUT (2) Search for alarms in devices",
+        "links": [
+            "893a79912c343403"
+        ],
+        "x": 975,
+        "y": 196,
+        "wires": []
+    },
+    {
+        "id": "893a79912c343403",
+        "type": "link in",
+        "z": "a716829fd201f4fd",
+        "name": "IN (2) Search for alarms in devices",
+        "links": [
+            "5a4b5eba1eec0cdb"
+        ],
+        "x": 55,
+        "y": 275,
+        "wires": [
+            [
+                "cf67aacc68164b4f"
+            ]
+        ]
+    },
+    {
+        "id": "478979063431a377",
+        "type": "link out",
+        "z": "a716829fd201f4fd",
+        "name": "OUT (3) Search for alarms in devices",
+        "links": [
+            "4c9496c77ae27cce"
+        ],
+        "x": 615,
+        "y": 275,
+        "wires": []
+    },
+    {
+        "id": "4c9496c77ae27cce",
+        "type": "link in",
+        "z": "a716829fd201f4fd",
+        "name": "IN (3) Search for alarms in devices",
+        "links": [
+            "478979063431a377"
+        ],
+        "x": 55,
+        "y": 355,
+        "wires": [
+            [
+                "37b3a4bb5c17bd3c"
+            ]
+        ]
+    },
+    {
+        "id": "37b3a4bb5c17bd3c",
+        "type": "function",
+        "z": "a716829fd201f4fd",
+        "name": "Prepare split",
+        "func": "msg.payload = msg.devices;\n\ndelete msg.devices;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 170,
+        "y": 355,
+        "wires": [
+            [
+                "2521dfd35a42d570"
+            ]
+        ]
+    },
+    {
+        "id": "5a96f9382e52a5bb",
+        "type": "link out",
+        "z": "a716829fd201f4fd",
+        "name": "OUT (4) Search for alarms in devices",
+        "links": [
+            "d8251d505af5a2da"
+        ],
+        "x": 435,
+        "y": 355,
+        "wires": []
+    },
+    {
+        "id": "d8251d505af5a2da",
+        "type": "link in",
+        "z": "a716829fd201f4fd",
+        "name": "IN (4) Search for alarms in devices",
+        "links": [
+            "5a96f9382e52a5bb"
+        ],
+        "x": 55,
+        "y": 457,
+        "wires": [
+            [
+                "d81860da08798b7c"
+            ]
+        ]
+    },
+    {
+        "id": "696d0fb157da1421",
+        "type": "function",
+        "z": "a716829fd201f4fd",
+        "name": "Search for failures",
+        "func": "const device = msg.payload;\nconst measures = device.measures;\nconst status = device.status;\n\nconst failures = msg.failures;\nfailures.shift();\n\nconst matches = failures.filter(failure => {\n    const measuresCheck = measures.every(measure => {\n        return msg.checkMeasures(failure.voltage, measure.voltage)\n            && msg.checkMeasures(failure.current, measure.current)\n            && msg.checkMeasures(failure.lightness, measure.lightness)\n            && msg.checkReleState(failure.rele_state, measure)\n    });\n    \n    const statusCheck = msg.checkStatus(failure.status, status);\n    \n    return measuresCheck && statusCheck;\n});\n\n\nmsg.device = device;\nmsg.device.failures = matches;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 790,
+        "y": 435,
+        "wires": [
+            [
+                "949e3ad118b2d007"
+            ]
+        ]
+    },
+    {
+        "id": "af9f059a00f28668",
+        "type": "function",
+        "z": "a716829fd201f4fd",
+        "name": "Define check functions",
+        "func": "// If attribute value is null in failure rule, it can be ignored\n\nmsg.checkMeasures = function (failure, measure) {\n    return failure !== null ? failure === measure : true;\n}\n\nmsg.checkReleState = function (failure, measure) {\n    if (failure !== null) {\n        const value = failure.value === measure.rele_state;\n        \n        const date = new Date(measure.insertion_time);\n        const time = date.getHours() * 3600 + date.getMinutes() * 60 + date.getSeconds(); // In seconds\n        \n        const begin = failure.threshold.begin;\n        const end = failure.threshold.end;\n\n        let threshold;\n        \n        if (begin < end) {\n            threshold = time >= begin && time < end;    \n        } else {\n            threshold = time >= begin || time < end;\n        }\n        \n        return value && threshold;\n    }\n    \n    return true;\n}\n\nmsg.checkStatus = function (failure, status) {\n    return failure !== null ? failure === status : true;\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 580,
+        "y": 435,
+        "wires": [
+            [
+                "696d0fb157da1421"
+            ]
+        ]
+    },
+    {
+        "id": "949e3ad118b2d007",
+        "type": "link out",
+        "z": "a716829fd201f4fd",
+        "name": "OUT (5) Search for alarms in devices",
+        "links": [
+            "5e5889d8cc8207b3"
+        ],
+        "x": 915,
+        "y": 435,
+        "wires": []
+    },
+    {
+        "id": "dd9e59380195cf1b",
+        "type": "comment",
+        "z": "a716829fd201f4fd",
+        "name": "########## Create/Update alarms",
+        "info": "",
+        "x": 180,
+        "y": 696,
+        "wires": []
+    },
+    {
+        "id": "c4e15d35d382fe70",
+        "type": "link in",
+        "z": "a716829fd201f4fd",
+        "name": "IN (1) Create/Update alarms",
+        "links": [
+            "b6c70f793086c1ba"
+        ],
+        "x": 55,
+        "y": 778,
+        "wires": [
+            [
+                "3effaa9a67ae8e30"
+            ]
+        ]
+    },
+    {
+        "id": "d81860da08798b7c",
+        "type": "switch",
+        "z": "a716829fd201f4fd",
+        "name": "Device collected measures in last interval?",
+        "property": "payload.measures.length",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "gt",
+                "v": "0",
+                "vt": "num"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "false",
+        "repair": false,
+        "outputs": 2,
+        "x": 270,
+        "y": 457,
+        "wires": [
+            [
+                "af9f059a00f28668"
+            ],
+            [
+                "ac446ab6680e70d0"
+            ]
+        ]
+    },
+    {
+        "id": "ac446ab6680e70d0",
+        "type": "function",
+        "z": "a716829fd201f4fd",
+        "name": "Search for failures",
+        "func": "msg.device = msg.payload;\nmsg.device.failures = [];\n\nif (msg.device.status) {\n    msg.device.failures.push(msg.failures[0]);\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 570,
+        "y": 479,
+        "wires": [
+            [
+                "7afa5ad05baa9170"
+            ]
+        ]
+    },
+    {
+        "id": "7afa5ad05baa9170",
+        "type": "link out",
+        "z": "a716829fd201f4fd",
+        "name": "OUT (6) Search for alarms in devices",
+        "links": [
+            "5e5889d8cc8207b3"
+        ],
+        "x": 695,
+        "y": 479,
+        "wires": []
+    },
+    {
+        "id": "5e5889d8cc8207b3",
+        "type": "link in",
+        "z": "a716829fd201f4fd",
+        "name": "IN (5) Search for alarms in devices",
+        "links": [
+            "949e3ad118b2d007",
+            "7afa5ad05baa9170"
+        ],
+        "x": 55,
+        "y": 576,
+        "wires": [
+            [
+                "a7cfaca3b35c39c7"
+            ]
+        ]
+    },
+    {
+        "id": "a7cfaca3b35c39c7",
+        "type": "switch",
+        "z": "a716829fd201f4fd",
+        "name": "Found alarms?",
+        "property": "device.failures.length",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "gt",
+                "v": "0",
+                "vt": "num"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "false",
+        "repair": false,
+        "outputs": 2,
+        "x": 180,
+        "y": 576,
+        "wires": [
+            [
+                "b6c70f793086c1ba"
+            ],
+            [
+                "becfcf373fa8d8b7"
+            ]
+        ]
+    },
+    {
+        "id": "b6c70f793086c1ba",
+        "type": "link out",
+        "z": "a716829fd201f4fd",
+        "name": "OUT (7) Search for alarms in devices",
+        "links": [
+            "c4e15d35d382fe70",
+            "349c4baee3ab3c32"
+        ],
+        "x": 315,
+        "y": 555,
+        "wires": []
+    },
+    {
+        "id": "becfcf373fa8d8b7",
+        "type": "debug",
+        "z": "a716829fd201f4fd",
+        "name": "[EXIT 1] Search for alarms in devices",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 450,
+        "y": 597,
+        "wires": []
+    },
+    {
+        "id": "bc681d11264c5aad",
+        "type": "comment",
+        "z": "1ce1485ad608bc7a",
+        "name": "########## Search for resolved alarms in devices",
+        "info": "",
+        "x": 230,
+        "y": 56,
+        "wires": []
+    },
+    {
+        "id": "84dc9f59d2922e6e",
+        "type": "inject",
+        "z": "1ce1485ad608bc7a",
+        "name": "Every 10 minutes",
+        "props": [
+            {
+                "p": "interval",
+                "v": "10",
+                "vt": "num"
+            }
+        ],
+        "repeat": "600",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "600",
+        "topic": "",
+        "payloadType": "str",
+        "x": 156,
+        "y": 115,
+        "wires": [
+            [
+                "ec1033c39f7f27f1"
+            ]
+        ]
+    },
+    {
+        "id": "cd5bad6c42c19d4a",
+        "type": "function",
+        "z": "1ce1485ad608bc7a",
+        "name": "Get devices",
+        "func": "msg.payload = 'SELECT ID, STATUS FROM DEVICES ORDER BY ID ASC';\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 171,
+        "y": 195,
+        "wires": [
+            [
+                "26f3ed1630dcde2b"
+            ]
+        ]
+    },
+    {
+        "id": "26f3ed1630dcde2b",
+        "type": "subflow:bab6ffe5b7ae3a28",
+        "z": "1ce1485ad608bc7a",
+        "name": "",
+        "x": 321,
+        "y": 195,
+        "wires": [
+            [
+                "2183ebb71f3624a5"
+            ]
+        ]
+    },
+    {
+        "id": "af432404de98c6bd",
+        "type": "split",
+        "z": "1ce1485ad608bc7a",
+        "name": "Split devices",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 331,
+        "y": 354,
+        "wires": [
+            [
+                "7113b90b7c788d2b"
+            ]
+        ]
+    },
+    {
+        "id": "ec1033c39f7f27f1",
+        "type": "link out",
+        "z": "1ce1485ad608bc7a",
+        "name": "OUT (1) Search for resolved alarms in devices",
+        "links": [
+            "2f44cc3e12e0aee8"
+        ],
+        "x": 296,
+        "y": 115,
+        "wires": []
+    },
+    {
+        "id": "2f44cc3e12e0aee8",
+        "type": "link in",
+        "z": "1ce1485ad608bc7a",
+        "name": "IN (1) Search for resolved alarms in devices",
+        "links": [
+            "ec1033c39f7f27f1"
+        ],
+        "x": 56,
+        "y": 195,
+        "wires": [
+            [
+                "cd5bad6c42c19d4a"
+            ]
+        ]
+    },
+    {
+        "id": "2183ebb71f3624a5",
+        "type": "function",
+        "z": "1ce1485ad608bc7a",
+        "name": "Get measures from devices",
+        "func": "msg.devices = msg.payload;\n\nmsg.payload = `SELECT DEVICE_ID, VOLTAGE, CURRENT, LIGHTNESS, RELE_STATE, INSERTION_TIME\n               FROM SENSORS_DATA_REAL_TIME\n               WHERE (INSERTION_TIME AT TIME ZONE 'CST') > (CURRENT_TIMESTAMP AT TIME ZONE 'CST') - INTERVAL '${msg.interval} min'\n               ORDER BY DEVICE_ID ASC, INSERTION_TIME ASC`;\n               \ndelete msg.interval;\n               \nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 521,
+        "y": 195,
+        "wires": [
+            [
+                "f37af9bf65800bf7"
+            ]
+        ]
+    },
+    {
+        "id": "f37af9bf65800bf7",
+        "type": "subflow:bab6ffe5b7ae3a28",
+        "z": "1ce1485ad608bc7a",
+        "name": "",
+        "x": 721,
+        "y": 195,
+        "wires": [
+            [
+                "9c90adade13bdeb6"
+            ]
+        ]
+    },
+    {
+        "id": "9c90adade13bdeb6",
+        "type": "function",
+        "z": "1ce1485ad608bc7a",
+        "name": "Parse results",
+        "func": "const devices = msg.devices;\nconst measures = msg.payload;\n\nlet result = [];\n\n// Map device id by array position\ndevices.forEach(device => result[device.id-1] = { id: device.id, status: device.status, measures: [] });\n\n// Group device info and measures\nmeasures.forEach(measure => result[measure.device_id-1].measures.push(measure));\n\n// Filter undefined array positions\nresult = result.filter(device => device !== undefined);\n\nmsg.devices = result;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 871,
+        "y": 195,
+        "wires": [
+            [
+                "3c9e9e1e65d0d901"
+            ]
+        ]
+    },
+    {
+        "id": "3c9e9e1e65d0d901",
+        "type": "link out",
+        "z": "1ce1485ad608bc7a",
+        "name": "OUT (2) Search for resolved alarms in devices",
+        "links": [
+            "cf15ea460869433a"
+        ],
+        "x": 976,
+        "y": 195,
+        "wires": []
+    },
+    {
+        "id": "cf15ea460869433a",
+        "type": "link in",
+        "z": "1ce1485ad608bc7a",
+        "name": "IN (2) Search for resolved alarms in devices",
+        "links": [
+            "3c9e9e1e65d0d901"
+        ],
+        "x": 56,
+        "y": 274,
+        "wires": [
+            [
+                "a778e665bd2949fd"
+            ]
+        ]
+    },
+    {
+        "id": "f6a2e4e634b990fa",
+        "type": "link out",
+        "z": "1ce1485ad608bc7a",
+        "name": "OUT (3) Search for resolved alarms in devices",
+        "links": [
+            "0b94a133b665070e"
+        ],
+        "x": 616,
+        "y": 274,
+        "wires": []
+    },
+    {
+        "id": "0b94a133b665070e",
+        "type": "link in",
+        "z": "1ce1485ad608bc7a",
+        "name": "IN (3) Search for resolved alarms in devices",
+        "links": [
+            "f6a2e4e634b990fa"
+        ],
+        "x": 56,
+        "y": 354,
+        "wires": [
+            [
+                "a0ef1ebf2e534430"
+            ]
+        ]
+    },
+    {
+        "id": "a0ef1ebf2e534430",
+        "type": "function",
+        "z": "1ce1485ad608bc7a",
+        "name": "Prepare split",
+        "func": "msg.payload = msg.devices;\n\ndelete msg.devices;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 171,
+        "y": 354,
+        "wires": [
+            [
+                "af432404de98c6bd"
+            ]
+        ]
+    },
+    {
+        "id": "7113b90b7c788d2b",
+        "type": "link out",
+        "z": "1ce1485ad608bc7a",
+        "name": "OUT (4) Search for resolved alarms in devices",
+        "links": [
+            "a0acc6aa48221e6d"
+        ],
+        "x": 436,
+        "y": 354,
+        "wires": []
+    },
+    {
+        "id": "a0acc6aa48221e6d",
+        "type": "link in",
+        "z": "1ce1485ad608bc7a",
+        "name": "IN (4) Search for resolved alarms in devices",
+        "links": [
+            "7113b90b7c788d2b"
+        ],
+        "x": 56,
+        "y": 456,
+        "wires": [
+            [
+                "712f89822e9704e4"
+            ]
+        ]
+    },
+    {
+        "id": "e0eb4a72e78bddc5",
+        "type": "function",
+        "z": "1ce1485ad608bc7a",
+        "name": "Search for failures",
+        "func": "const device = msg.payload;\nconst measures = device.measures;\nconst status = device.status;\n\nconst failures = msg.failures;\nfailures.pop();\n\nconst matches = failures.filter(failure => {\n    const measuresCheck = measures.every(measure => {\n        return msg.checkMeasures(failure.voltage, measure.voltage)\n            && msg.checkMeasures(failure.current, measure.current)\n            && msg.checkMeasures(failure.lightness, measure.lightness)\n            && msg.checkReleState(failure.rele_state, measure)\n    });\n    \n    const statusCheck = msg.checkStatus(failure.status, status);\n    \n    return measuresCheck && statusCheck;\n});\n\nmsg.device = device;\nmsg.device.failures = matches;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 791,
+        "y": 434,
+        "wires": [
+            [
+                "91dbe620484423ae"
+            ]
+        ]
+    },
+    {
+        "id": "91a2bbfa87df85bc",
+        "type": "function",
+        "z": "1ce1485ad608bc7a",
+        "name": "Define check functions",
+        "func": "// If attribute value is null in failure rule, it can be ignored\n\nmsg.checkMeasures = function (failure, measure) {\n    return failure !== null ? failure !== measure : true;\n}\n\nmsg.checkReleState = function (failure, measure) {\n    if (failure !== null) {\n        const value = failure.value !== measure.rele_state;\n        \n        const date = new Date(measure.insertion_time);\n        const time = date.getHours() * 3600 + date.getMinutes() * 60 + date.getSeconds(); // In seconds\n        \n        const begin = failure.threshold.begin;\n        const end = failure.threshold.end;\n\n        let threshold;\n        \n        if (begin < end) {\n            threshold = time >= begin && time < end;    \n        } else {\n            threshold = time >= begin || time < end;\n        }\n        \n        return value && threshold;\n    }\n    \n    return true;\n}\n\nmsg.checkStatus = function (failure, status) {\n    return failure !== null ? failure === status : true;\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 581,
+        "y": 434,
+        "wires": [
+            [
+                "e0eb4a72e78bddc5"
+            ]
+        ]
+    },
+    {
+        "id": "91dbe620484423ae",
+        "type": "link out",
+        "z": "1ce1485ad608bc7a",
+        "name": "OUT (5) Search for resolved alarms in devices",
+        "links": [
+            "8b725e75f38013b9"
+        ],
+        "x": 916,
+        "y": 434,
+        "wires": []
+    },
+    {
+        "id": "712f89822e9704e4",
+        "type": "switch",
+        "z": "1ce1485ad608bc7a",
+        "name": "Device collected measures in last interval?",
+        "property": "payload.measures.length",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "gt",
+                "v": "0",
+                "vt": "num"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "false",
+        "repair": false,
+        "outputs": 2,
+        "x": 271,
+        "y": 456,
+        "wires": [
+            [
+                "91a2bbfa87df85bc"
+            ],
+            [
+                "437e5391745a7043"
+            ]
+        ]
+    },
+    {
+        "id": "8b725e75f38013b9",
+        "type": "link in",
+        "z": "1ce1485ad608bc7a",
+        "name": "IN (5) Search for resolved alarms in devices",
+        "links": [
+            "91dbe620484423ae",
+            "142761bd553ef531"
+        ],
+        "x": 55,
+        "y": 576,
+        "wires": [
+            [
+                "92e4d72c9fcd39d0"
+            ]
+        ]
+    },
+    {
+        "id": "92e4d72c9fcd39d0",
+        "type": "switch",
+        "z": "1ce1485ad608bc7a",
+        "name": "Found alarms?",
+        "property": "device.failures.length",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "gt",
+                "v": "0",
+                "vt": "num"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "false",
+        "repair": false,
+        "outputs": 2,
+        "x": 180,
+        "y": 576,
+        "wires": [
+            [
+                "548c9048fafa7ef1"
+            ],
+            [
+                "c43efe82c097e2a2"
+            ]
+        ]
+    },
+    {
+        "id": "548c9048fafa7ef1",
+        "type": "link out",
+        "z": "1ce1485ad608bc7a",
+        "name": "OUT (7) Search for resolved alarms in devices",
+        "links": [
+            "ac3ecc4059ed3108"
+        ],
+        "x": 315,
+        "y": 555,
+        "wires": []
+    },
+    {
+        "id": "c43efe82c097e2a2",
+        "type": "debug",
+        "z": "1ce1485ad608bc7a",
+        "name": "[EXIT 2] Search for resolved alarms in devices",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 480,
+        "y": 597,
+        "wires": []
+    },
+    {
+        "id": "49ea81661e9662a6",
+        "type": "comment",
+        "z": "1ce1485ad608bc7a",
+        "name": "########## Increment resolve counter",
+        "info": "",
+        "x": 190,
+        "y": 696,
+        "wires": []
+    },
+    {
+        "id": "ac3ecc4059ed3108",
+        "type": "link in",
+        "z": "1ce1485ad608bc7a",
+        "name": "IN (1) Increment resolve counter",
+        "links": [
+            "548c9048fafa7ef1"
+        ],
+        "x": 55,
+        "y": 778,
+        "wires": [
+            [
+                "c3bed0f8b3cbb43e"
+            ]
+        ]
+    },
+    {
+        "id": "437e5391745a7043",
+        "type": "function",
+        "z": "1ce1485ad608bc7a",
+        "name": "Search for failures",
+        "func": "msg.device = msg.payload;\nmsg.device.failures = [];\n\nif (!msg.device.status) {\n    msg.device.failures.push(msg.failures[6]);\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 570,
+        "y": 477,
+        "wires": [
+            [
+                "142761bd553ef531"
+            ]
+        ]
+    },
+    {
+        "id": "142761bd553ef531",
+        "type": "link out",
+        "z": "1ce1485ad608bc7a",
+        "name": "OUT (6) Search for resolved alarms in devices",
+        "links": [
+            "8b725e75f38013b9"
+        ],
+        "x": 695,
+        "y": 477,
+        "wires": []
+    },
+    {
+        "id": "62efccd00ae19dbf",
+        "type": "redis-command",
+        "z": "185bd0a8b5a4b916",
+        "server": "a7cb2a42ddfd0d99",
+        "command": "JSON.SET",
+        "name": "JSON.INSERT",
+        "topic": "",
+        "params": "[]",
+        "paramsType": "json",
+        "payloadType": "json",
+        "block": false,
+        "x": 360,
+        "y": 755,
+        "wires": [
+            [
+                "bfbff7d80bac8776"
+            ]
+        ]
+    },
+    {
+        "id": "8309511dc52a3b6b",
+        "type": "redis-command",
+        "z": "185bd0a8b5a4b916",
+        "server": "a7cb2a42ddfd0d99",
+        "command": "JSON.GET",
+        "name": "JSON.GET",
+        "topic": "",
+        "params": "[]",
+        "paramsType": "json",
+        "payloadType": "json",
+        "block": false,
+        "x": 350,
+        "y": 715,
+        "wires": [
+            [
+                "14a4f1ea68611679"
+            ]
+        ]
+    },
+    {
+        "id": "70d4f99473093739",
+        "type": "switch",
+        "z": "185bd0a8b5a4b916",
+        "name": "What action?",
+        "property": "query.action",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "JSON.GET",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "JSON.INSERT",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "JSON.UPDATE",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "KEYS",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "JSON.ARRAPPEND",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "JSON.ARRPOP",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "LRANGE",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "LPOP",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "LPUSH",
+                "vt": "str"
+            }
+        ],
+        "checkall": "false",
+        "repair": false,
+        "outputs": 9,
+        "x": 170,
+        "y": 395,
+        "wires": [
+            [
+                "a5646b720d61e23d"
+            ],
+            [
+                "a712429cd9c00fb9"
+            ],
+            [
+                "09579b2768fd57ec"
+            ],
+            [
+                "91256a108cc22c6f"
+            ],
+            [
+                "470e03096c22a255"
+            ],
+            [
+                "016be0caa78e3d3d"
+            ],
+            [
+                "56b75208d0310c61"
+            ],
+            [
+                "895dd012bf236bdc"
+            ],
+            [
+                "0fe26b1a3204ee94"
+            ]
+        ]
+    },
+    {
+        "id": "1169e102e4d222c2",
+        "type": "link in",
+        "z": "185bd0a8b5a4b916",
+        "name": "IN JSON.INSERT",
+        "links": [
+            "7cdfb2af0af8ec92",
+            "a712429cd9c00fb9"
+        ],
+        "x": 55,
+        "y": 755,
+        "wires": [
+            [
+                "df7ff42e19db4df7"
+            ]
+        ]
+    },
+    {
+        "id": "f4032c3893645be0",
+        "type": "link in",
+        "z": "185bd0a8b5a4b916",
+        "name": "IN JSON.GET",
+        "links": [
+            "a5646b720d61e23d",
+            "38cd626f498d07a0"
+        ],
+        "x": 55,
+        "y": 715,
+        "wires": [
+            [
+                "95fbf9069438666b"
+            ]
+        ]
+    },
+    {
+        "id": "a712429cd9c00fb9",
+        "type": "link out",
+        "z": "185bd0a8b5a4b916",
+        "name": "TO JSON.INSERT",
+        "links": [
+            "1169e102e4d222c2"
+        ],
+        "x": 335,
+        "y": 275,
+        "wires": []
+    },
+    {
+        "id": "a5646b720d61e23d",
+        "type": "link out",
+        "z": "185bd0a8b5a4b916",
+        "name": "TO JSON.GET",
+        "links": [
+            "f4032c3893645be0"
+        ],
+        "x": 335,
+        "y": 235,
+        "wires": []
+    },
+    {
+        "id": "df7ff42e19db4df7",
+        "type": "function",
+        "z": "185bd0a8b5a4b916",
+        "name": "Prepare query",
+        "func": "const counter = msg.counter;\nconst params = msg.query.params[counter];\n\nmsg.payload = [params.key, \".\", JSON.stringify(params.values)];\n\nmsg.counter = counter+1;\nmsg.action = 2;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 180,
+        "y": 755,
+        "wires": [
+            [
+                "62efccd00ae19dbf"
+            ]
+        ]
+    },
+    {
+        "id": "95fbf9069438666b",
+        "type": "function",
+        "z": "185bd0a8b5a4b916",
+        "name": "Prepare query",
+        "func": "const counter = msg.counter;\nconst params = msg.query.params[counter];\n\nmsg.payload = [params.key];\n\nif (params.values !== undefined) {\n    msg.payload.push(params.values);    \n}\n\nmsg.counter = counter+1;\nmsg.action = 1;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 180,
+        "y": 715,
+        "wires": [
+            [
+                "8309511dc52a3b6b"
+            ]
+        ]
+    },
+    {
+        "id": "bfbff7d80bac8776",
+        "type": "link out",
+        "z": "185bd0a8b5a4b916",
+        "name": "OUT JSON.INSERT",
+        "links": [
+            "0aad452318b271e8"
+        ],
+        "x": 475,
+        "y": 755,
+        "wires": []
+    },
+    {
+        "id": "14a4f1ea68611679",
+        "type": "link out",
+        "z": "185bd0a8b5a4b916",
+        "name": "OUT JSON.GET",
+        "links": [
+            "0aad452318b271e8"
+        ],
+        "x": 455,
+        "y": 715,
+        "wires": []
+    },
+    {
+        "id": "451464678bbc3d93",
+        "type": "catch",
+        "z": "185bd0a8b5a4b916",
+        "name": "",
+        "scope": null,
+        "uncaught": false,
+        "x": 100,
+        "y": 1916,
+        "wires": [
+            [
+                "5db875bc9d533019"
+            ]
+        ]
+    },
+    {
+        "id": "fbc7b5775bf09c5d",
+        "type": "comment",
+        "z": "185bd0a8b5a4b916",
+        "name": "###### Exceptions Treatment",
+        "info": "",
+        "x": 159,
+        "y": 1856,
+        "wires": []
+    },
+    {
+        "id": "3466a7f65bed9eac",
+        "type": "link in",
+        "z": "185bd0a8b5a4b916",
+        "name": "IN (1) End",
+        "links": [
+            "e13e3ccd568107d2"
+        ],
+        "x": 55,
+        "y": 1617,
+        "wires": [
+            [
+                "48b1a57359cc9abd"
+            ]
+        ]
+    },
+    {
+        "id": "ab7425eb7c0d4676",
+        "type": "link in",
+        "z": "185bd0a8b5a4b916",
+        "name": "IN (2) End",
+        "links": [
+            "5db875bc9d533019"
+        ],
+        "x": 55,
+        "y": 1700,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "cba301d7724bd39b",
+        "type": "comment",
+        "z": "185bd0a8b5a4b916",
+        "name": "Success",
+        "info": "",
+        "x": 1140,
+        "y": 1623,
+        "wires": []
+    },
+    {
+        "id": "dd6277508180fb7c",
+        "type": "comment",
+        "z": "185bd0a8b5a4b916",
+        "name": "Insuccess",
+        "info": "",
+        "x": 220,
+        "y": 1700,
+        "wires": []
+    },
+    {
+        "id": "5db875bc9d533019",
+        "type": "link out",
+        "z": "185bd0a8b5a4b916",
+        "name": "OUT Exceptions Treatment",
+        "links": [
+            "ab7425eb7c0d4676"
+        ],
+        "x": 195,
+        "y": 1916,
+        "wires": []
+    },
+    {
+        "id": "09225a407ea571dc",
+        "type": "redis-command",
+        "z": "185bd0a8b5a4b916",
+        "server": "a7cb2a42ddfd0d99",
+        "command": "MULTI",
+        "name": "MULTI",
+        "topic": "",
+        "params": "[]",
+        "paramsType": "json",
+        "payloadType": "json",
+        "block": false,
+        "x": 770,
+        "y": 144,
+        "wires": [
+            [
+                "7a1c9d83a3613f33"
+            ]
+        ]
+    },
+    {
+        "id": "4c30f53bc0b8f715",
+        "type": "redis-command",
+        "z": "185bd0a8b5a4b916",
+        "server": "a7cb2a42ddfd0d99",
+        "command": "EXEC",
+        "name": "EXEC",
+        "topic": "",
+        "params": "[]",
+        "paramsType": "json",
+        "payloadType": "json",
+        "block": false,
+        "x": 550,
+        "y": 1595,
+        "wires": [
+            [
+                "071eddf0112438e8"
+            ]
+        ]
+    },
+    {
+        "id": "adc4c59772c6298c",
+        "type": "function",
+        "z": "185bd0a8b5a4b916",
+        "name": "Prepare result",
+        "func": "delete msg.query;\ndelete msg.action;\ndelete msg.counter;\ndelete msg.counterMax;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 920,
+        "y": 1623,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d739577f0282bcd8",
+        "type": "comment",
+        "z": "185bd0a8b5a4b916",
+        "name": "##### Begin",
+        "info": "",
+        "x": 110,
+        "y": 56,
+        "wires": []
+    },
+    {
+        "id": "49e5e7b7d2a08001",
+        "type": "comment",
+        "z": "185bd0a8b5a4b916",
+        "name": "##### Functions",
+        "info": "",
+        "x": 120,
+        "y": 656,
+        "wires": []
+    },
+    {
+        "id": "4f69d0a79d62082f",
+        "type": "comment",
+        "z": "185bd0a8b5a4b916",
+        "name": "##### End",
+        "info": "",
+        "x": 100,
+        "y": 1536,
+        "wires": []
+    },
+    {
+        "id": "7a1c9d83a3613f33",
+        "type": "function",
+        "z": "185bd0a8b5a4b916",
+        "name": "Set counter",
+        "func": "msg.counter    = 0;\nmsg.counterMax = msg.query.params.length\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 930,
+        "y": 173,
+        "wires": [
+            [
+                "67b41fa2bf4d76bc"
+            ]
+        ]
+    },
+    {
+        "id": "2b42e25c9acdcf26",
+        "type": "switch",
+        "z": "185bd0a8b5a4b916",
+        "name": "Execute again?",
+        "property": "counter",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "lt",
+                "v": "counterMax",
+                "vt": "msg"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "false",
+        "repair": false,
+        "outputs": 2,
+        "x": 180,
+        "y": 1320,
+        "wires": [
+            [
+                "79fd20871dc7a136"
+            ],
+            [
+                "e13e3ccd568107d2"
+            ]
+        ]
+    },
+    {
+        "id": "0aad452318b271e8",
+        "type": "link in",
+        "z": "185bd0a8b5a4b916",
+        "name": "IN (1) Functions",
+        "links": [
+            "14a4f1ea68611679",
+            "bfbff7d80bac8776",
+            "a02f6fb69be119eb",
+            "fe2af213e574e51f",
+            "42c060b70aeae32d",
+            "ea7cfcf3d063512b",
+            "90a4dd5d76046d0d",
+            "d667c0f05dc6ad3c",
+            "cef2b3bc69d40282"
+        ],
+        "x": 55,
+        "y": 1320,
+        "wires": [
+            [
+                "2b42e25c9acdcf26"
+            ]
+        ]
+    },
+    {
+        "id": "79fd20871dc7a136",
+        "type": "switch",
+        "z": "185bd0a8b5a4b916",
+        "name": "What action?",
+        "property": "action",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "1",
+                "vt": "num"
+            },
+            {
+                "t": "eq",
+                "v": "2",
+                "vt": "num"
+            },
+            {
+                "t": "eq",
+                "v": "3",
+                "vt": "num"
+            },
+            {
+                "t": "eq",
+                "v": "4",
+                "vt": "num"
+            },
+            {
+                "t": "eq",
+                "v": "5",
+                "vt": "num"
+            },
+            {
+                "t": "eq",
+                "v": "6",
+                "vt": "num"
+            },
+            {
+                "t": "eq",
+                "v": "7",
+                "vt": "num"
+            },
+            {
+                "t": "eq",
+                "v": "8",
+                "vt": "num"
+            },
+            {
+                "t": "eq",
+                "v": "9",
+                "vt": "num"
+            }
+        ],
+        "checkall": "false",
+        "repair": false,
+        "outputs": 9,
+        "x": 370,
+        "y": 1274,
+        "wires": [
+            [
+                "38cd626f498d07a0"
+            ],
+            [
+                "7cdfb2af0af8ec92"
+            ],
+            [
+                "b066144a02a0bbf7"
+            ],
+            [
+                "560829592f1ac023"
+            ],
+            [
+                "16f13f2b46c404e0"
+            ],
+            [
+                "d147bd3a65c12089"
+            ],
+            [
+                "7ad34e5d27148c67"
+            ],
+            [
+                "37b4c09b1e66ed9b"
+            ],
+            [
+                "a12addbfa2b2247b"
+            ]
+        ]
+    },
+    {
+        "id": "e13e3ccd568107d2",
+        "type": "link out",
+        "z": "185bd0a8b5a4b916",
+        "name": "OUT (3) Functions",
+        "links": [
+            "3466a7f65bed9eac"
+        ],
+        "x": 315,
+        "y": 1366,
+        "wires": []
+    },
+    {
+        "id": "38cd626f498d07a0",
+        "type": "link out",
+        "z": "185bd0a8b5a4b916",
+        "name": "TO JSON.GET",
+        "links": [
+            "f4032c3893645be0"
+        ],
+        "x": 535,
+        "y": 1115,
+        "wires": []
+    },
+    {
+        "id": "7cdfb2af0af8ec92",
+        "type": "link out",
+        "z": "185bd0a8b5a4b916",
+        "name": "TO JSON.INSERT",
+        "links": [
+            "1169e102e4d222c2"
+        ],
+        "x": 535,
+        "y": 1155,
+        "wires": []
+    },
+    {
+        "id": "94a4714c3a3969b8",
+        "type": "function",
+        "z": "185bd0a8b5a4b916",
+        "name": "Prepare query",
+        "func": "msg.payload = [];\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 1595,
+        "wires": [
+            [
+                "4c30f53bc0b8f715"
+            ]
+        ]
+    },
+    {
+        "id": "16d60375c4a1414f",
+        "type": "function",
+        "z": "185bd0a8b5a4b916",
+        "name": "Enabled MULTI mode",
+        "func": "msg.payload = [];\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 600,
+        "y": 144,
+        "wires": [
+            [
+                "09225a407ea571dc"
+            ]
+        ]
+    },
+    {
+        "id": "09579b2768fd57ec",
+        "type": "link out",
+        "z": "185bd0a8b5a4b916",
+        "name": "TO JSON.UPDATE",
+        "links": [
+            "779dad188b169279"
+        ],
+        "x": 335,
+        "y": 315,
+        "wires": []
+    },
+    {
+        "id": "071eddf0112438e8",
+        "type": "function",
+        "z": "185bd0a8b5a4b916",
+        "name": "Map result with key",
+        "func": "function isJSON (string) {\n    try {\n        JSON.parse(string);\n        return true;\n    } catch (e) {\n        return false;\n    }\n}\n\nlet results = [].concat(msg.payload);\nlet keys    = msg.query.params.map(param => param.key);\n\nresults = results.map((result, i) => {\n    return {\n        key:    keys[i] || '',\n        result: isJSON(result) ? JSON.parse(result) : result\n    }        \n});\n\nmsg.payload = results;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 730,
+        "y": 1623,
+        "wires": [
+            [
+                "adc4c59772c6298c"
+            ]
+        ]
+    },
+    {
+        "id": "a302f13da39b1f7c",
+        "type": "redis-command",
+        "z": "185bd0a8b5a4b916",
+        "server": "a7cb2a42ddfd0d99",
+        "command": "JSON.SET",
+        "name": "JSON.UPDATE",
+        "topic": "",
+        "params": "[]",
+        "paramsType": "json",
+        "payloadType": "json",
+        "block": false,
+        "x": 360,
+        "y": 796,
+        "wires": [
+            [
+                "a02f6fb69be119eb"
+            ]
+        ]
+    },
+    {
+        "id": "779dad188b169279",
+        "type": "link in",
+        "z": "185bd0a8b5a4b916",
+        "name": "IN JSON.UPDATE",
+        "links": [
+            "b066144a02a0bbf7",
+            "09579b2768fd57ec"
+        ],
+        "x": 55,
+        "y": 796,
+        "wires": [
+            [
+                "477bd67677dbe6bb"
+            ]
+        ]
+    },
+    {
+        "id": "477bd67677dbe6bb",
+        "type": "function",
+        "z": "185bd0a8b5a4b916",
+        "name": "Prepare query",
+        "func": "const counter = msg.counter;\nconst params = msg.query.params[counter];\n\nconst attr = params.values.attr;\nconst newValue = params.values.value;\n\nmsg.payload = [params.key, attr, newValue];\n\nmsg.counter = counter+1;\nmsg.action = 3;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 180,
+        "y": 796,
+        "wires": [
+            [
+                "a302f13da39b1f7c"
+            ]
+        ]
+    },
+    {
+        "id": "a02f6fb69be119eb",
+        "type": "link out",
+        "z": "185bd0a8b5a4b916",
+        "name": "OUT JSON.UPDATE",
+        "links": [
+            "0aad452318b271e8"
+        ],
+        "x": 475,
+        "y": 796,
+        "wires": []
+    },
+    {
+        "id": "b066144a02a0bbf7",
+        "type": "link out",
+        "z": "185bd0a8b5a4b916",
+        "name": "TO JSON.UPDATE",
+        "links": [
+            "779dad188b169279"
+        ],
+        "x": 535,
+        "y": 1193,
+        "wires": []
+    },
+    {
+        "id": "3c546124752a49f4",
+        "type": "function",
+        "z": "185bd0a8b5a4b916",
+        "name": "Parse params",
+        "func": "msg.query = msg.payload;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 180,
+        "y": 166,
+        "wires": [
+            [
+                "bb3f3b5c78d45598"
+            ]
+        ]
+    },
+    {
+        "id": "bb3f3b5c78d45598",
+        "type": "switch",
+        "z": "185bd0a8b5a4b916",
+        "name": "Multiples querys?",
+        "property": "query.params.length",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "gt",
+                "v": "1",
+                "vt": "num"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "false",
+        "repair": false,
+        "outputs": 2,
+        "x": 370,
+        "y": 166,
+        "wires": [
+            [
+                "16d60375c4a1414f"
+            ],
+            [
+                "7a1c9d83a3613f33"
+            ]
+        ]
+    },
+    {
+        "id": "48b1a57359cc9abd",
+        "type": "switch",
+        "z": "185bd0a8b5a4b916",
+        "name": "Multiples querys?",
+        "property": "query.params.length",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "gt",
+                "v": "1",
+                "vt": "num"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "false",
+        "repair": false,
+        "outputs": 2,
+        "x": 190,
+        "y": 1617,
+        "wires": [
+            [
+                "94a4714c3a3969b8"
+            ],
+            [
+                "071eddf0112438e8"
+            ]
+        ]
+    },
+    {
+        "id": "91256a108cc22c6f",
+        "type": "link out",
+        "z": "185bd0a8b5a4b916",
+        "name": "TO KEYS",
+        "links": [
+            "4766e4737d4ab82a"
+        ],
+        "x": 335,
+        "y": 355,
+        "wires": []
+    },
+    {
+        "id": "18fb4272c1434516",
+        "type": "redis-command",
+        "z": "185bd0a8b5a4b916",
+        "server": "a7cb2a42ddfd0d99",
+        "command": "KEYS",
+        "name": "KEYS",
+        "topic": "",
+        "params": "[]",
+        "paramsType": "json",
+        "payloadType": "json",
+        "block": false,
+        "x": 330,
+        "y": 836,
+        "wires": [
+            [
+                "fe2af213e574e51f"
+            ]
+        ]
+    },
+    {
+        "id": "4766e4737d4ab82a",
+        "type": "link in",
+        "z": "185bd0a8b5a4b916",
+        "name": "IN KEYS",
+        "links": [
+            "91256a108cc22c6f",
+            "560829592f1ac023"
+        ],
+        "x": 55,
+        "y": 836,
+        "wires": [
+            [
+                "a8cb1707b0683a56"
+            ]
+        ]
+    },
+    {
+        "id": "a8cb1707b0683a56",
+        "type": "function",
+        "z": "185bd0a8b5a4b916",
+        "name": "Prepare query",
+        "func": "const counter = msg.counter;\nconst params = msg.query.params[counter];\n\nmsg.payload = [params.values];\n\nmsg.counter = counter+1;\nmsg.action = 4;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 180,
+        "y": 836,
+        "wires": [
+            [
+                "18fb4272c1434516"
+            ]
+        ]
+    },
+    {
+        "id": "fe2af213e574e51f",
+        "type": "link out",
+        "z": "185bd0a8b5a4b916",
+        "name": "OUT KEYS",
+        "links": [
+            "0aad452318b271e8"
+        ],
+        "x": 415,
+        "y": 836,
+        "wires": []
+    },
+    {
+        "id": "560829592f1ac023",
+        "type": "link out",
+        "z": "185bd0a8b5a4b916",
+        "name": "TO KEYS",
+        "links": [
+            "4766e4737d4ab82a"
+        ],
+        "x": 535,
+        "y": 1235,
+        "wires": []
+    },
+    {
+        "id": "67b41fa2bf4d76bc",
+        "type": "link out",
+        "z": "185bd0a8b5a4b916",
+        "name": "OUT (1) Begin",
+        "links": [
+            "7dd90b75f23df424"
+        ],
+        "x": 1035,
+        "y": 173,
+        "wires": []
+    },
+    {
+        "id": "470e03096c22a255",
+        "type": "link out",
+        "z": "185bd0a8b5a4b916",
+        "name": "TO JSON.ARRAPPEND",
+        "links": [
+            "44311aec488997d1"
+        ],
+        "x": 335,
+        "y": 395,
+        "wires": []
+    },
+    {
+        "id": "7dd90b75f23df424",
+        "type": "link in",
+        "z": "185bd0a8b5a4b916",
+        "name": "IN (1) Begin",
+        "links": [
+            "67b41fa2bf4d76bc"
+        ],
+        "x": 55,
+        "y": 395,
+        "wires": [
+            [
+                "70d4f99473093739"
+            ]
+        ]
+    },
+    {
+        "id": "cfcd806421fa3d3e",
+        "type": "redis-command",
+        "z": "185bd0a8b5a4b916",
+        "server": "a7cb2a42ddfd0d99",
+        "command": "JSON.ARRAPPEND",
+        "name": "JSON.ARRAPPEND",
+        "topic": "",
+        "params": "[]",
+        "paramsType": "json",
+        "payloadType": "json",
+        "block": false,
+        "x": 380,
+        "y": 876,
+        "wires": [
+            [
+                "42c060b70aeae32d"
+            ]
+        ]
+    },
+    {
+        "id": "5ba5be911a160c86",
+        "type": "function",
+        "z": "185bd0a8b5a4b916",
+        "name": "Prepare query",
+        "func": "const counter = msg.counter;\nconst params = msg.query.params[counter];\n\nconst key = params.key;\nconst array = params.values.array;\nconst value = params.values.value;\n\nmsg.payload = [key, array, value];\n\nmsg.counter = counter+1;\nmsg.action = 5;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 180,
+        "y": 876,
+        "wires": [
+            [
+                "cfcd806421fa3d3e"
+            ]
+        ]
+    },
+    {
+        "id": "44311aec488997d1",
+        "type": "link in",
+        "z": "185bd0a8b5a4b916",
+        "name": "IN JSON.ARRAPPEND",
+        "links": [
+            "16f13f2b46c404e0",
+            "470e03096c22a255"
+        ],
+        "x": 55,
+        "y": 876,
+        "wires": [
+            [
+                "5ba5be911a160c86"
+            ]
+        ]
+    },
+    {
+        "id": "42c060b70aeae32d",
+        "type": "link out",
+        "z": "185bd0a8b5a4b916",
+        "name": "OUT JSON.ARRAPPEND",
+        "links": [
+            "0aad452318b271e8"
+        ],
+        "x": 515,
+        "y": 876,
+        "wires": []
+    },
+    {
+        "id": "16f13f2b46c404e0",
+        "type": "link out",
+        "z": "185bd0a8b5a4b916",
+        "name": "TO JSON.ARRAPPEND",
+        "links": [
+            "44311aec488997d1"
+        ],
+        "x": 535,
+        "y": 1275,
+        "wires": []
+    },
+    {
+        "id": "e702a62e3341bf9a",
+        "type": "redis-command",
+        "z": "185bd0a8b5a4b916",
+        "server": "a7cb2a42ddfd0d99",
+        "command": "JSON.ARRPOP",
+        "name": "JSON.ARRPOP",
+        "topic": "",
+        "params": "[]",
+        "paramsType": "json",
+        "payloadType": "json",
+        "block": false,
+        "x": 360,
+        "y": 916,
+        "wires": [
+            [
+                "ea7cfcf3d063512b"
+            ]
+        ]
+    },
+    {
+        "id": "5b8fb422e2151359",
+        "type": "function",
+        "z": "185bd0a8b5a4b916",
+        "name": "Prepare query",
+        "func": "const counter = msg.counter;\nconst params = msg.query.params[counter];\n\nconst key = params.key;\nconst array = params.values.array;\nconst index = params.values.index;\n\nif (index !== undefined) {\n    msg.payload = [key, array, index];\n} else {\n    msg.payload = [key, array];\n}\n\nmsg.counter = counter+1;\nmsg.action = 6;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 180,
+        "y": 916,
+        "wires": [
+            [
+                "e702a62e3341bf9a"
+            ]
+        ]
+    },
+    {
+        "id": "6843c5c9bf74c0c2",
+        "type": "link in",
+        "z": "185bd0a8b5a4b916",
+        "name": "IN JSON.ARRPOP",
+        "links": [
+            "016be0caa78e3d3d",
+            "d147bd3a65c12089"
+        ],
+        "x": 55,
+        "y": 916,
+        "wires": [
+            [
+                "5b8fb422e2151359"
+            ]
+        ]
+    },
+    {
+        "id": "ea7cfcf3d063512b",
+        "type": "link out",
+        "z": "185bd0a8b5a4b916",
+        "name": "OUT JSON.ARRPOP",
+        "links": [
+            "0aad452318b271e8"
+        ],
+        "x": 475,
+        "y": 916,
+        "wires": []
+    },
+    {
+        "id": "016be0caa78e3d3d",
+        "type": "link out",
+        "z": "185bd0a8b5a4b916",
+        "name": "TO JSON.ARRPOP",
+        "links": [
+            "6843c5c9bf74c0c2"
+        ],
+        "x": 335,
+        "y": 435,
+        "wires": []
+    },
+    {
+        "id": "d147bd3a65c12089",
+        "type": "link out",
+        "z": "185bd0a8b5a4b916",
+        "name": "TO JSON.ARRPOP",
+        "links": [
+            "6843c5c9bf74c0c2"
+        ],
+        "x": 535,
+        "y": 1315,
+        "wires": []
+    },
+    {
+        "id": "56b75208d0310c61",
+        "type": "link out",
+        "z": "185bd0a8b5a4b916",
+        "name": "TO LRANGE",
+        "links": [
+            "2eb5c5ab95ca241f"
+        ],
+        "x": 335,
+        "y": 475,
+        "wires": []
+    },
+    {
+        "id": "895dd012bf236bdc",
+        "type": "link out",
+        "z": "185bd0a8b5a4b916",
+        "name": "TO LPOP",
+        "links": [
+            "9afca3569a87daee"
+        ],
+        "x": 335,
+        "y": 515,
+        "wires": []
+    },
+    {
+        "id": "7ad34e5d27148c67",
+        "type": "link out",
+        "z": "185bd0a8b5a4b916",
+        "name": "TO LRANGE",
+        "links": [
+            "2eb5c5ab95ca241f"
+        ],
+        "x": 535,
+        "y": 1355,
+        "wires": []
+    },
+    {
+        "id": "37b4c09b1e66ed9b",
+        "type": "link out",
+        "z": "185bd0a8b5a4b916",
+        "name": "TO LPOP",
+        "links": [
+            "9afca3569a87daee"
+        ],
+        "x": 535,
+        "y": 1395,
+        "wires": []
+    },
+    {
+        "id": "9b9042615074e921",
+        "type": "redis-command",
+        "z": "185bd0a8b5a4b916",
+        "server": "a7cb2a42ddfd0d99",
+        "command": "LRANGE",
+        "name": "LRANGE",
+        "topic": "",
+        "params": "[]",
+        "paramsType": "json",
+        "payloadType": "json",
+        "block": false,
+        "x": 340,
+        "y": 956,
+        "wires": [
+            [
+                "90a4dd5d76046d0d"
+            ]
+        ]
+    },
+    {
+        "id": "4be7ba18277b216b",
+        "type": "redis-command",
+        "z": "185bd0a8b5a4b916",
+        "server": "a7cb2a42ddfd0d99",
+        "command": "LPOP",
+        "name": "LPOP",
+        "topic": "",
+        "params": "[]",
+        "paramsType": "json",
+        "payloadType": "json",
+        "block": false,
+        "x": 330,
+        "y": 996,
+        "wires": [
+            [
+                "d667c0f05dc6ad3c"
+            ]
+        ]
+    },
+    {
+        "id": "8344925557244649",
+        "type": "redis-command",
+        "z": "185bd0a8b5a4b916",
+        "server": "a7cb2a42ddfd0d99",
+        "command": "LPUSH",
+        "name": "LPUSH",
+        "topic": "",
+        "params": "[]",
+        "paramsType": "json",
+        "payloadType": "json",
+        "block": false,
+        "x": 340,
+        "y": 1036,
+        "wires": [
+            [
+                "cef2b3bc69d40282"
+            ]
+        ]
+    },
+    {
+        "id": "90a4dd5d76046d0d",
+        "type": "link out",
+        "z": "185bd0a8b5a4b916",
+        "name": "OUT LRANGE",
+        "links": [
+            "0aad452318b271e8"
+        ],
+        "x": 435,
+        "y": 956,
+        "wires": []
+    },
+    {
+        "id": "d667c0f05dc6ad3c",
+        "type": "link out",
+        "z": "185bd0a8b5a4b916",
+        "name": "OUT LPOP",
+        "links": [
+            "0aad452318b271e8"
+        ],
+        "x": 415,
+        "y": 996,
+        "wires": []
+    },
+    {
+        "id": "cef2b3bc69d40282",
+        "type": "link out",
+        "z": "185bd0a8b5a4b916",
+        "name": "OUT LPUSH",
+        "links": [
+            "0aad452318b271e8"
+        ],
+        "x": 435,
+        "y": 1036,
+        "wires": []
+    },
+    {
+        "id": "0fe26b1a3204ee94",
+        "type": "link out",
+        "z": "185bd0a8b5a4b916",
+        "name": "TO LPUSH",
+        "links": [
+            "de7e9dd7af166b90"
+        ],
+        "x": 335,
+        "y": 555,
+        "wires": []
+    },
+    {
+        "id": "a12addbfa2b2247b",
+        "type": "link out",
+        "z": "185bd0a8b5a4b916",
+        "name": "TO LPUSH",
+        "links": [
+            "de7e9dd7af166b90"
+        ],
+        "x": 535,
+        "y": 1434,
+        "wires": []
+    },
+    {
+        "id": "2eb5c5ab95ca241f",
+        "type": "link in",
+        "z": "185bd0a8b5a4b916",
+        "name": "IN LRANGE",
+        "links": [
+            "56b75208d0310c61",
+            "7ad34e5d27148c67"
+        ],
+        "x": 55,
+        "y": 956,
+        "wires": [
+            [
+                "b8a030ada5f55f7a"
+            ]
+        ]
+    },
+    {
+        "id": "9afca3569a87daee",
+        "type": "link in",
+        "z": "185bd0a8b5a4b916",
+        "name": "IN LPOP",
+        "links": [
+            "895dd012bf236bdc",
+            "37b4c09b1e66ed9b"
+        ],
+        "x": 55,
+        "y": 996,
+        "wires": [
+            [
+                "783dd74b7b1d78f2"
+            ]
+        ]
+    },
+    {
+        "id": "de7e9dd7af166b90",
+        "type": "link in",
+        "z": "185bd0a8b5a4b916",
+        "name": "IN LPUSH",
+        "links": [
+            "a12addbfa2b2247b",
+            "0fe26b1a3204ee94"
+        ],
+        "x": 55,
+        "y": 1036,
+        "wires": [
+            [
+                "b3d8d93452720140"
+            ]
+        ]
+    },
+    {
+        "id": "b8a030ada5f55f7a",
+        "type": "function",
+        "z": "185bd0a8b5a4b916",
+        "name": "Prepare query",
+        "func": "const counter = msg.counter;\nconst params = msg.query.params[counter];\n\nconst key = params.key;\nconst start = params.values.start;\nconst stop = params.values.stop;\n\nmsg.payload = [key, start, stop];\n\nmsg.counter = counter+1;\nmsg.action = 7;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 180,
+        "y": 956,
+        "wires": [
+            [
+                "9b9042615074e921"
+            ]
+        ]
+    },
+    {
+        "id": "783dd74b7b1d78f2",
+        "type": "function",
+        "z": "185bd0a8b5a4b916",
+        "name": "Prepare query",
+        "func": "const counter = msg.counter;\nconst params = msg.query.params[counter];\n\nconst key = params.key;\nconst total = params.values;\n\nmsg.payload = [key, total];\n\nmsg.counter = counter+1;\nmsg.action = 8;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 180,
+        "y": 996,
+        "wires": [
+            [
+                "4be7ba18277b216b"
+            ]
+        ]
+    },
+    {
+        "id": "b3d8d93452720140",
+        "type": "function",
+        "z": "185bd0a8b5a4b916",
+        "name": "Prepare query",
+        "func": "const counter = msg.counter;\nconst params = msg.query.params[counter];\n\nconst key = params.key;\nconst values = params.values;\n\nmsg.payload = [key].concat(values);\n\nmsg.counter = counter+1;\nmsg.action = 9;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 180,
+        "y": 1036,
+        "wires": [
+            [
+                "8344925557244649"
+            ]
+        ]
+    },
+    {
+        "id": "3effaa9a67ae8e30",
+        "type": "function",
+        "z": "a716829fd201f4fd",
+        "name": "Get current alarms of device",
+        "func": "msg.payload = {\n    action: 'LRANGE',\n    params: [{\n        key: msg.device.id,\n        values: {\n            start: 0,\n            stop: -1\n        }\n    }]\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 220,
+        "y": 778,
+        "wires": [
+            [
+                "5536e6d31bd99553"
+            ]
+        ]
+    },
+    {
+        "id": "5536e6d31bd99553",
+        "type": "subflow:185bd0a8b5a4b916",
+        "z": "a716829fd201f4fd",
+        "name": "",
+        "x": 440,
+        "y": 778,
+        "wires": [
+            [
+                "77f61339ce8b0282"
+            ],
+            [
+                "5f17cf3b80e41476"
+            ]
+        ]
+    },
+    {
+        "id": "5f17cf3b80e41476",
+        "type": "debug",
+        "z": "a716829fd201f4fd",
+        "name": "[EXIT 1] Create/Update alarms",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 690,
+        "y": 800,
+        "wires": []
+    },
+    {
+        "id": "77f61339ce8b0282",
+        "type": "function",
+        "z": "a716829fd201f4fd",
+        "name": "Update problem counters",
+        "func": "const currentAlarms = msg.payload.map(alarm => alarm.result);\nconst failures = msg.device.failures;\n\nconst newAlarms = [];\n\nfailures.forEach(failure => {\n    const find = currentAlarms.find(alarm => alarm.type === failure.id);\n\n    if (find === undefined) {\n        newAlarms.push(failure);\n    } else {\n        find.problem_counter++;\n        find.resolve_counter = 0;\n    }\n});\n\nmsg.currentAlarms = currentAlarms;\nmsg.newAlarms = newAlarms;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 670,
+        "y": 756,
+        "wires": [
+            [
+                "2689c430be5bfd2f"
+            ]
+        ]
+    },
+    {
+        "id": "2689c430be5bfd2f",
+        "type": "function",
+        "z": "a716829fd201f4fd",
+        "name": "Create new alarms",
+        "func": "const currentAlarms = msg.currentAlarms;\n\nconst newAlarms = msg.newAlarms.map(failure => {\n    const date = new Date();\n    \n    const alarm = {\n        id:              '',\n        type:            failure.id,\n        name:            failure.name,\n        device_id:       msg.device.id,\n        creation_time:   Math.round(date.getTime()/1000),\n        problem_counter: 1,\n        resolve_counter: 0\n    }\n    \n    return alarm;\n});\n\nmsg.total = msg.currentAlarms.length;\nmsg.alarms = currentAlarms.concat(newAlarms);\n\ndelete msg.currentAlarms;\ndelete msg.newAlarms;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 890,
+        "y": 756,
+        "wires": [
+            [
+                "92227d472ca09548"
+            ]
+        ]
+    },
+    {
+        "id": "c203209893b251ca",
+        "type": "link in",
+        "z": "a716829fd201f4fd",
+        "name": "IN (1) Insert alarms in historic table",
+        "links": [
+            "92227d472ca09548"
+        ],
+        "x": 55,
+        "y": 978,
+        "wires": [
+            [
+                "b8af597118fc26c2"
+            ]
+        ]
+    },
+    {
+        "id": "92227d472ca09548",
+        "type": "link out",
+        "z": "a716829fd201f4fd",
+        "name": "OUT (1) Create/Update alarms",
+        "links": [
+            "c203209893b251ca"
+        ],
+        "x": 1015,
+        "y": 756,
+        "wires": []
+    },
+    {
+        "id": "58fdfd40528ebb59",
+        "type": "comment",
+        "z": "a716829fd201f4fd",
+        "name": "########## Insert alarms in historic table (problem_counter === 3)",
+        "info": "",
+        "x": 280,
+        "y": 896,
+        "wires": []
+    },
+    {
+        "id": "b8af597118fc26c2",
+        "type": "function",
+        "z": "a716829fd201f4fd",
+        "name": "Search for alarms to insert in historic table",
+        "func": "const alarms = msg.alarms;\n\nconst toHistoric = [];\nconst others = [];\n\nalarms.forEach(alarm => {\n    if (alarm.problem_counter === 3) {\n        toHistoric.push(alarm);\n    } else {\n        others.push(alarm);\n    }\n});\n\nmsg.toHistoric = toHistoric;\nmsg.others = others;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 260,
+        "y": 978,
+        "wires": [
+            [
+                "bd6010cb506c3b1a"
+            ]
+        ]
+    },
+    {
+        "id": "bd6010cb506c3b1a",
+        "type": "switch",
+        "z": "a716829fd201f4fd",
+        "name": "Found alarms?",
+        "property": "toHistoric.length",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "gt",
+                "v": "0",
+                "vt": "num"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "false",
+        "repair": false,
+        "outputs": 2,
+        "x": 520,
+        "y": 978,
+        "wires": [
+            [
+                "c32ede3e5ceef202"
+            ],
+            [
+                "11f845e8fe894f62"
+            ]
+        ]
+    },
+    {
+        "id": "c32ede3e5ceef202",
+        "type": "function",
+        "z": "a716829fd201f4fd",
+        "name": "Insert alarms in historic table",
+        "func": "const toHistoric = msg.toHistoric;\n\nconst insertValues = toHistoric.map(alarm => {\n    return `(${alarm.type}, ${alarm.device_id}, TO_TIMESTAMP(${alarm.creation_time}))`;\n}).join(',');\n\nmsg.payload = `INSERT INTO \n               ALARMS (TYPE, DEVICE_ID, CREATION_TIME)\n               VALUES\n               ${insertValues}\n               RETURNING ID, TYPE`\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 760,
+        "y": 956,
+        "wires": [
+            [
+                "9b3a281ae90f46f8"
+            ]
+        ]
+    },
+    {
+        "id": "9b3a281ae90f46f8",
+        "type": "subflow:bab6ffe5b7ae3a28",
+        "z": "a716829fd201f4fd",
+        "name": "",
+        "x": 960,
+        "y": 956,
+        "wires": [
+            [
+                "958e2afc99d9a189"
+            ]
+        ]
+    },
+    {
+        "id": "958e2afc99d9a189",
+        "type": "function",
+        "z": "a716829fd201f4fd",
+        "name": "Map serials to alarms",
+        "func": "const alarms = msg.toHistoric.concat(msg.others);\nconst insertedRows = msg.payload;\n\ninsertedRows.forEach(row => {\n    const find = alarms.find(alarm => alarm.type === row.type);\n    find.id = row.id;\n});\n\nmsg.alarms = alarms;\n\ndelete msg.toHistoric;\ndelete msg.others;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1140,
+        "y": 956,
+        "wires": [
+            [
+                "d44a003dbf52554f"
+            ]
+        ]
+    },
+    {
+        "id": "dd35e1c4df8eaf15",
+        "type": "debug",
+        "z": "a716829fd201f4fd",
+        "name": "[EXIT 1] Update alarms list",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 660,
+        "y": 1221,
+        "wires": []
+    },
+    {
+        "id": "d44a003dbf52554f",
+        "type": "link out",
+        "z": "a716829fd201f4fd",
+        "name": "OUT (1) Insert alarms in historic table",
+        "links": [
+            "6921ce91d6a40a93"
+        ],
+        "x": 1275,
+        "y": 956,
+        "wires": []
+    },
+    {
+        "id": "6921ce91d6a40a93",
+        "type": "link in",
+        "z": "a716829fd201f4fd",
+        "name": "IN (1) Update alarms list",
+        "links": [
+            "d44a003dbf52554f",
+            "11f845e8fe894f62"
+        ],
+        "x": 55,
+        "y": 1200,
+        "wires": [
+            [
+                "fc4a441c5601ed69"
+            ]
+        ]
+    },
+    {
+        "id": "312afdbfaee80119",
+        "type": "function",
+        "z": "a716829fd201f4fd",
+        "name": "Insert new alarms list",
+        "func": "const alarms = msg.alarms.map(alarm => JSON.stringify(alarm));\n\nmsg.payload = {\n    action: 'LPUSH',\n    params: [{\n        key: msg.device.id,\n        values: alarms\n    }]\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 640,
+        "y": 1178,
+        "wires": [
+            [
+                "f90b3ecdc5a39cba"
+            ]
+        ]
+    },
+    {
+        "id": "f90b3ecdc5a39cba",
+        "type": "subflow:185bd0a8b5a4b916",
+        "z": "a716829fd201f4fd",
+        "name": "",
+        "x": 840,
+        "y": 1178,
+        "wires": [
+            [
+                "95d679959715f7c9"
+            ],
+            [
+                "da8d352cb855c2c5"
+            ]
+        ]
+    },
+    {
+        "id": "da8d352cb855c2c5",
+        "type": "debug",
+        "z": "a716829fd201f4fd",
+        "name": "[EXIT 3] Update alarms list",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1080,
+        "y": 1199,
+        "wires": []
+    },
+    {
+        "id": "95d679959715f7c9",
+        "type": "debug",
+        "z": "a716829fd201f4fd",
+        "name": "[EXIT 2] Update alarms list",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1080,
+        "y": 1156,
+        "wires": []
+    },
+    {
+        "id": "d7109afd07efa46e",
+        "type": "catch",
+        "z": "a716829fd201f4fd",
+        "name": "",
+        "scope": null,
+        "uncaught": false,
+        "x": 100,
+        "y": 1437,
+        "wires": [
+            [
+                "aba8a80fa672c520"
+            ]
+        ]
+    },
+    {
+        "id": "75af3e7b5fc63593",
+        "type": "comment",
+        "z": "a716829fd201f4fd",
+        "name": "########## Exceptions Treatment",
+        "info": "",
+        "x": 179,
+        "y": 1376,
+        "wires": []
+    },
+    {
+        "id": "aba8a80fa672c520",
+        "type": "debug",
+        "z": "a716829fd201f4fd",
+        "name": "Exception",
+        "active": true,
+        "tosidebar": true,
+        "console": true,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 250,
+        "y": 1437,
+        "wires": []
+    },
+    {
+        "id": "71255050788bf980",
+        "type": "comment",
+        "z": "a716829fd201f4fd",
+        "name": "########## Update alarms list",
+        "info": "",
+        "x": 170,
+        "y": 1096,
+        "wires": []
+    },
+    {
+        "id": "11f845e8fe894f62",
+        "type": "link out",
+        "z": "a716829fd201f4fd",
+        "name": "OUT (2) Insert alarms in historic table",
+        "links": [
+            "6921ce91d6a40a93"
+        ],
+        "x": 655,
+        "y": 1000,
+        "wires": []
+    },
+    {
+        "id": "95099afba89a6ad6",
+        "type": "subflow:185bd0a8b5a4b916",
+        "z": "a716829fd201f4fd",
+        "name": "",
+        "x": 420,
+        "y": 1200,
+        "wires": [
+            [
+                "312afdbfaee80119"
+            ],
+            [
+                "dd35e1c4df8eaf15"
+            ]
+        ]
+    },
+    {
+        "id": "fc4a441c5601ed69",
+        "type": "function",
+        "z": "a716829fd201f4fd",
+        "name": "Delete current alarms list",
+        "func": "msg.payload = {\n    action: 'LPOP',\n    params: [{\n        key: msg.device.id,\n        values: msg.total\n    }]\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 210,
+        "y": 1200,
+        "wires": [
+            [
+                "95099afba89a6ad6"
+            ]
+        ]
+    },
+    {
+        "id": "c3bed0f8b3cbb43e",
+        "type": "function",
+        "z": "1ce1485ad608bc7a",
+        "name": "Get current alarms of device",
+        "func": "msg.payload = {\n    action: 'LRANGE',\n    params: [{\n        key: msg.device.id,\n        values: {\n            start: 0,\n            stop: -1\n        }\n    }]\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 220,
+        "y": 778,
+        "wires": [
+            [
+                "2d9791bcbb2f7c87"
+            ]
+        ]
+    },
+    {
+        "id": "2d9791bcbb2f7c87",
+        "type": "subflow:185bd0a8b5a4b916",
+        "z": "1ce1485ad608bc7a",
+        "name": "",
+        "x": 440,
+        "y": 778,
+        "wires": [
+            [
+                "2722d781c3aa55d9"
+            ],
+            [
+                "c9dbd9e3a5a46643"
+            ]
+        ]
+    },
+    {
+        "id": "c9dbd9e3a5a46643",
+        "type": "debug",
+        "z": "1ce1485ad608bc7a",
+        "name": "[EXIT 1] Create/Update alarms",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 690,
+        "y": 800,
+        "wires": []
+    },
+    {
+        "id": "2722d781c3aa55d9",
+        "type": "function",
+        "z": "1ce1485ad608bc7a",
+        "name": "Update resolve counters",
+        "func": "const alarms = msg.payload.map(alarm => alarm.result);\nconst failures = msg.device.failures;\n\nfailures.forEach(failure => {\n    const find = alarms.find(alarm => alarm.type === failure.id);\n\n    if (find !== undefined) {\n        find.resolve_counter++;\n    }\n});\n\nmsg.total = alarms.length;\nmsg.alarms = alarms;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 670,
+        "y": 756,
+        "wires": [
+            [
+                "84b917302ce31758"
+            ]
+        ]
+    },
+    {
+        "id": "84b917302ce31758",
+        "type": "link out",
+        "z": "1ce1485ad608bc7a",
+        "name": "OUT (1) Increment resolve counter",
+        "links": [
+            "c87aff05d514e788"
+        ],
+        "x": 815,
+        "y": 756,
+        "wires": []
+    },
+    {
+        "id": "c87aff05d514e788",
+        "type": "link in",
+        "z": "1ce1485ad608bc7a",
+        "name": "IN (1) Update alarms in historic table",
+        "links": [
+            "84b917302ce31758"
+        ],
+        "x": 55,
+        "y": 978,
+        "wires": [
+            [
+                "eaa5c40d914f8f5a"
+            ]
+        ]
+    },
+    {
+        "id": "f088a50fbcf52cfc",
+        "type": "comment",
+        "z": "1ce1485ad608bc7a",
+        "name": "########## Update alarms in historic table (resolve_counter === 3)",
+        "info": "",
+        "x": 280,
+        "y": 896,
+        "wires": []
+    },
+    {
+        "id": "eaa5c40d914f8f5a",
+        "type": "function",
+        "z": "1ce1485ad608bc7a",
+        "name": "Search for resolved alarms with historic",
+        "func": "const alarms = msg.alarms;\n\nconst clear = [];\nconst problem = [];\n\nalarms.forEach(alarm => {\n    if (alarm.resolve_counter === 3) {\n        if (alarm.problem_counter >= 3) {\n            clear.push(alarm);\n        }\n    } else {\n        problem.push(alarm);\n    }\n});\n\nmsg.clear = clear;\nmsg.alarms = problem;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 260,
+        "y": 978,
+        "wires": [
+            [
+                "a984131ddc862c3e"
+            ]
+        ]
+    },
+    {
+        "id": "a984131ddc862c3e",
+        "type": "switch",
+        "z": "1ce1485ad608bc7a",
+        "name": "Found alarms?",
+        "property": "clear.length",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "gt",
+                "v": "0",
+                "vt": "num"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "false",
+        "repair": false,
+        "outputs": 2,
+        "x": 520,
+        "y": 978,
+        "wires": [
+            [
+                "f21b90b43a031e9a"
+            ],
+            [
+                "e0d43ea5683417d0"
+            ]
+        ]
+    },
+    {
+        "id": "f21b90b43a031e9a",
+        "type": "function",
+        "z": "1ce1485ad608bc7a",
+        "name": "Set clear time in resolved alarms",
+        "func": "const alarms = msg.clear;\n\nconst ids = alarms.map(alarm => alarm.id).filter(id => id !== '').join(',');\n\nconst currentDate = new Date();\nconst timestamp = Math.round(currentDate.getTime()/1000);\n\nmsg.payload = `UPDATE ALARMS\n               SET CLEAR_TIME = TO_TIMESTAMP(${timestamp})\n               WHERE ID IN (${ids})`;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 770,
+        "y": 956,
+        "wires": [
+            [
+                "fb0863bb8377f03c"
+            ]
+        ]
+    },
+    {
+        "id": "fb0863bb8377f03c",
+        "type": "subflow:bab6ffe5b7ae3a28",
+        "z": "1ce1485ad608bc7a",
+        "name": "",
+        "x": 980,
+        "y": 956,
+        "wires": [
+            [
+                "e786deccc89bf279"
+            ]
+        ]
+    },
+    {
+        "id": "e786deccc89bf279",
+        "type": "link out",
+        "z": "1ce1485ad608bc7a",
+        "name": "OUT (1) Update alarms in historic table",
+        "links": [
+            "d9aee65cde3b444d"
+        ],
+        "x": 1075,
+        "y": 956,
+        "wires": []
+    },
+    {
+        "id": "e0d43ea5683417d0",
+        "type": "link out",
+        "z": "1ce1485ad608bc7a",
+        "name": "OUT (2) Update alarms in historic table",
+        "links": [
+            "d9aee65cde3b444d"
+        ],
+        "x": 655,
+        "y": 1000,
+        "wires": []
+    },
+    {
+        "id": "46bbec51c1845bc2",
+        "type": "debug",
+        "z": "1ce1485ad608bc7a",
+        "name": "[EXIT 1] Update alarms list",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 660,
+        "y": 1198,
+        "wires": []
+    },
+    {
+        "id": "d9aee65cde3b444d",
+        "type": "link in",
+        "z": "1ce1485ad608bc7a",
+        "name": "IN (1) Update alarms list",
+        "links": [
+            "e0d43ea5683417d0",
+            "e786deccc89bf279"
+        ],
+        "x": 55,
+        "y": 1177,
+        "wires": [
+            [
+                "b89e1b2327a1279f"
+            ]
+        ]
+    },
+    {
+        "id": "3d38d1e54993ad8c",
+        "type": "function",
+        "z": "1ce1485ad608bc7a",
+        "name": "Insert new alarms list",
+        "func": "const alarms = msg.alarms.map(alarm => JSON.stringify(alarm));\n\nmsg.payload = {\n    action: 'LPUSH',\n    params: [{\n        key: msg.device.id,\n        values: alarms\n    }]\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 1298,
+        "wires": [
+            [
+                "88976d8bdbdeccfb"
+            ]
+        ]
+    },
+    {
+        "id": "88976d8bdbdeccfb",
+        "type": "subflow:185bd0a8b5a4b916",
+        "z": "1ce1485ad608bc7a",
+        "name": "",
+        "x": 580,
+        "y": 1298,
+        "wires": [
+            [
+                "830b2b3e664aecbd"
+            ],
+            [
+                "1f85e78821b1c53e"
+            ]
+        ]
+    },
+    {
+        "id": "1f85e78821b1c53e",
+        "type": "debug",
+        "z": "1ce1485ad608bc7a",
+        "name": "[EXIT 4] Update alarms list",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 820,
+        "y": 1319,
+        "wires": []
+    },
+    {
+        "id": "830b2b3e664aecbd",
+        "type": "debug",
+        "z": "1ce1485ad608bc7a",
+        "name": "[EXIT 3] Update alarms list",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 820,
+        "y": 1276,
+        "wires": []
+    },
+    {
+        "id": "117b30d7dd9e4667",
+        "type": "catch",
+        "z": "1ce1485ad608bc7a",
+        "name": "",
+        "scope": null,
+        "uncaught": false,
+        "x": 100,
+        "y": 1556,
+        "wires": [
+            [
+                "20e2bb4192bab23f"
+            ]
+        ]
+    },
+    {
+        "id": "14ca10eb1390baa4",
+        "type": "comment",
+        "z": "1ce1485ad608bc7a",
+        "name": "########## Exceptions Treatment",
+        "info": "",
+        "x": 179,
+        "y": 1495,
+        "wires": []
+    },
+    {
+        "id": "20e2bb4192bab23f",
+        "type": "debug",
+        "z": "1ce1485ad608bc7a",
+        "name": "Exception",
+        "active": true,
+        "tosidebar": true,
+        "console": true,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 250,
+        "y": 1556,
+        "wires": []
+    },
+    {
+        "id": "fb8994c311d75eb2",
+        "type": "comment",
+        "z": "1ce1485ad608bc7a",
+        "name": "########## Update alarms list",
+        "info": "",
+        "x": 170,
+        "y": 1095,
+        "wires": []
+    },
+    {
+        "id": "2112cb721aef7fa5",
+        "type": "subflow:185bd0a8b5a4b916",
+        "z": "1ce1485ad608bc7a",
+        "name": "",
+        "x": 420,
+        "y": 1177,
+        "wires": [
+            [
+                "8c16d74e5c87fa44"
+            ],
+            [
+                "46bbec51c1845bc2"
+            ]
+        ]
+    },
+    {
+        "id": "b89e1b2327a1279f",
+        "type": "function",
+        "z": "1ce1485ad608bc7a",
+        "name": "Delete current alarms list",
+        "func": "msg.payload = {\n    action: 'LPOP',\n    params: [{\n        key: msg.device.id,\n        values: msg.total\n    }]\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 210,
+        "y": 1177,
+        "wires": [
+            [
+                "2112cb721aef7fa5"
+            ]
+        ]
+    },
+    {
+        "id": "cf67aacc68164b4f",
+        "type": "function",
+        "z": "a716829fd201f4fd",
+        "name": "Get failures rules",
+        "func": "msg.payload = 'SELECT * FROM ALARMS_LIST';\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 190,
+        "y": 275,
+        "wires": [
+            [
+                "0e4b70d0dd4314d2"
+            ]
+        ]
+    },
+    {
+        "id": "0e4b70d0dd4314d2",
+        "type": "subflow:bab6ffe5b7ae3a28",
+        "z": "a716829fd201f4fd",
+        "name": "",
+        "x": 360,
+        "y": 275,
+        "wires": [
+            [
+                "d0a5b16d59230622"
+            ]
+        ]
+    },
+    {
+        "id": "d0a5b16d59230622",
+        "type": "function",
+        "z": "a716829fd201f4fd",
+        "name": "Parse result",
+        "func": "let failures = msg.payload;\n\nfailures = failures.map(failure => {\n    if (failure.rele_state !== null) {\n        failure.rele_state = JSON.parse(failure.rele_state.replace(/'/g, '\"')); \n    }\n    \n    if (failure.look_for !== null) {\n        failure.look_for = failure.look_for.split(',').map(id => parseInt(id));\n    } else {\n        failure.look_for = [];\n    }\n    \n    return failure;\n});\n\nmsg.failures = failures;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 510,
+        "y": 275,
+        "wires": [
+            [
+                "478979063431a377"
+            ]
+        ]
+    },
+    {
+        "id": "a778e665bd2949fd",
+        "type": "function",
+        "z": "1ce1485ad608bc7a",
+        "name": "Get failures rules",
+        "func": "msg.payload = 'SELECT * FROM ALARMS_LIST';\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 190,
+        "y": 274,
+        "wires": [
+            [
+                "7bce9583437a84ac"
+            ]
+        ]
+    },
+    {
+        "id": "7bce9583437a84ac",
+        "type": "subflow:bab6ffe5b7ae3a28",
+        "z": "1ce1485ad608bc7a",
+        "name": "",
+        "x": 360,
+        "y": 274,
+        "wires": [
+            [
+                "93b5025afe6c3209"
+            ]
+        ]
+    },
+    {
+        "id": "93b5025afe6c3209",
+        "type": "function",
+        "z": "1ce1485ad608bc7a",
+        "name": "Parse result",
+        "func": "let failures = msg.payload;\n\nfailures = failures.map(failure => {\n    if (failure.rele_state !== null) {\n        failure.rele_state = JSON.parse(failure.rele_state.replace(/'/g, '\"')); \n    }\n    \n    if (failure.look_for !== null) {\n        failure.look_for = failure.look_for.split(',').map(id => parseInt(id));\n    } else {\n        failure.look_for = [];\n    }\n    \n    return failure;\n});\n\nmsg.failures = failures;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 510,
+        "y": 274,
+        "wires": [
+            [
+                "f6a2e4e634b990fa"
+            ]
+        ]
+    },
+    {
+        "id": "14075ea953c0fac3",
+        "type": "switch",
+        "z": "1ce1485ad608bc7a",
+        "name": "Left alarms?",
+        "property": "alarms.length",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "gt",
+                "v": "0",
+                "vt": "num"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "false",
+        "repair": false,
+        "outputs": 2,
+        "x": 170,
+        "y": 1319,
+        "wires": [
+            [
+                "3d38d1e54993ad8c"
+            ],
+            [
+                "e349c6da73052ef9"
+            ]
+        ]
+    },
+    {
+        "id": "e349c6da73052ef9",
+        "type": "debug",
+        "z": "1ce1485ad608bc7a",
+        "name": "[EXIT 2] Update alarms list",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 400,
+        "y": 1341,
+        "wires": []
+    },
+    {
+        "id": "8c16d74e5c87fa44",
+        "type": "link out",
+        "z": "1ce1485ad608bc7a",
+        "name": "OUT (2) Update alarms list",
+        "links": [
+            "71887d69ecbccb90"
+        ],
+        "x": 555,
+        "y": 1156,
+        "wires": []
+    },
+    {
+        "id": "71887d69ecbccb90",
+        "type": "link in",
+        "z": "1ce1485ad608bc7a",
+        "name": "IN (2) Update alarms list",
+        "links": [
+            "8c16d74e5c87fa44"
+        ],
+        "x": 55,
+        "y": 1319,
+        "wires": [
+            [
+                "14075ea953c0fac3"
             ]
         ]
     }

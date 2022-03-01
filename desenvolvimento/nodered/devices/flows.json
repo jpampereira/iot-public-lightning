@@ -97,6 +97,39 @@
         "color": "#DDAA99"
     },
     {
+        "id": "bab6ffe5b7ae3a28",
+        "type": "subflow",
+        "name": "Database",
+        "info": "",
+        "category": "",
+        "in": [
+            {
+                "x": 100,
+                "y": 100,
+                "wires": [
+                    {
+                        "id": "2dc46f9c24f9eb35"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 700,
+                "y": 100,
+                "wires": [
+                    {
+                        "id": "dcf9a148a61be9fc",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [],
+        "meta": {},
+        "color": "#DDAA99"
+    },
+    {
         "id": "0cae39fb33383cf0",
         "type": "mqtt-broker",
         "name": "MQTT Mosquitto",
@@ -146,11 +179,27 @@
         "optionsType": "json"
     },
     {
+        "id": "21c629e3be9268f3",
+        "type": "mydbConfig",
+        "name": "postgres@db:5432/PGC",
+        "host": "db",
+        "port": "5432",
+        "database": "PGC",
+        "ssl": false,
+        "rejectUnauthorized": false,
+        "ca": "",
+        "key": "",
+        "cert": "",
+        "max": "10",
+        "min": "1",
+        "idle": "1000"
+    },
+    {
         "id": "32feb38f11d62b82",
         "type": "function",
         "z": "d54052ea6cb4b184",
         "name": "Set measure values",
-        "func": "const measures = msg.payload;\n\nconst device_id  = msg.device.id;\nconst rele_state = msg.device.rele_state;\n\nmeasures.device_id  = device_id;\nmeasures.rele_state = rele_state;\n\nmeasures.voltage   = measures.voltage   !== -1 ? measures.voltage   : (rele_state ? Math.floor(Math.random() * (136 - 118) + 118) : 0);\nmeasures.current   = measures.current   !== -1 ? measures.current   : (parseFloat((rele_state ? Math.random() * (0.6 - 0.5) + 0.5 : 0).toFixed(1)));\nmeasures.lightness = measures.lightness !== -1 ? measures.lightness : (rele_state ? 247: 150);\n\nmsg.payload = JSON.stringify(measures);\n\nreturn msg;",
+        "func": "const measures = msg.payload;\n\nconst device_id  = msg.device.id;\nconst rele_state = msg.device.rele_state;\n\nmeasures.device_id  = device_id;\nmeasures.rele_state = rele_state;\n\nmeasures.voltage   = measures.voltage   !== null ? measures.voltage   : (rele_state ? Math.floor(Math.random() * (136 - 118) + 118) : 0);\nmeasures.current   = measures.current   !== null ? measures.current   : (parseFloat((rele_state ? Math.random() * (0.6 - 0.5) + 0.5 : 0).toFixed(1)));\nmeasures.lightness = measures.lightness !== null ? measures.lightness : (rele_state ? 247: 150);\n\nmsg.payload = JSON.stringify(measures);\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1697,45 +1746,10 @@
         "y": 657,
         "wires": [
             [
-                "43c31dcda89bd922"
+                "a76b1c7e5bbe3efd"
             ],
             [
                 "f0d1d6b64a7659fd"
-            ]
-        ]
-    },
-    {
-        "id": "43c31dcda89bd922",
-        "type": "file in",
-        "z": "d54052ea6cb4b184",
-        "name": "Get fails.jsonc file",
-        "filename": "/scripts/fails.jsonc",
-        "format": "utf8",
-        "chunk": false,
-        "sendError": false,
-        "encoding": "none",
-        "allProps": false,
-        "x": 430,
-        "y": 636,
-        "wires": [
-            [
-                "89a06ba1d5c21202"
-            ]
-        ]
-    },
-    {
-        "id": "8b401a54048b163c",
-        "type": "json",
-        "z": "d54052ea6cb4b184",
-        "name": "Convert JSON to JS Object",
-        "property": "payload",
-        "action": "",
-        "pretty": false,
-        "x": 860,
-        "y": 636,
-        "wires": [
-            [
-                "b3c4bb4261150dd8"
             ]
         ]
     },
@@ -1750,7 +1764,7 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1110,
+        "x": 950,
         "y": 636,
         "wires": [
             [
@@ -1766,7 +1780,7 @@
         "links": [
             "68fb113372f89e05"
         ],
-        "x": 1255,
+        "x": 1095,
         "y": 636,
         "wires": []
     },
@@ -1829,25 +1843,6 @@
         "x": 475,
         "y": 896,
         "wires": []
-    },
-    {
-        "id": "89a06ba1d5c21202",
-        "type": "function",
-        "z": "d54052ea6cb4b184",
-        "name": "Remove comments",
-        "func": "msg.payload = msg.payload.replace(/\\/\\/.*\\r\\n/g, '');\n\ndelete msg.filename;\n\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 630,
-        "y": 636,
-        "wires": [
-            [
-                "8b401a54048b163c"
-            ]
-        ]
     },
     {
         "id": "5fa5186b9968ce9f",
@@ -2219,7 +2214,7 @@
         "y": 236,
         "wires": [
             [
-                "15b457ec3a792b00"
+                "a778e665bd2949fd"
             ]
         ]
     },
@@ -2309,7 +2304,7 @@
         "type": "function",
         "z": "d54052ea6cb4b184",
         "name": "Set fails",
-        "func": "const fails = msg.device.fails;\n\nconst measures = {\n    voltage:   -1,\n    current:   -1,\n    lightness: -1,\n};\n\nfails.forEach(fail => {\n    measures.voltage   = fail.voltage   !== -1 ? fail.voltage   : measures.voltage;\n    measures.current   = fail.current   !== -1 ? fail.current   : measures.current;\n    measures.lightness = fail.lightness !== -1 ? fail.lightness : measures.lightness;\n});\n\nmsg.payload = measures;\n\nreturn msg;",
+        "func": "const fails = msg.device.fails;\n\nconst measures = {\n    voltage:   null,\n    current:   null,\n    lightness: null,\n};\n\nfails.forEach(fail => {\n    measures.voltage   = fail.voltage   !== null ? fail.voltage   : measures.voltage;\n    measures.current   = fail.current   !== null ? fail.current   : measures.current;\n    measures.lightness = fail.lightness !== null ? fail.lightness : measures.lightness;\n});\n\nmsg.payload = measures;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -2395,60 +2390,6 @@
         ]
     },
     {
-        "id": "15b457ec3a792b00",
-        "type": "file in",
-        "z": "a444632620451a72",
-        "name": "Get fails rules file",
-        "filename": "/scripts/fails.jsonc",
-        "format": "utf8",
-        "chunk": false,
-        "sendError": false,
-        "encoding": "none",
-        "allProps": false,
-        "x": 190,
-        "y": 236,
-        "wires": [
-            [
-                "4e54a1ad083756a8"
-            ]
-        ]
-    },
-    {
-        "id": "10fb61fcd7bc6960",
-        "type": "json",
-        "z": "a444632620451a72",
-        "name": "Convert JSON to JS Object",
-        "property": "payload",
-        "action": "",
-        "pretty": false,
-        "x": 620,
-        "y": 236,
-        "wires": [
-            [
-                "d093a4bff79842d4"
-            ]
-        ]
-    },
-    {
-        "id": "4e54a1ad083756a8",
-        "type": "function",
-        "z": "a444632620451a72",
-        "name": "Remove comments",
-        "func": "msg.payload = msg.payload.replace(/\\/\\/.*\\r\\n/g, '');\n\ndelete msg.filename;\n\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 390,
-        "y": 236,
-        "wires": [
-            [
-                "10fb61fcd7bc6960"
-            ]
-        ]
-    },
-    {
         "id": "d093a4bff79842d4",
         "type": "link out",
         "z": "a444632620451a72",
@@ -2456,7 +2397,7 @@
         "links": [
             "d4e1c79447dc0538"
         ],
-        "x": 775,
+        "x": 615,
         "y": 236,
         "wires": []
     },
@@ -2645,7 +2586,7 @@
         "type": "function",
         "z": "a444632620451a72",
         "name": "Set 'send' parameter",
-        "func": "const send = msg.device.newFail.send !== -1 ? msg.device.newFail.send : msg.device.send;\n\nmsg.payload = {\n    action: 'JSON.UPDATE',\n    params: [{ \n        key: msg.device.id, \n        values: { attr: 'send', value: send } \n    }]\n};\n\nreturn msg;",
+        "func": "const send = msg.device.newFail.send !== null ? msg.device.newFail.send : msg.device.send;\n\nmsg.payload = {\n    action: 'JSON.UPDATE',\n    params: [{ \n        key: msg.device.id, \n        values: { attr: 'send', value: send } \n    }]\n};\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -2921,7 +2862,7 @@
         "type": "function",
         "z": "a444632620451a72",
         "name": "Set 'rele_state' parameter",
-        "func": "const rele_state = msg.device.newFail.rele_state !== -1 ? msg.device.newFail.rele_state.value : msg.device.rele_state;\n\nmsg.payload = {\n    action: 'JSON.UPDATE',\n    params: [{ \n        key: msg.device.id, \n        values: { attr: 'rele_state', value: rele_state } \n    }]\n};\n\nreturn msg;",
+        "func": "const rele_state = msg.device.newFail.rele_state !== null ? msg.device.newFail.rele_state.value : msg.device.rele_state;\n\nmsg.payload = {\n    action: 'JSON.UPDATE',\n    params: [{ \n        key: msg.device.id, \n        values: { attr: 'rele_state', value: rele_state } \n    }]\n};\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -2940,7 +2881,7 @@
         "type": "function",
         "z": "a444632620451a72",
         "name": "Define check functions",
-        "func": "// Fail is already in device?\nfunction check1 (deviceFails, id) { \n    return !deviceFails.find(fail => fail.id === id);\n}\n\n// Has fails that prevent the new fail to being included?\nfunction check2 (deviceFails, fail) {\n    return !fail.look_for.some(id => !!deviceFails.find(fail => fail.id === id));\n}\n\n// The new fail prevents any fail already present in the device?\nfunction check3 (deviceFails, id) {\n    return !deviceFails.some(fail => fail.look_for.includes(id));\n}\n\n// Change send state only in case of difference between current value and new value\nfunction check4 (device, fail) {\n    return fail === -1 || fail !== device;\n}\n\n// Time restriction to change rele state\nfunction check5 (device, fail) {\n    if (fail !== -1 && fail.threshold !== undefined) {\n        const currentDate = new Date();\n        const currentTime = currentDate.getHours() * 3600 + currentDate.getMinutes() * 60 + currentDate.getSeconds(); // In seconds\n        \n        const begin = fail.threshold.begin;\n        const end = fail.threshold.end;\n        \n        if (begin < end) {\n            return currentTime >= begin && currentTime < end;\n        } else {\n            return currentTime >= begin || currentTime < end;\n        }\n    }\n    \n    return true;\n}\n\nmsg.check1 = check1;\nmsg.check2 = check2;\nmsg.check3 = check3;\nmsg.check4 = check4;\nmsg.check5 = check5;\n\nreturn msg;",
+        "func": "// Fail is already in device?\nfunction check1 (deviceFails, id) { \n    return !deviceFails.find(fail => fail.id === id);\n}\n\n// Has fails that prevent the new fail to being included?\nfunction check2 (deviceFails, fail) {\n    return !fail.look_for.some(id => !!deviceFails.find(fail => fail.id === id));\n}\n\n// The new fail prevents any fail already present in the device?\nfunction check3 (deviceFails, id) {\n    return !deviceFails.some(fail => fail.look_for.includes(id));\n}\n\n// Change send state only in case of difference between current value and new value\nfunction check4 (device, fail) {\n    return fail === null || fail !== device;\n}\n\n// Time restriction to change rele state\nfunction check5 (device, fail) {\n    if (fail !== null && fail.threshold !== undefined) {\n        const currentDate = new Date();\n        const currentTime = currentDate.getHours() * 3600 + currentDate.getMinutes() * 60 + currentDate.getSeconds(); // In seconds\n        \n        const begin = fail.threshold.begin;\n        const end = fail.threshold.end;\n        \n        if (begin < end) {\n            return currentTime >= begin && currentTime < end;\n        } else {\n            return currentTime >= begin || currentTime < end;\n        }\n    }\n    \n    return true;\n}\n\nmsg.check1 = check1;\nmsg.check2 = check2;\nmsg.check3 = check3;\nmsg.check4 = check4;\nmsg.check5 = check5;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -2959,7 +2900,7 @@
         "type": "function",
         "z": "a444632620451a72",
         "name": "Prepare split",
-        "func": "msg.fails = msg.payload;\nmsg.payload = msg.devices;\n\ndelete msg.devices;\n\nreturn msg;",
+        "func": "msg.payload = msg.devices;\n\ndelete msg.devices;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -3192,7 +3133,7 @@
         "y": 1016,
         "wires": [
             [
-                "bfdb44a467dbeb5e"
+                "399091d5a893b91e"
             ]
         ]
     },
@@ -3236,60 +3177,6 @@
         "wires": []
     },
     {
-        "id": "bfdb44a467dbeb5e",
-        "type": "file in",
-        "z": "a444632620451a72",
-        "name": "Get fails rules file",
-        "filename": "/scripts/fails.jsonc",
-        "format": "utf8",
-        "chunk": false,
-        "sendError": false,
-        "encoding": "none",
-        "allProps": false,
-        "x": 190,
-        "y": 1016,
-        "wires": [
-            [
-                "2c0940f97d7470b1"
-            ]
-        ]
-    },
-    {
-        "id": "c91e3fc1febf918d",
-        "type": "json",
-        "z": "a444632620451a72",
-        "name": "Convert JSON to JS Object",
-        "property": "payload",
-        "action": "",
-        "pretty": false,
-        "x": 620,
-        "y": 1016,
-        "wires": [
-            [
-                "3cbbde7d4ed6a5c4"
-            ]
-        ]
-    },
-    {
-        "id": "2c0940f97d7470b1",
-        "type": "function",
-        "z": "a444632620451a72",
-        "name": "Remove comments",
-        "func": "msg.payload = msg.payload.replace(/\\/\\/.*\\r\\n/g, '');\n\ndelete msg.filename;\n\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 390,
-        "y": 1016,
-        "wires": [
-            [
-                "c91e3fc1febf918d"
-            ]
-        ]
-    },
-    {
         "id": "3cbbde7d4ed6a5c4",
         "type": "link out",
         "z": "a444632620451a72",
@@ -3297,7 +3184,7 @@
         "links": [
             "4c73ae75d9d49cfa"
         ],
-        "x": 775,
+        "x": 615,
         "y": 1016,
         "wires": []
     },
@@ -3402,7 +3289,7 @@
         "type": "function",
         "z": "a444632620451a72",
         "name": "Prepare split",
-        "func": "msg.fails = msg.payload;\nmsg.payload = msg.devices;\n\ndelete msg.devices;\n\nreturn msg;",
+        "func": "msg.payload = msg.devices;\n\ndelete msg.devices;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -3487,7 +3374,7 @@
         "type": "function",
         "z": "a444632620451a72",
         "name": "Set 'send' parameter",
-        "func": "const index = msg.failIndex;\nconst fail = msg.device.fails[index];\nconst send = fail.send !== -1 ? !fail.send : msg.device.send;\n\nmsg.payload = {\n    action: 'JSON.UPDATE',\n    params: [{ \n        key: msg.device.id, \n        values: { attr: 'send', value: send } \n    }]\n};\n\nreturn msg;",
+        "func": "const index = msg.failIndex;\nconst fail = msg.device.fails[index];\nconst send = fail.send !== null ? !fail.send : msg.device.send;\n\nmsg.payload = {\n    action: 'JSON.UPDATE',\n    params: [{ \n        key: msg.device.id, \n        values: { attr: 'send', value: send } \n    }]\n};\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -3610,7 +3497,7 @@
         "type": "function",
         "z": "a444632620451a72",
         "name": "Set 'rele_state' parameter",
-        "func": "const index = msg.failIndex;\nconst fail = msg.device.fails[index];\nconst rele_state = fail.rele_state !== -1 ? !fail.rele_state.value : msg.device.rele_state;\n\nmsg.payload = {\n    action: 'JSON.UPDATE',\n    params: [{ \n        key: msg.device.id, \n        values: { attr: 'rele_state', value: rele_state }\n    }]\n};\n\nreturn msg;",
+        "func": "const index = msg.failIndex;\nconst fail = msg.device.fails[index];\nconst rele_state = fail.rele_state !== null ? !fail.rele_state.value : msg.device.rele_state;\n\nmsg.payload = {\n    action: 'JSON.UPDATE',\n    params: [{ \n        key: msg.device.id, \n        values: { attr: 'rele_state', value: rele_state }\n    }]\n};\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -3851,6 +3738,212 @@
         "wires": [
             [
                 "b179fce68ca4da9a"
+            ]
+        ]
+    },
+    {
+        "id": "2dc46f9c24f9eb35",
+        "type": "function",
+        "z": "bab6ffe5b7ae3a28",
+        "name": "Set Query",
+        "func": "msg.query = msg.payload;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 200,
+        "y": 100,
+        "wires": [
+            [
+                "bb3a8d2b7854dccb"
+            ]
+        ]
+    },
+    {
+        "id": "dcf9a148a61be9fc",
+        "type": "function",
+        "z": "bab6ffe5b7ae3a28",
+        "name": "Get Query Response",
+        "func": "const query_response = msg.payload.rows;\n\ndelete msg.query;\n\nmsg.payload = query_response;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 560,
+        "y": 100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "bb3a8d2b7854dccb",
+        "type": "mydb",
+        "z": "bab6ffe5b7ae3a28",
+        "name": "Execute Query",
+        "style": "mustache",
+        "substEnvVars": false,
+        "query": "{{{ msg.query }}};",
+        "mydbConfig": "21c629e3be9268f3",
+        "x": 360,
+        "y": 100,
+        "wires": [
+            [
+                "dcf9a148a61be9fc"
+            ]
+        ]
+    },
+    {
+        "id": "a778e665bd2949fd",
+        "type": "function",
+        "z": "a444632620451a72",
+        "name": "Get failures rules",
+        "func": "msg.payload = 'SELECT * FROM ALARMS_LIST';\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 190,
+        "y": 236,
+        "wires": [
+            [
+                "7bce9583437a84ac"
+            ]
+        ]
+    },
+    {
+        "id": "7bce9583437a84ac",
+        "type": "subflow:bab6ffe5b7ae3a28",
+        "z": "a444632620451a72",
+        "name": "",
+        "x": 360,
+        "y": 236,
+        "wires": [
+            [
+                "93b5025afe6c3209"
+            ]
+        ]
+    },
+    {
+        "id": "93b5025afe6c3209",
+        "type": "function",
+        "z": "a444632620451a72",
+        "name": "Parse result",
+        "func": "let failures = msg.payload;\n\nfailures = failures.map(failure => {\n    if (failure.rele_state !== null) {\n        failure.rele_state = JSON.parse(failure.rele_state.replace(/'/g, '\"')); \n    }\n    \n    if (failure.look_for !== null) {\n        failure.look_for = failure.look_for.split(',').map(id => parseInt(id));\n    } else {\n        failure.look_for = [];\n    }\n    \n    return failure;\n});\n\nmsg.fails = failures;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 510,
+        "y": 236,
+        "wires": [
+            [
+                "d093a4bff79842d4"
+            ]
+        ]
+    },
+    {
+        "id": "399091d5a893b91e",
+        "type": "function",
+        "z": "a444632620451a72",
+        "name": "Get failures rules",
+        "func": "msg.payload = 'SELECT * FROM ALARMS_LIST';\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 190,
+        "y": 1016,
+        "wires": [
+            [
+                "4bfc8c22d180d172"
+            ]
+        ]
+    },
+    {
+        "id": "4bfc8c22d180d172",
+        "type": "subflow:bab6ffe5b7ae3a28",
+        "z": "a444632620451a72",
+        "name": "",
+        "x": 360,
+        "y": 1016,
+        "wires": [
+            [
+                "d0a1b465381f754a"
+            ]
+        ]
+    },
+    {
+        "id": "d0a1b465381f754a",
+        "type": "function",
+        "z": "a444632620451a72",
+        "name": "Parse result",
+        "func": "let failures = msg.payload;\n\nfailures = failures.map(failure => {\n    if (failure.rele_state !== null) {\n        failure.rele_state = JSON.parse(failure.rele_state.replace(/'/g, '\"')); \n    }\n    \n    if (failure.look_for !== null) {\n        failure.look_for = failure.look_for.split(',').map(id => parseInt(id));\n    } else {\n        failure.look_for = [];\n    }\n    \n    return failure;\n});\n\nmsg.fails = failures;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 510,
+        "y": 1016,
+        "wires": [
+            [
+                "3cbbde7d4ed6a5c4"
+            ]
+        ]
+    },
+    {
+        "id": "a76b1c7e5bbe3efd",
+        "type": "function",
+        "z": "d54052ea6cb4b184",
+        "name": "Get failures rules",
+        "func": "msg.payload = 'SELECT * FROM ALARMS_LIST';\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 636,
+        "wires": [
+            [
+                "5cdfa1870f081180"
+            ]
+        ]
+    },
+    {
+        "id": "5cdfa1870f081180",
+        "type": "subflow:bab6ffe5b7ae3a28",
+        "z": "d54052ea6cb4b184",
+        "name": "",
+        "x": 600,
+        "y": 636,
+        "wires": [
+            [
+                "78d51c31c923af80"
+            ]
+        ]
+    },
+    {
+        "id": "78d51c31c923af80",
+        "type": "function",
+        "z": "d54052ea6cb4b184",
+        "name": "Parse result",
+        "func": "let failures = msg.payload;\n\nfailures = failures.map(failure => {\n    if (failure.rele_state !== null) {\n        failure.rele_state = JSON.parse(failure.rele_state.replace(/'/g, '\"')); \n    }\n    \n    if (failure.look_for !== null) {\n        failure.look_for = failure.look_for.split(',').map(id => parseInt(id));\n    }\n    \n    return failure;\n});\n\nmsg.payload = failures;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 750,
+        "y": 636,
+        "wires": [
+            [
+                "b3c4bb4261150dd8"
             ]
         ]
     }
