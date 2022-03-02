@@ -2053,7 +2053,7 @@
         "scope": null,
         "uncaught": false,
         "x": 100,
-        "y": 1216,
+        "y": 1416,
         "wires": [
             [
                 "d1e16d213602f942"
@@ -2067,7 +2067,7 @@
         "name": "########## Exceptions Treatment",
         "info": "",
         "x": 180,
-        "y": 1155,
+        "y": 1355,
         "wires": []
     },
     {
@@ -2084,7 +2084,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 630,
-        "y": 1216,
+        "y": 1416,
         "wires": []
     },
     {
@@ -2181,7 +2181,7 @@
         "finalize": "",
         "libs": [],
         "x": 270,
-        "y": 1216,
+        "y": 1416,
         "wires": [
             [
                 "ae3acdea4e84f4b4",
@@ -2197,7 +2197,7 @@
         "statusCode": "",
         "headers": {},
         "x": 460,
-        "y": 1216,
+        "y": 1416,
         "wires": []
     },
     {
@@ -6213,5 +6213,132 @@
                 "14075ea953c0fac3"
             ]
         ]
+    },
+    {
+        "id": "0ebb6748382350a1",
+        "type": "comment",
+        "z": "4a674aaa9e667dd6",
+        "name": "########## Get alarms of device",
+        "info": "",
+        "x": 170,
+        "y": 1096,
+        "wires": []
+    },
+    {
+        "id": "ac7d4375f61cbffc",
+        "type": "http in",
+        "z": "4a674aaa9e667dd6",
+        "name": "",
+        "url": "/devices/info/alarms",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 150,
+        "y": 1177,
+        "wires": [
+            [
+                "73ec4cc75728f245"
+            ]
+        ]
+    },
+    {
+        "id": "73ec4cc75728f245",
+        "type": "function",
+        "z": "4a674aaa9e667dd6",
+        "name": "Search for alarms",
+        "func": "const device_id = msg.payload.device_id;\n\nmsg.payload = {\n    action: 'LRANGE',\n    params: [{\n        key: device_id,\n        values: {\n            start: 0,\n            stop: -1\n        }\n    }]\n};\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 370,
+        "y": 1177,
+        "wires": [
+            [
+                "909d876e8a218e4f"
+            ]
+        ]
+    },
+    {
+        "id": "909d876e8a218e4f",
+        "type": "subflow:185bd0a8b5a4b916",
+        "z": "4a674aaa9e667dd6",
+        "name": "",
+        "x": 560,
+        "y": 1177,
+        "wires": [
+            [
+                "dc283aa3dce143dc"
+            ],
+            [
+                "501a634f773ab915"
+            ]
+        ]
+    },
+    {
+        "id": "501a634f773ab915",
+        "type": "debug",
+        "z": "4a674aaa9e667dd6",
+        "name": "[EXIT 1] Get alarms of device",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 800,
+        "y": 1199,
+        "wires": []
+    },
+    {
+        "id": "070dae8fb52096d4",
+        "type": "debug",
+        "z": "4a674aaa9e667dd6",
+        "name": "[EXIT 2] Get alarms of device",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1140,
+        "y": 1156,
+        "wires": []
+    },
+    {
+        "id": "dc283aa3dce143dc",
+        "type": "function",
+        "z": "4a674aaa9e667dd6",
+        "name": "Parse result",
+        "func": "function formatDate (timestamp) {\n    const date = new Date(timestamp * 1000);\n    \n    const day   = `0${date.getDate()}`.slice(-2); \n    const month = `0${date.getMonth()+1}`.slice(-2);\n    const year  = date.getFullYear();\n    const hour  = `0${date.getHours()}`.slice(-2);\n    const min   = `0${date.getMinutes()}`.slice(-2);\n    const sec   = `0${date.getSeconds()}`.slice(-2);\n    \n    return `${day}/${month}/${year} ${hour}:${min}:${sec}`;\n}\n\nlet alarms = msg.payload;\n\nalarms = alarms.map(alarm => {\n    alarm = alarm.result;\n    \n    alarm.creation_time = formatDate(alarm.creation_time);\n    \n    delete alarm.type;\n    delete alarm.device_id;\n    delete alarm.problem_counter;\n    delete alarm.resolve_counter;\n    \n    return alarm;\n});\n\nalarms = alarms.filter(alarm => alarm.id !== '');\n\nmsg.payload = alarms;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 750,
+        "y": 1155,
+        "wires": [
+            [
+                "070dae8fb52096d4",
+                "cf05803867f3abd4"
+            ]
+        ]
+    },
+    {
+        "id": "cf05803867f3abd4",
+        "type": "http response",
+        "z": "4a674aaa9e667dd6",
+        "name": "Send response",
+        "statusCode": "",
+        "headers": {},
+        "x": 920,
+        "y": 1155,
+        "wires": []
     }
 ]

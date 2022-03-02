@@ -107,12 +107,89 @@ function formSubmission (e) {
 
 	const endpoint = `by${searchType[0].toUpperCase() + searchType.slice(1)}`;
 
+	removeTable();
 	updateMap(endpoint, params);
+}
+
+/************** TABLE FUNCTIONS ***************/
+
+function createTable () {
+	const area = createElement('div', { id: 'alarms' });
+
+	// Create table
+	const table = createElement('table');
+
+	// Create table header
+	const header = createElement('thead');
+	const row = createElement('tr');
+	const columns = ['ID do Alarme', 'Nome do Alarme', 'Data de Criação'].map(column => {
+		const th = createElement('th');
+		th.innerHTML = column;
+
+		return th;
+	});
+	appendChilds(row, columns);
+	appendChilds(header, [row]);
+
+	// Create table body
+	const body = createElement('tbody');
+
+	// Append header and body in table
+	appendChilds(table, [header]);
+	appendChilds(table, [body]);
+
+	appendChilds(area, [table]);
+
+	const main = window.document.querySelector('main');
+	appendChilds(main, [area]);
+}
+
+function removeTable () {
+	const main = window.document.querySelector('main');
+	const table = window.document.querySelector('#alarms');
+
+	if (table !== null) {
+		removeChilds(main, [table]);
+	}
+}
+
+function getAlarms () {
+	removeTable();
+
+	request('/devices/info/alarms', { device_id: this.device.id }, 'get')
+	.then(res => {
+		const alarms = res;
+
+		const rows = alarms.map(alarm => {
+			const row = createElement('tr');
+
+			const columns = Object.entries(alarm).map(info => {
+				const column = createElement('td');
+				column.innerHTML = info[1];
+
+				return column;
+			});
+
+			appendChilds(row, columns);
+
+			return row;
+		});
+
+		createTable();
+
+		const tbody = window.document.querySelector('tbody');
+		appendChilds(tbody, rows);
+
+		window.location.href = '#alarms';
+	})
+	.catch(console.log);
 }
 
 /******************** MAIN ********************/
 
-window.onload = createMap;
+window.onload = function () {
+	createMap([{ action: 'click', function: getAlarms }]);
+};
 
 const searchType = window.document.querySelector('select[id="type"]');
 searchType.addEventListener('change', createForm);
