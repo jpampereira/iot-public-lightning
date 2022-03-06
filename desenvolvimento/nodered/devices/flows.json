@@ -21,39 +21,6 @@
         "info": ""
     },
     {
-        "id": "86696f385ff65db5",
-        "type": "subflow",
-        "name": "Database",
-        "info": "",
-        "category": "",
-        "in": [
-            {
-                "x": 100,
-                "y": 100,
-                "wires": [
-                    {
-                        "id": "acebf4880992c09a"
-                    }
-                ]
-            }
-        ],
-        "out": [
-            {
-                "x": 700,
-                "y": 100,
-                "wires": [
-                    {
-                        "id": "a3af27511d4c1b33",
-                        "port": 0
-                    }
-                ]
-            }
-        ],
-        "env": [],
-        "meta": {},
-        "color": "#DDAA99"
-    },
-    {
         "id": "185bd0a8b5a4b916",
         "type": "subflow",
         "name": "Database Redis",
@@ -250,59 +217,6 @@
         "wires": []
     },
     {
-        "id": "acebf4880992c09a",
-        "type": "function",
-        "z": "86696f385ff65db5",
-        "name": "Set Query",
-        "func": "msg.query = msg.payload;\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 200,
-        "y": 100,
-        "wires": [
-            [
-                "0f60afc3ba8b5e2b"
-            ]
-        ]
-    },
-    {
-        "id": "a3af27511d4c1b33",
-        "type": "function",
-        "z": "86696f385ff65db5",
-        "name": "Get Query Response",
-        "func": "const query_response = msg.payload.rows;\n\ndelete msg.query;\n\nmsg.payload = query_response;\n\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 560,
-        "y": 100,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "0f60afc3ba8b5e2b",
-        "type": "mydb",
-        "z": "86696f385ff65db5",
-        "name": "Execute Query",
-        "style": "mustache",
-        "substEnvVars": false,
-        "query": "{{{ msg.query }}};",
-        "mydbConfig": "a60982b15f334d52",
-        "x": 360,
-        "y": 100,
-        "wires": [
-            [
-                "a3af27511d4c1b33"
-            ]
-        ]
-    },
-    {
         "id": "6c5cbba3d9e3d78a",
         "type": "link in",
         "z": "d54052ea6cb4b184",
@@ -355,7 +269,7 @@
         "type": "function",
         "z": "ab0855462a34e9f7",
         "name": "Set rele state of device",
-        "func": "const deviceId = parseInt(msg.topic.match(/\\/(\\d+)$/)[1]);\n\nconst action = msg.payload;\nconst newState = action === 'L' ? 1 : 0;\n\nmsg.payload = { \n    action: 'JSON.UPDATE', \n    params: [{ \n        key: deviceId, \n        values: { attr: 'rele_state', value: newState } \n    }] \n};\n\ndelete msg.topic;\n\nreturn msg;",
+        "func": "const deviceId = parseInt(msg.topic.match(/\\/(\\d+)$/)[1]);\n\nconst action = msg.payload;\nconst newState = action === 'L' ? true : false;\n\nmsg.payload = { \n    action: 'JSON.UPDATE', \n    params: [{ \n        key: deviceId, \n        values: { attr: 'rele_state', value: newState } \n    }] \n};\n\ndelete msg.topic;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1237,20 +1151,6 @@
         "wires": []
     },
     {
-        "id": "56f8e443b2cab0f7",
-        "type": "subflow:86696f385ff65db5",
-        "z": "d54052ea6cb4b184",
-        "name": "",
-        "env": [],
-        "x": 620,
-        "y": 138,
-        "wires": [
-            [
-                "cc421e3896e3a98f"
-            ]
-        ]
-    },
-    {
         "id": "21db4d079c64e83c",
         "type": "inject",
         "z": "d54052ea6cb4b184",
@@ -1290,7 +1190,7 @@
         "y": 138,
         "wires": [
             [
-                "56f8e443b2cab0f7"
+                "ebb7cbc54a3257fb"
             ]
         ]
     },
@@ -1989,6 +1889,7 @@
         "once": true,
         "onceDelay": "300",
         "topic": "",
+        "payloadType": "str",
         "x": 155,
         "y": 138,
         "wires": [
@@ -2441,7 +2342,7 @@
         "type": "function",
         "z": "a444632620451a72",
         "name": "Get current device state",
-        "func": "msg.payload = { action: 'JSON.GET', params: [{ key: msg.device.id }]};\nreturn msg;",
+        "func": "msg.payload = { \n    action: 'JSON.GET', \n    params: [{ key: msg.device.id }]\n};\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -3010,6 +2911,7 @@
         "once": true,
         "onceDelay": "600",
         "topic": "",
+        "payloadType": "str",
         "x": 155,
         "y": 918,
         "wires": [
@@ -3209,7 +3111,7 @@
         "type": "function",
         "z": "a444632620451a72",
         "name": "Get current device state",
-        "func": "msg.payload = { action: 'JSON.GET', params: [{ key: msg.device.id }]};\nreturn msg;",
+        "func": "msg.payload = { \n    action: 'JSON.GET', \n    params: [{ key: msg.device.id }]\n};\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -3831,7 +3733,7 @@
         "type": "function",
         "z": "a444632620451a72",
         "name": "Parse result",
-        "func": "let failures = msg.payload;\n\nfailures = failures.map(failure => {\n    if (failure.rele_state !== null) {\n        failure.rele_state = JSON.parse(failure.rele_state.replace(/'/g, '\"')); \n    }\n    \n    if (failure.look_for !== null) {\n        failure.look_for = failure.look_for.split(',').map(id => parseInt(id));\n    } else {\n        failure.look_for = [];\n    }\n    \n    return failure;\n});\n\nmsg.fails = failures;\n\nreturn msg;",
+        "func": "let failures = msg.payload;\n\nfailures = failures.map(failure => {\n    if (failure.rele_state !== null) {\n        const state = {};\n        \n        state.value = failure.rele_state;\n        state.threshold = { begin: failure.interval_begin , end: failure.interval_end };\n        \n        failure.rele_state = state;\n    }\n    \n    if (failure.look_for !== null) {\n        failure.look_for = failure.look_for.split(',').map(id => parseInt(id));\n    } else {\n        failure.look_for = [];\n    }\n    \n    delete failure.interval_begin;\n    delete failure.interval_end;\n    \n    return failure;\n});\n\nmsg.fails = failures;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -3882,7 +3784,7 @@
         "type": "function",
         "z": "a444632620451a72",
         "name": "Parse result",
-        "func": "let failures = msg.payload;\n\nfailures = failures.map(failure => {\n    if (failure.rele_state !== null) {\n        failure.rele_state = JSON.parse(failure.rele_state.replace(/'/g, '\"')); \n    }\n    \n    if (failure.look_for !== null) {\n        failure.look_for = failure.look_for.split(',').map(id => parseInt(id));\n    } else {\n        failure.look_for = [];\n    }\n    \n    return failure;\n});\n\nmsg.fails = failures;\n\nreturn msg;",
+        "func": "let failures = msg.payload;\n\nfailures = failures.map(failure => {\n    if (failure.rele_state !== null) {\n        const state = {};\n        \n        state.value = failure.rele_state;\n        state.threshold = { begin: failure.interval_begin , end: failure.interval_end };\n        \n        failure.rele_state = state;\n    }\n    \n    if (failure.look_for !== null) {\n        failure.look_for = failure.look_for.split(',').map(id => parseInt(id));\n    } else {\n        failure.look_for = [];\n    }\n    \n    delete failure.interval_begin;\n    delete failure.interval_end;\n    \n    return failure;\n});\n\nmsg.fails = failures;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -3933,7 +3835,7 @@
         "type": "function",
         "z": "d54052ea6cb4b184",
         "name": "Parse result",
-        "func": "let failures = msg.payload;\n\nfailures = failures.map(failure => {\n    if (failure.rele_state !== null) {\n        failure.rele_state = JSON.parse(failure.rele_state.replace(/'/g, '\"')); \n    }\n    \n    if (failure.look_for !== null) {\n        failure.look_for = failure.look_for.split(',').map(id => parseInt(id));\n    }\n    \n    return failure;\n});\n\nmsg.payload = failures;\n\nreturn msg;",
+        "func": "let failures = msg.payload;\n\nfailures = failures.map(failure => {\n    if (failure.rele_state !== null) {\n        const state = {};\n        \n        state.value = failure.rele_state;\n        state.threshold = { begin: failure.interval_begin , end: failure.interval_end };\n        \n        failure.rele_state = state;\n    }\n    \n    if (failure.look_for !== null) {\n        failure.look_for = failure.look_for.split(',').map(id => parseInt(id));\n    } else {\n        failure.look_for = [];\n    }\n    \n    delete failure.interval_begin;\n    delete failure.interval_end;\n    \n    return failure;\n});\n\nmsg.payload = failures;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -3944,6 +3846,19 @@
         "wires": [
             [
                 "b3c4bb4261150dd8"
+            ]
+        ]
+    },
+    {
+        "id": "ebb7cbc54a3257fb",
+        "type": "subflow:bab6ffe5b7ae3a28",
+        "z": "d54052ea6cb4b184",
+        "name": "",
+        "x": 620,
+        "y": 138,
+        "wires": [
+            [
+                "cc421e3896e3a98f"
             ]
         ]
     }

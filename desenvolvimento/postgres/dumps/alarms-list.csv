@@ -1,8 +1,8 @@
-﻿id;name;voltage;current;lightness;rele_state;status;send;look_for
-1;"FALHA DE CONEXAO";;;;;True;;"7"
-2;"FALHA NO SENSOR DE LUMINOSIDADE";;;0;;;;
-3;"FALHA NO SENSOR DE CORRENTE";;200;;;;;
-4;"FALHA NO SENSOR DE TENSAO";200;;;;;;
-5;"DISPOSITIVO LIGADO FORA DE CONTEXTO";;;;"{ '"value'": true, '"threshold'": { '"begin'": 21600, '"end'": 64800 } }";;;"6"
-6;"DISPOSITIVO DESLIGADO FORA DE CONTEXTO";;;;"{ '"value'": false, '"threshold'": { '"begin'": 64800, '"end'": 21600 } }";True;;"5"
-7;"ERRO DE INVENTARIO";;;;;False;True;"1"
+﻿name;voltage;current;lightness;rele_state;interval_begin;interval_end;status;send;look_for
+"FALHA DE CONEXAO";;;;;;;True;False;"7"
+"FALHA NO SENSOR DE LUMINOSIDADE";;;0;;;;;;
+"FALHA NO SENSOR DE CORRENTE";;200;;;;;;;
+"FALHA NO SENSOR DE TENSAO";200;;;;;;;;
+"DISPOSITIVO LIGADO FORA DE CONTEXTO";;;;True;21600;64800;;;"6"
+"DISPOSITIVO DESLIGADO FORA DE CONTEXTO";;;;False;64800;21600;True;;"5"
+"ERRO DE INVENTARIO";;;;;;;False;True;"1"

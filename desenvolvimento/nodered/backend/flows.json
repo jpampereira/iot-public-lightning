@@ -242,7 +242,7 @@
         "y": 116,
         "wires": [
             [
-                "187acea3920b5c2c"
+                "96803667e593d0dc"
             ]
         ]
     },
@@ -289,36 +289,17 @@
         "wires": []
     },
     {
-        "id": "187acea3920b5c2c",
-        "type": "function",
-        "z": "8813ec2835daae18",
-        "name": "Parse output",
-        "func": "msg.sensor_output = msg.payload;\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 290,
-        "y": 116,
-        "wires": [
-            [
-                "96803667e593d0dc"
-            ]
-        ]
-    },
-    {
         "id": "96803667e593d0dc",
         "type": "function",
         "z": "8813ec2835daae18",
         "name": "Set query",
-        "func": "const measures = msg.payload;\n\nmsg.payload = `INSERT \n               INTO SENSORS_DATA_REAL_TIME (DEVICE_ID, VOLTAGE, CURRENT, LIGHTNESS, RELE_STATE) \n               VALUES (${measures.device_id}, ${measures.voltage}, ${measures.current}, ${measures.lightness}, '${measures.rele_state}')`;\n\nreturn msg;",
+        "func": "const measures = msg.payload;\n\nmsg.payload = `INSERT \n               INTO SENSORS_DATA_REAL_TIME (DEVICE_ID, VOLTAGE, CURRENT, LIGHTNESS, RELE_STATE) \n               VALUES (${measures.device_id}, ${measures.voltage}, ${measures.current}, ${measures.lightness}, '${measures.rele_state}')`;\n\nmsg.measures = measures;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 440,
+        "x": 280,
         "y": 116,
         "wires": [
             [
@@ -332,7 +313,7 @@
         "z": "8813ec2835daae18",
         "name": "",
         "env": [],
-        "x": 580,
+        "x": 420,
         "y": 116,
         "wires": [
             [
@@ -353,7 +334,7 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 830,
+        "x": 670,
         "y": 116,
         "wires": []
     },
@@ -3565,7 +3546,7 @@
         "type": "function",
         "z": "1ce1485ad608bc7a",
         "name": "Define check functions",
-        "func": "// If attribute value is null in failure rule, it can be ignored\n\nmsg.checkMeasures = function (failure, measure) {\n    return failure !== null ? failure !== measure : true;\n}\n\nmsg.checkReleState = function (failure, measure) {\n    if (failure !== null) {\n        const value = failure.value !== measure.rele_state;\n        \n        const date = new Date(measure.insertion_time);\n        const time = date.getHours() * 3600 + date.getMinutes() * 60 + date.getSeconds(); // In seconds\n        \n        const begin = failure.threshold.begin;\n        const end = failure.threshold.end;\n\n        let threshold;\n        \n        if (begin < end) {\n            threshold = time >= begin && time < end;    \n        } else {\n            threshold = time >= begin || time < end;\n        }\n        \n        return value && threshold;\n    }\n    \n    return true;\n}\n\nmsg.checkStatus = function (failure, status) {\n    return failure !== null ? failure === status : true;\n}\n\nreturn msg;",
+        "func": "// If attribute value is null in failure rule, it can be ignored\n\nmsg.checkMeasures = function (failure, measure) {\n    return failure !== null ? failure !== measure : true;\n}\n\nmsg.checkReleState = function (failure, measure) {\n    if (failure !== null) {\n        const value = failure.value !== measure.rele_state;\n        \n        const date = new Date(measure.insertion_time);\n        const time = date.getHours() * 3600 + date.getMinutes() * 60 + date.getSeconds(); // In seconds\n        \n        const begin = failure.threshold.begin;\n        const end = failure.threshold.end;\n\n        let threshold;\n        \n        if (begin < end) {\n            threshold = time >= begin && time < end;    \n        } else {\n            threshold = time >= begin || time < end;\n        }\n        \n        return (value && threshold) || !threshold;\n    }\n    \n    return true;\n}\n\nmsg.checkStatus = function (failure, status) {\n    return failure !== null ? failure === status : true;\n}\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -6073,7 +6054,7 @@
         "type": "function",
         "z": "a716829fd201f4fd",
         "name": "Parse result",
-        "func": "let failures = msg.payload;\n\nfailures = failures.map(failure => {\n    if (failure.rele_state !== null) {\n        failure.rele_state = JSON.parse(failure.rele_state.replace(/'/g, '\"')); \n    }\n    \n    if (failure.look_for !== null) {\n        failure.look_for = failure.look_for.split(',').map(id => parseInt(id));\n    } else {\n        failure.look_for = [];\n    }\n    \n    return failure;\n});\n\nmsg.failures = failures;\n\nreturn msg;",
+        "func": "let failures = msg.payload;\n\nfailures = failures.map(failure => {\n    if (failure.rele_state !== null) {\n        const state = {};\n        \n        state.value = failure.rele_state;\n        state.threshold = { begin: failure.interval_begin , end: failure.interval_end };\n        \n        failure.rele_state = state;\n    }\n    \n    if (failure.look_for !== null) {\n        failure.look_for = failure.look_for.split(',').map(id => parseInt(id));\n    } else {\n        failure.look_for = [];\n    }\n    \n    delete failure.interval_begin;\n    delete failure.interval_end;\n    \n    return failure;\n});\n\nmsg.failures = failures;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -6124,7 +6105,7 @@
         "type": "function",
         "z": "1ce1485ad608bc7a",
         "name": "Parse result",
-        "func": "let failures = msg.payload;\n\nfailures = failures.map(failure => {\n    if (failure.rele_state !== null) {\n        failure.rele_state = JSON.parse(failure.rele_state.replace(/'/g, '\"')); \n    }\n    \n    if (failure.look_for !== null) {\n        failure.look_for = failure.look_for.split(',').map(id => parseInt(id));\n    } else {\n        failure.look_for = [];\n    }\n    \n    return failure;\n});\n\nmsg.failures = failures;\n\nreturn msg;",
+        "func": "let failures = msg.payload;\n\nfailures = failures.map(failure => {\n    if (failure.rele_state !== null) {\n        const state = {};\n        \n        state.value = failure.rele_state;\n        state.threshold = { begin: failure.interval_begin , end: failure.interval_end };\n        \n        failure.rele_state = state;\n    }\n    \n    if (failure.look_for !== null) {\n        failure.look_for = failure.look_for.split(',').map(id => parseInt(id));\n    } else {\n        failure.look_for = [];\n    }\n    \n    delete failure.interval_begin;\n    delete failure.interval_end;\n    \n    return failure;\n});\n\nmsg.failures = failures;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
