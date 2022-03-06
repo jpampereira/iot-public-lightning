@@ -128,7 +128,7 @@
         "id": "df4bdf4be0d4150f",
         "type": "mqtt-broker",
         "name": "MQTT Mosquitto",
-        "broker": "test.mosquitto.org",
+        "broker": "broker_mqtt",
         "port": "1883",
         "clientid": "",
         "usetls": false,

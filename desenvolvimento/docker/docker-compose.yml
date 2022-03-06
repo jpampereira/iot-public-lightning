@@ -12,6 +12,18 @@ volumes:
 ### SERVICES ############################################################
 services:
 
+  ## MQTT BROKER ###########################
+  broker_mqtt:
+    container_name: broker_mqtt
+    image: eclipse-mosquitto:2.0.14 # https://hub.docker.com/_/eclipse-mosquitto
+    restart: always
+    ports:
+      - 1883:1883
+    volumes:
+      - ../mosquitto/config/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - ../mosquitto/data:/mosquitto/data
+      - ../mosquitto/log:/mosquitto/log
+  
   ## DATABASE ##############################
   db:
     container_name: db
@@ -69,9 +81,11 @@ services:
     volumes:
       - backend-data:/data
     links:
+      - broker_mqtt
       - db
       - db_redis
     depends_on:
+      - broker_mqtt
       - db
       - db_redis
 
@@ -99,9 +113,11 @@ services:
     volumes:
       - devices_nodered-data:/data
     links:
+      - broker_mqtt
       - db
       - devices_redis
     depends_on:
+      - broker_mqtt
       - db
       - devices_redis
       
