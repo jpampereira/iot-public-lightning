@@ -127,7 +127,7 @@
     {
         "id": "df4bdf4be0d4150f",
         "type": "mqtt-broker",
-        "name": "MQTT Mosquitto",
+        "name": "Local MQTT Broker",
         "broker": "broker_mqtt",
         "port": "1883",
         "clientid": "",
@@ -172,6 +172,31 @@
         "options": "{\"host\":\"db_redis\"}",
         "cluster": false,
         "optionsType": "json"
+    },
+    {
+        "id": "1278b67130dc94fa",
+        "type": "mqtt-broker",
+        "name": "MQTT Mosquitto",
+        "broker": "test.mosquitto.org",
+        "port": "1883",
+        "clientid": "",
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "sessionExpiry": ""
     },
     {
         "id": "2dc46f9c24f9eb35",
@@ -230,7 +255,7 @@
         "id": "8b614dd0c4e7ecd6",
         "type": "mqtt in",
         "z": "8813ec2835daae18",
-        "name": "Sensors Output",
+        "name": "Sensors Output Local",
         "topic": "pgc_ufabc/devices/measures",
         "qos": "0",
         "datatype": "json",
@@ -238,7 +263,7 @@
         "nl": false,
         "rap": true,
         "rh": 0,
-        "x": 120,
+        "x": 140,
         "y": 116,
         "wires": [
             [
@@ -254,7 +279,7 @@
         "scope": null,
         "uncaught": false,
         "x": 101,
-        "y": 356,
+        "y": 416,
         "wires": [
             [
                 "4fed0b38fbbe8ae3"
@@ -268,7 +293,7 @@
         "name": "########## Exceptions Treatment",
         "info": "",
         "x": 180,
-        "y": 295,
+        "y": 355,
         "wires": []
     },
     {
@@ -285,7 +310,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 251,
-        "y": 356,
+        "y": 416,
         "wires": []
     },
     {
@@ -299,8 +324,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 280,
-        "y": 116,
+        "x": 340,
+        "y": 147,
         "wires": [
             [
                 "fea15522f7bc9730"
@@ -313,8 +338,8 @@
         "z": "8813ec2835daae18",
         "name": "",
         "env": [],
-        "x": 420,
-        "y": 116,
+        "x": 480,
+        "y": 147,
         "wires": [
             [
                 "8885c9540ad9bf99"
@@ -334,8 +359,8 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 670,
-        "y": 116,
+        "x": 730,
+        "y": 147,
         "wires": []
     },
     {
@@ -1884,7 +1909,7 @@
         "id": "2baad984afc85eae",
         "type": "mqtt out",
         "z": "e27b09cd4ecd866a",
-        "name": "Sensors Input",
+        "name": "Sensors Input Local",
         "topic": "",
         "qos": "0",
         "retain": "",
@@ -1894,8 +1919,8 @@
         "correl": "",
         "expiry": "",
         "broker": "df4bdf4be0d4150f",
-        "x": 880,
-        "y": 155,
+        "x": 1120,
+        "y": 216,
         "wires": []
     },
     {
@@ -1908,7 +1933,7 @@
         "upload": false,
         "swaggerDoc": "",
         "x": 150,
-        "y": 135,
+        "y": 151,
         "wires": [
             [
                 "49692ea51cb1817f"
@@ -1920,18 +1945,18 @@
         "type": "function",
         "z": "e27b09cd4ecd866a",
         "name": "Parse request body",
-        "func": "const device_id = msg.payload[0].id;\nconst action    = msg.action;\n\nmsg.topic = `pgc_ufabc/devices/actions/change_state/${device_id}`;\nmsg.payload = action;\n\nreturn msg;",
+        "func": "const device_id = msg.payload[0].id;\nconst action    = msg.action;\n\nmsg.topic = `pgc_ufabc/devices/actions/change_state/${device_id}`;\nmsg.payload = action;\n\nmsg.device_id = device_id;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
         "x": 670,
-        "y": 135,
+        "y": 151,
         "wires": [
             [
                 "100673d3690931d5",
-                "2baad984afc85eae"
+                "9daeb4c690348a8b"
             ]
         ]
     },
@@ -1943,7 +1968,7 @@
         "statusCode": "",
         "headers": {},
         "x": 1080,
-        "y": 115,
+        "y": 116,
         "wires": []
     },
     {
@@ -1958,7 +1983,7 @@
         "finalize": "",
         "libs": [],
         "x": 890,
-        "y": 115,
+        "y": 116,
         "wires": [
             [
                 "76d3eecb7c2eb2bc",
@@ -1988,7 +2013,7 @@
         "finalize": "",
         "libs": [],
         "x": 350,
-        "y": 135,
+        "y": 151,
         "wires": [
             [
                 "394e42416b908028"
@@ -2002,7 +2027,7 @@
         "name": "",
         "env": [],
         "x": 500,
-        "y": 135,
+        "y": 151,
         "wires": [
             [
                 "2a89e07262bccc41"
@@ -2023,7 +2048,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 1320,
-        "y": 115,
+        "y": 116,
         "wires": []
     },
     {
@@ -2076,7 +2101,7 @@
         "scope": null,
         "uncaught": false,
         "x": 100,
-        "y": 596,
+        "y": 696,
         "wires": [
             [
                 "54d530db04013318"
@@ -2090,7 +2115,7 @@
         "name": "########## Exceptions Treatment",
         "info": "",
         "x": 180,
-        "y": 535,
+        "y": 636,
         "wires": []
     },
     {
@@ -2107,7 +2132,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 630,
-        "y": 596,
+        "y": 696,
         "wires": []
     },
     {
@@ -2224,7 +2249,7 @@
         "finalize": "",
         "libs": [],
         "x": 270,
-        "y": 596,
+        "y": 696,
         "wires": [
             [
                 "783d881f4f37ed3b",
@@ -2240,7 +2265,7 @@
         "statusCode": "",
         "headers": {},
         "x": 460,
-        "y": 596,
+        "y": 696,
         "wires": []
     },
     {
@@ -2513,7 +2538,7 @@
             "428c91e378be6650"
         ],
         "x": 55,
-        "y": 335,
+        "y": 442,
         "wires": [
             [
                 "d6c15f789150113c"
@@ -2527,7 +2552,7 @@
         "name": "########## Update messages interval",
         "info": "",
         "x": 190,
-        "y": 276,
+        "y": 316,
         "wires": []
     },
     {
@@ -2542,7 +2567,7 @@
         "finalize": "",
         "libs": [],
         "x": 180,
-        "y": 335,
+        "y": 442,
         "wires": [
             [
                 "e3504661b768ac18"
@@ -2556,7 +2581,7 @@
         "name": "",
         "env": [],
         "x": 340,
-        "y": 335,
+        "y": 442,
         "wires": [
             [
                 "4f29d941c74707a5"
@@ -2568,17 +2593,17 @@
         "type": "function",
         "z": "e27b09cd4ecd866a",
         "name": "Prepare message",
-        "func": "const device_id = msg.payload[0].id;\nconst interval  = msg.payload[0].interval;\n\nmsg.topic = `pgc_ufabc/devices/actions/change_interval/${device_id}`;\nmsg.payload = interval;\n\nreturn msg;",
+        "func": "const device_id = msg.payload[0].id;\nconst interval  = msg.payload[0].interval;\n\nmsg.topic = `pgc_ufabc/devices/actions/change_interval/${device_id}`;\nmsg.payload = interval;\n\nmsg.device_id = device_id;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
         "x": 510,
-        "y": 335,
+        "y": 442,
         "wires": [
             [
-                "4bc37b961a472284",
+                "8424f1c292375f5a",
                 "b644f813a9b949c7"
             ]
         ]
@@ -2587,7 +2612,7 @@
         "id": "4bc37b961a472284",
         "type": "mqtt out",
         "z": "e27b09cd4ecd866a",
-        "name": "Sensors Input",
+        "name": "Sensors Input Local",
         "topic": "",
         "qos": "0",
         "retain": "",
@@ -2597,8 +2622,8 @@
         "correl": "",
         "expiry": "",
         "broker": "df4bdf4be0d4150f",
-        "x": 700,
-        "y": 335,
+        "x": 960,
+        "y": 429,
         "wires": []
     },
     {
@@ -2614,8 +2639,8 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 940,
-        "y": 336,
+        "x": 780,
+        "y": 482,
         "wires": []
     },
     {
@@ -6320,6 +6345,124 @@
         "headers": {},
         "x": 920,
         "y": 1155,
+        "wires": []
+    },
+    {
+        "id": "85a48ca071771654",
+        "type": "mqtt in",
+        "z": "8813ec2835daae18",
+        "name": "Sensors Output Public",
+        "topic": "pgc_ufabc/devices/measures",
+        "qos": "0",
+        "datatype": "json",
+        "broker": "1278b67130dc94fa",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "x": 140,
+        "y": 176,
+        "wires": [
+            [
+                "96803667e593d0dc"
+            ]
+        ]
+    },
+    {
+        "id": "9daeb4c690348a8b",
+        "type": "switch",
+        "z": "e27b09cd4ecd866a",
+        "name": "What is device ID?",
+        "property": "device_id",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "1",
+                "vt": "num"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "false",
+        "repair": false,
+        "outputs": 2,
+        "x": 890,
+        "y": 190,
+        "wires": [
+            [
+                "7ada6d2a89919aee"
+            ],
+            [
+                "2baad984afc85eae"
+            ]
+        ]
+    },
+    {
+        "id": "8424f1c292375f5a",
+        "type": "switch",
+        "z": "e27b09cd4ecd866a",
+        "name": "What is device ID?",
+        "property": "device_id",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "1",
+                "vt": "num"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "false",
+        "repair": false,
+        "outputs": 2,
+        "x": 730,
+        "y": 402,
+        "wires": [
+            [
+                "10b9534d381f31d9"
+            ],
+            [
+                "4bc37b961a472284"
+            ]
+        ]
+    },
+    {
+        "id": "10b9534d381f31d9",
+        "type": "mqtt out",
+        "z": "e27b09cd4ecd866a",
+        "name": "Sensors Input Public",
+        "topic": "",
+        "qos": "0",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "1278b67130dc94fa",
+        "x": 960,
+        "y": 375,
+        "wires": []
+    },
+    {
+        "id": "7ada6d2a89919aee",
+        "type": "mqtt out",
+        "z": "e27b09cd4ecd866a",
+        "name": "Sensors Input Public",
+        "topic": "",
+        "qos": "0",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "1278b67130dc94fa",
+        "x": 1120,
+        "y": 163,
         "wires": []
     }
 ]

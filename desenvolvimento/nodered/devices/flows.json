@@ -99,7 +99,7 @@
     {
         "id": "0cae39fb33383cf0",
         "type": "mqtt-broker",
-        "name": "MQTT Mosquitto",
+        "name": "Local MQTT Broker",
         "broker": "broker_mqtt",
         "port": "1883",
         "clientid": "",
