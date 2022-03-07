@@ -1,8 +1,8 @@
 ﻿name;voltage;current;lightness;rele_state;interval_begin;interval_end;status;send;look_for
 "FALHA DE CONEXAO";;;;;;;True;False;"7"
 "FALHA NO SENSOR DE LUMINOSIDADE";;;0;;;;;;
-"FALHA NO SENSOR DE CORRENTE";;200;;;;;;;
-"FALHA NO SENSOR DE TENSAO";200;;;;;;;;
+"FALHA NO SENSOR DE CORRENTE";;37.5;;;;;;;
+"FALHA NO SENSOR DE TENSAO";835;;;;;;;;
 "DISPOSITIVO LIGADO FORA DE CONTEXTO";;;;True;21600;64800;;;"6"
 "DISPOSITIVO DESLIGADO FORA DE CONTEXTO";;;;False;64800;21600;True;;"5"
 "ERRO DE INVENTARIO";;;;;;;False;True;"1"
