@@ -1513,8 +1513,8 @@
         "name": "Send response",
         "statusCode": "",
         "headers": {},
-        "x": 1240,
-        "y": 115,
+        "x": 600,
+        "y": 278,
         "wires": []
     },
     {
@@ -1527,7 +1527,7 @@
         "upload": false,
         "swaggerDoc": "",
         "x": 150,
-        "y": 976,
+        "y": 1096,
         "wires": [
             [
                 "c25aa9a97958c4e6"
@@ -1541,7 +1541,7 @@
         "name": "",
         "env": [],
         "x": 740,
-        "y": 976,
+        "y": 1096,
         "wires": [
             [
                 "86ba935683dc8e83"
@@ -1556,7 +1556,7 @@
         "statusCode": "",
         "headers": {},
         "x": 1060,
-        "y": 976,
+        "y": 1096,
         "wires": []
     },
     {
@@ -1573,7 +1573,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 1280,
-        "y": 976,
+        "y": 1096,
         "wires": []
     },
     {
@@ -1588,7 +1588,7 @@
         "finalize": "",
         "libs": [],
         "x": 550,
-        "y": 955,
+        "y": 1075,
         "wires": [
             [
                 "b5500c0de884707c"
@@ -1607,7 +1607,7 @@
         "finalize": "",
         "libs": [],
         "x": 890,
-        "y": 976,
+        "y": 1096,
         "wires": [
             [
                 "3f76da596363637a",
@@ -1638,7 +1638,7 @@
         "repair": false,
         "outputs": 2,
         "x": 350,
-        "y": 976,
+        "y": 1096,
         "wires": [
             [
                 "bb96314b45690cfe"
@@ -1660,7 +1660,7 @@
         "finalize": "",
         "libs": [],
         "x": 550,
-        "y": 998,
+        "y": 1118,
         "wires": [
             [
                 "b5500c0de884707c"
@@ -1677,7 +1677,7 @@
         "upload": false,
         "swaggerDoc": "",
         "x": 130,
-        "y": 332,
+        "y": 452,
         "wires": [
             [
                 "0ff29a6d6ef0912d"
@@ -1696,7 +1696,7 @@
         "finalize": "",
         "libs": [],
         "x": 330,
-        "y": 332,
+        "y": 452,
         "wires": [
             [
                 "3e0f2d19e87fc036"
@@ -1710,7 +1710,7 @@
         "name": "",
         "env": [],
         "x": 500,
-        "y": 332,
+        "y": 452,
         "wires": [
             [
                 "cd9beedcf7c41e7a"
@@ -1731,7 +1731,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 1280,
-        "y": 353,
+        "y": 473,
         "wires": []
     },
     {
@@ -1755,7 +1755,7 @@
         "repair": false,
         "outputs": 2,
         "x": 660,
-        "y": 332,
+        "y": 452,
         "wires": [
             [
                 "354d74e276ba97cd"
@@ -1777,7 +1777,7 @@
         "finalize": "",
         "libs": [],
         "x": 870,
-        "y": 353,
+        "y": 473,
         "wires": [
             [
                 "45059aa775477247",
@@ -1793,7 +1793,7 @@
         "statusCode": "",
         "headers": {},
         "x": 1060,
-        "y": 353,
+        "y": 473,
         "wires": []
     },
     {
@@ -1808,7 +1808,7 @@
         "finalize": "",
         "libs": [],
         "x": 170,
-        "y": 436,
+        "y": 556,
         "wires": [
             [
                 "583ec79d0b612605"
@@ -1829,7 +1829,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 900,
-        "y": 436,
+        "y": 556,
         "wires": []
     },
     {
@@ -1839,7 +1839,7 @@
         "name": "",
         "env": [],
         "x": 320,
-        "y": 436,
+        "y": 556,
         "wires": [
             [
                 "7ace7937a50e561f"
@@ -1858,7 +1858,7 @@
         "finalize": "",
         "libs": [],
         "x": 490,
-        "y": 436,
+        "y": 556,
         "wires": [
             [
                 "ea840e0e78c36329",
@@ -1874,7 +1874,7 @@
         "statusCode": "",
         "headers": {},
         "x": 680,
-        "y": 436,
+        "y": 556,
         "wires": []
     },
     {
@@ -1886,7 +1886,7 @@
             "42357eb93017ae22"
         ],
         "x": 795,
-        "y": 316,
+        "y": 436,
         "wires": []
     },
     {
@@ -1898,7 +1898,7 @@
             "354d74e276ba97cd"
         ],
         "x": 55,
-        "y": 436,
+        "y": 556,
         "wires": [
             [
                 "1dd4dac7de48fd07"
@@ -2059,7 +2059,7 @@
         "scope": null,
         "uncaught": false,
         "x": 100,
-        "y": 1416,
+        "y": 1536,
         "wires": [
             [
                 "d1e16d213602f942"
@@ -2073,7 +2073,7 @@
         "name": "########## Exceptions Treatment",
         "info": "",
         "x": 180,
-        "y": 1355,
+        "y": 1475,
         "wires": []
     },
     {
@@ -2090,7 +2090,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 630,
-        "y": 1416,
+        "y": 1536,
         "wires": []
     },
     {
@@ -2162,7 +2162,7 @@
         "name": "########## Insert a new device",
         "info": "",
         "x": 170,
-        "y": 255,
+        "y": 375,
         "wires": []
     },
     {
@@ -2172,7 +2172,7 @@
         "name": "########## Get geographic info",
         "info": "",
         "x": 170,
-        "y": 895,
+        "y": 1015,
         "wires": []
     },
     {
@@ -2187,7 +2187,7 @@
         "finalize": "",
         "libs": [],
         "x": 270,
-        "y": 1416,
+        "y": 1536,
         "wires": [
             [
                 "ae3acdea4e84f4b4",
@@ -2203,7 +2203,7 @@
         "statusCode": "",
         "headers": {},
         "x": 460,
-        "y": 1416,
+        "y": 1536,
         "wires": []
     },
     {
@@ -2278,7 +2278,7 @@
         "upload": false,
         "swaggerDoc": "",
         "x": 120,
-        "y": 616,
+        "y": 736,
         "wires": [
             [
                 "4b16be6b6b2b1e3b"
@@ -2292,7 +2292,7 @@
         "name": "########## Update a device",
         "info": "",
         "x": 160,
-        "y": 536,
+        "y": 656,
         "wires": []
     },
     {
@@ -2307,7 +2307,7 @@
         "finalize": "",
         "libs": [],
         "x": 310,
-        "y": 616,
+        "y": 736,
         "wires": [
             [
                 "936642715f14669a"
@@ -2321,7 +2321,7 @@
         "name": "",
         "env": [],
         "x": 480,
-        "y": 616,
+        "y": 736,
         "wires": [
             [
                 "122724bf96a147d7"
@@ -2349,7 +2349,7 @@
         "repair": false,
         "outputs": 2,
         "x": 640,
-        "y": 616,
+        "y": 736,
         "wires": [
             [
                 "3fd0be4cc0f3bdbc"
@@ -2373,7 +2373,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 1250,
-        "y": 637,
+        "y": 757,
         "wires": []
     },
     {
@@ -2388,7 +2388,7 @@
         "finalize": "",
         "libs": [],
         "x": 850,
-        "y": 637,
+        "y": 757,
         "wires": [
             [
                 "2101839e3edcbd88",
@@ -2404,7 +2404,7 @@
         "statusCode": "",
         "headers": {},
         "x": 1040,
-        "y": 637,
+        "y": 757,
         "wires": []
     },
     {
@@ -2416,7 +2416,7 @@
             "bca9421ea3162cbe"
         ],
         "x": 775,
-        "y": 594,
+        "y": 714,
         "wires": []
     },
     {
@@ -2431,7 +2431,7 @@
         "finalize": "",
         "libs": [],
         "x": 180,
-        "y": 756,
+        "y": 876,
         "wires": [
             [
                 "a7a9fdad92d0bee0"
@@ -2447,7 +2447,7 @@
             "3fd0be4cc0f3bdbc"
         ],
         "x": 55,
-        "y": 756,
+        "y": 876,
         "wires": [
             [
                 "7d354790d19477dd"
@@ -2461,7 +2461,7 @@
         "name": "",
         "env": [],
         "x": 340,
-        "y": 756,
+        "y": 876,
         "wires": [
             [
                 "5e444f6f03c677da"
@@ -2482,7 +2482,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 750,
-        "y": 796,
+        "y": 916,
         "wires": []
     },
     {
@@ -2497,7 +2497,7 @@
         "finalize": "",
         "libs": [],
         "x": 510,
-        "y": 756,
+        "y": 876,
         "wires": [
             [
                 "f1ec79581a0d0359",
@@ -2514,7 +2514,7 @@
         "statusCode": "",
         "headers": {},
         "x": 720,
-        "y": 756,
+        "y": 876,
         "wires": []
     },
     {
@@ -2526,7 +2526,7 @@
             "e94d04fcb7ddddd9"
         ],
         "x": 655,
-        "y": 716,
+        "y": 836,
         "wires": []
     },
     {
@@ -2743,7 +2743,7 @@
         "id": "cb6bcc25b4569647",
         "type": "debug",
         "z": "4a674aaa9e667dd6",
-        "name": "[EXIT 1] Get informations of a device",
+        "name": "[EXIT 2] Get informations of a device",
         "active": false,
         "tosidebar": true,
         "console": false,
@@ -2752,15 +2752,15 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1490,
-        "y": 115,
+        "x": 850,
+        "y": 278,
         "wires": []
     },
     {
         "id": "2de0d96376549d84",
         "type": "debug",
         "z": "4a674aaa9e667dd6",
-        "name": "[EXIT 2] Get informations of a device",
+        "name": "[EXIT 1] Get informations of a device",
         "active": false,
         "tosidebar": true,
         "console": false,
@@ -2778,7 +2778,7 @@
         "type": "function",
         "z": "4a674aaa9e667dd6",
         "name": "Parse result",
-        "func": "let devices = msg.payload;\n\ndevices = devices.map(device => {\n    device.status = device.status ? 'OPERACIONAL' : 'NÃO OPERACIONAL';\n    return device;\n});\n\nmsg.payload = devices;\n\nreturn msg;",
+        "func": "let devices = msg.payload;\n\ndevices = devices.map(device => {\n    device.status = device.status ? 'OPERACIONAL' : 'NÃO OPERACIONAL';\n    return device;\n});\n\nmsg.devices = devices;\nmsg.counter = devices.length;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -2788,8 +2788,7 @@
         "y": 115,
         "wires": [
             [
-                "cb6bcc25b4569647",
-                "5e01cf1a6a9c08e8"
+                "a9b5679456086136"
             ]
         ]
     },
@@ -6047,7 +6046,7 @@
         "type": "function",
         "z": "a716829fd201f4fd",
         "name": "Get failures rules",
-        "func": "msg.payload = 'SELECT * FROM ALARMS_LIST';\nreturn msg;",
+        "func": "msg.payload = 'SELECT * FROM ALARMS_LIST ORDER BY ID';\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -6098,7 +6097,7 @@
         "type": "function",
         "z": "1ce1485ad608bc7a",
         "name": "Get failures rules",
-        "func": "msg.payload = 'SELECT * FROM ALARMS_LIST';\nreturn msg;",
+        "func": "msg.payload = 'SELECT * FROM ALARMS_LIST ORDER BY ID';\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -6227,7 +6226,7 @@
         "name": "########## Get alarms of device",
         "info": "",
         "x": 170,
-        "y": 1096,
+        "y": 1216,
         "wires": []
     },
     {
@@ -6240,7 +6239,7 @@
         "upload": false,
         "swaggerDoc": "",
         "x": 150,
-        "y": 1177,
+        "y": 1297,
         "wires": [
             [
                 "73ec4cc75728f245"
@@ -6259,7 +6258,7 @@
         "finalize": "",
         "libs": [],
         "x": 370,
-        "y": 1177,
+        "y": 1297,
         "wires": [
             [
                 "909d876e8a218e4f"
@@ -6272,7 +6271,7 @@
         "z": "4a674aaa9e667dd6",
         "name": "",
         "x": 560,
-        "y": 1177,
+        "y": 1297,
         "wires": [
             [
                 "dc283aa3dce143dc"
@@ -6296,7 +6295,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 800,
-        "y": 1199,
+        "y": 1319,
         "wires": []
     },
     {
@@ -6313,7 +6312,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 1140,
-        "y": 1156,
+        "y": 1276,
         "wires": []
     },
     {
@@ -6328,7 +6327,7 @@
         "finalize": "",
         "libs": [],
         "x": 750,
-        "y": 1155,
+        "y": 1275,
         "wires": [
             [
                 "070dae8fb52096d4",
@@ -6344,7 +6343,7 @@
         "statusCode": "",
         "headers": {},
         "x": 920,
-        "y": 1155,
+        "y": 1275,
         "wires": []
     },
     {
@@ -6464,5 +6463,156 @@
         "x": 1120,
         "y": 163,
         "wires": []
+    },
+    {
+        "id": "a9b5679456086136",
+        "type": "link out",
+        "z": "4a674aaa9e667dd6",
+        "name": "OUT (1) Get informations of a device",
+        "links": [
+            "68f2fc6c7a7b41a7"
+        ],
+        "x": 1175,
+        "y": 115,
+        "wires": []
+    },
+    {
+        "id": "68f2fc6c7a7b41a7",
+        "type": "link in",
+        "z": "4a674aaa9e667dd6",
+        "name": "IN (1) Get informations of a device",
+        "links": [
+            "a9b5679456086136",
+            "c45fe0bb68869e47"
+        ],
+        "x": 55,
+        "y": 256,
+        "wires": [
+            [
+                "90d54881cbd1f94c"
+            ]
+        ]
+    },
+    {
+        "id": "8540c014f294007d",
+        "type": "function",
+        "z": "4a674aaa9e667dd6",
+        "name": "Get alarms of device",
+        "func": "const pos = msg.counter-1;\nconst device = msg.devices[pos];\n\nmsg.payload = { device_id: device.id };\n\nmsg.counter = pos;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 235,
+        "wires": [
+            [
+                "4675435db46b5c0b"
+            ]
+        ]
+    },
+    {
+        "id": "4675435db46b5c0b",
+        "type": "http request",
+        "z": "4a674aaa9e667dd6",
+        "name": "Request alarms",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "query",
+        "url": "localhost:1880/devices/info/alarms",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "x": 619,
+        "y": 235,
+        "wires": [
+            [
+                "9ef9e2743961bebb"
+            ]
+        ]
+    },
+    {
+        "id": "9ef9e2743961bebb",
+        "type": "function",
+        "z": "4a674aaa9e667dd6",
+        "name": "Parse result",
+        "func": "const pos = msg.counter;\nconst device = msg.devices[pos];\nconst alarms = msg.payload;\n\ndevice.has_alarms = alarms.length > 0 ? true : false;\n\nmsg.devices[pos] = device;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 790,
+        "y": 235,
+        "wires": [
+            [
+                "c45fe0bb68869e47"
+            ]
+        ]
+    },
+    {
+        "id": "c45fe0bb68869e47",
+        "type": "link out",
+        "z": "4a674aaa9e667dd6",
+        "name": "OUT (2) Get informations of a device",
+        "links": [
+            "68f2fc6c7a7b41a7"
+        ],
+        "x": 895,
+        "y": 235,
+        "wires": []
+    },
+    {
+        "id": "90d54881cbd1f94c",
+        "type": "switch",
+        "z": "4a674aaa9e667dd6",
+        "name": "Search all devices?",
+        "property": "counter",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "gt",
+                "v": "0",
+                "vt": "num"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "false",
+        "repair": false,
+        "outputs": 2,
+        "x": 190,
+        "y": 256,
+        "wires": [
+            [
+                "8540c014f294007d"
+            ],
+            [
+                "ef14c156e2993b31"
+            ]
+        ]
+    },
+    {
+        "id": "ef14c156e2993b31",
+        "type": "function",
+        "z": "4a674aaa9e667dd6",
+        "name": "Prepare response",
+        "func": "msg.payload = msg.devices;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 410,
+        "y": 278,
+        "wires": [
+            [
+                "cb6bcc25b4569647",
+                "5e01cf1a6a9c08e8"
+            ]
+        ]
     }
 ]

@@ -40,7 +40,9 @@ function getCoordinates(coordinates) {
 
 function createMarker (device, infoWindow) {
 	const position = getCoordinates(device.coordinates);
-	const marker = new google.maps.Marker({ position, icon: '../images/maps/marker.png', device, infoWindow });
+	const icon = device.has_alarms ? '../images/maps/marker-problem.png' : '../images/maps/marker.png';
+
+	const marker = new google.maps.Marker({ position, icon, device, infoWindow });
 
 	return marker;
 }
