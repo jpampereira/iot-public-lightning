@@ -679,7 +679,7 @@
         "y": 295,
         "wires": [
             [
-                "bc47812a82cb85c3"
+                "a176ecc87e0d6a8e"
             ]
         ]
     },
@@ -694,7 +694,7 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 810,
+        "x": 950,
         "y": 276,
         "wires": [
             [
@@ -713,7 +713,7 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1040,
+        "x": 1180,
         "y": 276,
         "wires": [
             [
@@ -741,7 +741,7 @@
         "checkall": "false",
         "repair": false,
         "outputs": 2,
-        "x": 610,
+        "x": 750,
         "y": 295,
         "wires": [
             [
@@ -760,7 +760,7 @@
         "links": [
             "3648289a20e9cc5d"
         ],
-        "x": 1195,
+        "x": 1335,
         "y": 276,
         "wires": []
     },
@@ -1245,7 +1245,7 @@
         "type": "function",
         "z": "7f5557aca01f4737",
         "name": "Define thresholds",
-        "func": "const interval = msg.interval;\n\nconst threshold = new Date();\nthreshold.setSeconds(0);\nthreshold.setMilliseconds(0);\n\nif (interval > 60) {\n    threshold.setMinutes(0);\n    \n    if (interval > 1440) {\n        const hour = threshold.getHours();\n        \n        if (hour > 18) { // Hour between 18:01 and 23:59\n            threshold.setHours(18);\n        } else if (hour > 6) { // Hour between 06:01 and 17:59\n            threshold.setHours(6);\n        } else if (hour < 6) { // Hour between 00:00 and 05:59\n            threshold.setDate(threshold.getDate()-1);\n            threshold.setHours(18);\n        }\n    }\n}\n\nmsg.threshold = threshold;\n\nreturn msg;",
+        "func": "const interval = msg.interval;\n\nconst threshold = new Date();\nthreshold.setSeconds(0);\nthreshold.setMilliseconds(0);\n\nif (interval > 60) {\n    threshold.setMinutes(0);\n    \n    if (interval > 1440) {\n        const hour = threshold.getHours();\n        threshold.setHours(Math.ceil(hour/6) * 6);\n    }\n}\n\nmsg.threshold = threshold;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1291,7 +1291,7 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 870,
+        "x": 1010,
         "y": 316,
         "wires": []
     },
@@ -1402,7 +1402,7 @@
         "type": "function",
         "z": "7f5557aca01f4737",
         "name": "Set query",
-        "func": "// Get data from current month\n\nfunction format_date (timestamp) {\n    const year = timestamp.getFullYear();\n    const mon  = `0${timestamp.getMonth()+1}`.slice(-2);\n    const day  = `0${timestamp.getDate()}`.slice(-2);\n    const hour = `0${timestamp.getHours()}`.slice(-2);\n    const min  = `0${timestamp.getMinutes()}`.slice(-2);\n    const sec  = `0${timestamp.getSeconds()}`.slice(-2);\n    \n    return `${year}-${mon}-${day} ${hour}:${min}:${sec}`;\n}\n\nconst threshold   = msg.threshold;\nconst device_name = msg.device_name;\n\nconst end = format_date(threshold);\n\nlet begin = new Date(threshold);\nbegin.setDate(1);\nbegin = format_date(begin);\n\nmsg.payload = `SELECT SDI.VOLTAGE_MIN, SDI.VOLTAGE_MAX, SDI.VOLTAGE_AVG, SDI.CURRENT_MIN, SDI.CURRENT_MAX, SDI.CURRENT_AVG, SDI.LIGHTNESS_MIN, SDI.LIGHTNESS_MAX, SDI.LIGHTNESS_AVG, SDI.POWER_MIN, SDI.POWER_MAX, SDI.POWER_AVG, SDI.POWER_EXPEND, SDI.NUM_REGISTRIES, SDI.INSERTION_TIME\n               FROM SENSORS_DATA_INTERVAL AS SDI \n               JOIN DEVICES AS D ON SDI.DEVICE_ID = D.ID\n               WHERE D.NAME = '${device_name}'\n               AND (SDI.INSERTION_TIME AT TIME ZONE 'CST') > (TO_TIMESTAMP('${begin}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST') \n               AND (SDI.INSERTION_TIME AT TIME ZONE 'CST') <= (TO_TIMESTAMP('${end}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST')\n               ORDER BY SDI.INSERTION_TIME`;\n               \nreturn msg;",
+        "func": "// Get data from current month\n\nfunction format_date (timestamp) {\n    const year = timestamp.getFullYear();\n    const mon  = `0${timestamp.getMonth()+1}`.slice(-2);\n    const day  = `0${timestamp.getDate()}`.slice(-2);\n    const hour = `0${timestamp.getHours()}`.slice(-2);\n    const min  = `0${timestamp.getMinutes()}`.slice(-2);\n    const sec  = `0${timestamp.getSeconds()}`.slice(-2);\n    \n    return `${year}-${mon}-${day} ${hour}:${min}:${sec}`;\n}\n\nconst threshold   = msg.threshold;\nconst device_name = msg.device_name;\n\nconst end = format_date(threshold);\n\nlet begin = new Date(threshold);\nbegin.setDate(1);\nbegin.setHours(0);\nbegin = format_date(begin);\n\nmsg.payload = `SELECT SDI.VOLTAGE_MIN, SDI.VOLTAGE_MAX, SDI.VOLTAGE_AVG, SDI.CURRENT_MIN, SDI.CURRENT_MAX, SDI.CURRENT_AVG, SDI.LIGHTNESS_MIN, SDI.LIGHTNESS_MAX, SDI.LIGHTNESS_AVG, SDI.POWER_MIN, SDI.POWER_MAX, SDI.POWER_AVG, SDI.POWER_EXPEND, SDI.NUM_REGISTRIES, SDI.INSERTION_TIME\n               FROM SENSORS_DATA_INTERVAL AS SDI \n               JOIN DEVICES AS D ON SDI.DEVICE_ID = D.ID\n               WHERE D.NAME = '${device_name}'\n               AND (SDI.INSERTION_TIME AT TIME ZONE 'CST') > (TO_TIMESTAMP('${begin}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST') \n               AND (SDI.INSERTION_TIME AT TIME ZONE 'CST') <= (TO_TIMESTAMP('${end}', 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'CST')\n               ORDER BY SDI.INSERTION_TIME`;\n               \nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1421,7 +1421,7 @@
         "type": "function",
         "z": "7f5557aca01f4737",
         "name": "Set n_groups and hop",
-        "func": "const interval = msg.interval;\n\nlet n_groups;\nlet hop;\n\nswitch (interval) {\n    case 1440:\n        n_groups = 24;\n        hop = 1000 * 60 * 60 * 1; // 1 hour (millseconds * seconds * minutes * hours)\n        break;\n    case 10080:\n        n_groups = 14;\n        hop = 1000 * 60 * 60 * 12; // 12 hours\n        break;\n    case 44640:\n        n_groups = (new Date(msg.threshold)).getDate() * 2 - 1;\n        hop = 1000 * 60 * 60 * 12; // 12 hours\n        break;\n}\n\nmsg.n_groups = n_groups;\nmsg.hop      = hop;\n\nreturn msg;",
+        "func": "const interval = msg.interval;\n\nlet n_groups;\nlet hop;\n\nswitch (interval) {\n    case 1440:\n        n_groups = 24;\n        hop = 1000 * 60 * 60 * 1; // 1 hour (millseconds * seconds * minutes * hours)\n        break;\n    case 10080:\n        n_groups = 28;\n        hop = 1000 * 60 * 60 * 6; // 6 hours\n        break;\n    case 44640:\n        const timestamp = new Date(msg.threshold); \n        n_groups = ((timestamp.getDate()-1) * 4) + Math.ceil(timestamp.getHours()/6);\n        hop = 1000 * 60 * 60 * 6; // 6 hours\n        break;\n}\n\nmsg.n_groups = n_groups;\nmsg.hop      = hop;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -6612,6 +6612,25 @@
             [
                 "cb6bcc25b4569647",
                 "5e01cf1a6a9c08e8"
+            ]
+        ]
+    },
+    {
+        "id": "a176ecc87e0d6a8e",
+        "type": "function",
+        "z": "7bfe80d199363eac",
+        "name": "Filter data",
+        "func": "msg.payload = msg.payload.filter(data => data.voltage !== 835 && data.current !== 37.5);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 600,
+        "y": 295,
+        "wires": [
+            [
+                "bc47812a82cb85c3"
             ]
         ]
     }
