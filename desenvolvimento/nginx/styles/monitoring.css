@@ -5,7 +5,7 @@
 :root {
 	--background-color: #242424;
 	--cards-color:      #1d1d1d;
-	--headers-color:    #097479;
+	--headers-color:    rgb(9, 116, 121);
 	--btn-hover:        #d6d6d6;
 	--btn-active:       #9c9c9c;
 	--font:               Roboto, Arial, sans-serif;

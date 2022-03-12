@@ -17,8 +17,8 @@ function createCharts () {
 	}
 }
 
-function updateGaugeCharts (device_name) {
-	request('/devices/measures/last', { device_name }, 'get')
+function updateGaugeCharts (device_id) {
+	request('/devices/measures/last', { device_id }, 'get')
 	.then(res => {
 		const data = res[0];
 
@@ -43,8 +43,8 @@ function updateGaugeCharts (device_name) {
 	});
 }
 
-function updateLineCharts (device_name, interval) {
-	request('/devices/measures/interval', { device_name, interval }, 'get')
+function updateLineCharts (device_id, interval) {
+	request('/devices/measures/interval', { device_id, interval }, 'get')
 	.then(res => {
 		const labels = res.labels;
 		const values = res.values;

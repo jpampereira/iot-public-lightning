@@ -86,35 +86,44 @@ let gaugesInterval;
 let linesInterval;
 
 function gaugesIntervalFunction () {
-	const deviceName = form.elements.current_name.value;
-	updateGaugeCharts(deviceName);
+	const deviceId = form.elements.current_id.value;
+	updateGaugeCharts(deviceId);
 }
 
 function linesIntervalFunction () {
-	const deviceName = form.elements.current_name.value;
-	updateLineCharts(deviceName, 60);
+	const deviceId = form.elements.current_id.value;
+	updateLineCharts(deviceId, 60);
 }
 
 /*************** FORM FUNCTIONS ***************/
 
-function formSubmission(e) {
+async function formSubmission(e) {
 	e.preventDefault();
 	
 	const device_name = form.elements.device_name.value;
 	const currentName = form.elements.current_name;
+	const currentId   = form.elements.current_id;
 
-	if (device_name !== currentName.value && device_name !== "") {
+	if (device_name !== currentName.value && device_name !== '') {
 		clearInterval(gaugesInterval);
 		clearInterval(linesInterval);
 
-		updateMap('byDevice', { device_name }).then(updateInfoCard).catch(resetInfoCard);
-		updateGaugeCharts(device_name);
-		updateLineCharts(device_name, 60);
+		updateMap('byDevice', { device_name })
+		.then(updateInfoCard)
+		.catch(resetInfoCard);
+		
+		const [device] = await request('/devices/info/byDevice', { device_name }, 'get');
+		const deviceId = device !== undefined ? device.id : 0;
 
-		currentName.value = device_name; // Store last device searched for data updating
+		updateGaugeCharts(deviceId);
+		updateLineCharts(deviceId, 60);
+
+		// Store last device searched for data updating
+		currentName.value = device_name;
+		currentId.value   = deviceId;
 
 		gaugesInterval = setInterval(gaugesIntervalFunction, 1000 * 5); // 5 seconds
-		linesInterval = setInterval(linesIntervalFunction, 1000 * 60 * 1) // 1 minute
+		linesInterval  = setInterval(linesIntervalFunction, 1000 * 60 * 1) // 1 minute
 	}
 }
 
@@ -184,9 +193,9 @@ function sendAction () {
 			action = 'L';
 		}
 
-		const device_name = form.elements.current_name.value;
+		const device_id = form.elements.current_id.value;
 
-		request('/devices/actions/on-off', { device_name, action }, 'get');
+		request('/devices/actions/on-off', { device_id, action }, 'get');
 	}
 }
 

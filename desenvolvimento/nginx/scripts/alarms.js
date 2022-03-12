@@ -122,7 +122,7 @@ function createTable () {
 	// Create table header
 	const header = createElement('thead');
 	const row = createElement('tr');
-	const columns = ['ID do Alarme', 'Nome do Alarme', 'Data de Criação'].map(column => {
+	const columns = ['ID do Alarme', 'Dispositivo', 'Nome do Alarme', 'Data de Criação'].map(column => {
 		const th = createElement('th');
 		th.innerHTML = column;
 
@@ -163,14 +163,19 @@ function getAlarms () {
 		const rows = alarms.map(alarm => {
 			const row = createElement('tr');
 
-			const columns = Object.entries(alarm).map(info => {
-				const column = createElement('td');
-				column.innerHTML = info[1];
+			const alarmId = createElement('td');
+			alarmId.innerHTML = alarm.id;
 
-				return column;
-			});
+			const deviceName = createElement('td');
+			deviceName.innerHTML = this.device.name
 
-			appendChilds(row, columns);
+			const alarmName = createElement('td');
+			alarmName.innerHTML = alarm.name
+
+			const creationTime = createElement('td');
+			creationTime.innerHTML = alarm.creation_time
+
+			appendChilds(row, [alarmId, deviceName, alarmName, creationTime]);
 
 			return row;
 		});

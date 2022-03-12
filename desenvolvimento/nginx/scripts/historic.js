@@ -62,14 +62,17 @@ function chartConfig (type, measure) {
 
 /*************** FORM FUNCTIONS ***************/
 
-function formSubmission (e) {
+async function formSubmission (e) {
 	e.preventDefault();
 	
-	const deviceName = form.elements.device_name.value;
+	const device_name = form.elements.device_name.value;
 	const interval = form.elements.interval.value;
-	
-	if (deviceName !== "") {
-		updateLineCharts(deviceName, interval);
+
+	if (device_name !== '' && interval !== '') {
+		const [device] = await request('/devices/info/byDevice', { device_name }, 'get');
+		const deviceId = device !== undefined ? device.id : 0;
+
+		updateLineCharts(deviceId, interval);
 	}
 }
 
